@@ -904,7 +904,7 @@ function initChat() {
         body: JSON.stringify({
           model: API_CONFIG.model,
           messages: conversationHistory,  // REQUIRED field - array of message objects
-          stream: false,  // Disable streaming for simpler handling
+          stream: true,  // Disable streaming for simpler handling
           temperature: 0.7,
           max_tokens: 1024
         }),
