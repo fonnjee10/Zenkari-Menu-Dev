@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Zenkari Menu - Unified Launcher v10.0.0F</title>
-<link rel="icon" type="image/svg+xml" href="image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233b82f6;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 50 L45 35 L70 60 M45 35 L45 65' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70' cy='30' r='8' fill='%2310b981'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233b82f6;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 50 L45 35 L70 60 M45 35 L45 65' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70' cy='30' r='8' fill='%2310b981'/%3E%3C/svg%3E">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
 body {
@@ -688,167 +688,89 @@ body {
 </div>
 <div class="lang-indicator" id="langIndicator">🇫🇷 FR</div>
 <script>
-// ==================== API CONFIGURATION ====================
+// ==================== API CONFIGURATION - LM STUDIO COMPATIBLE ====================
 const API_CONFIG = {
   baseUrl: 'https://zenkaritecuitai.ngrok.app',
   endpoint: '/v1/chat/completions',
   model: 'nousresearch/nous-hermes-2-mistral-7b-dpo',
-  timeout: 60000,
+  timeout: 30000,
   maxRetries: 3
 };
 
 // ==================== TRANSLATIONS ====================
 const translations = {
   en: {
-    title: "Zenkari Menu",
-    subtitle: "Unified security platform - Choose your application",
-    zk_web_title: "ZenkariApp Web",
-    zk_web_desc: "Secure messaging & file encryption - Web Version",
-    zk_win_title: "ZenkariApp Windows",
-    zk_win_desc: "Native Windows application - Free download",
-    zkp_title: "ZenkariPass",
-    zkp_archive_desc: "Password manager with 2FA - Archive",
+    title: "Zenkari Menu", subtitle: "Unified security platform - Choose your application",
+    zk_web_title: "ZenkariApp Web", zk_web_desc: "Secure messaging & file encryption - Web Version",
+    zk_win_title: "ZenkariApp Windows", zk_win_desc: "Native Windows application - Free download",
+    zkp_title: "ZenkariPass", zkp_archive_desc: "Password manager with 2FA - Archive",
     zkp_web_desc: "Password manager with 2FA - Web Version",
-    zkpa_title: "ZenkariPass Authenticator",
-    zkpa_desc: "2FA authenticator with QR detection (Python)",
-    zkia_title: "Zenkari IA",
-    zkia_version: "v2.1.0 BETA",
-    zkia_desc: "AI Assistant & Smart Automation - Web Version",
-    feat_rsa: "RSA-3072 + AES-256 Encryption",
-    feat_rsa4096: "RSA-4096 + AES-256 Encryption",
-    feat_signed: "Cryptographically signed messages",
-    feat_files: "File encryption (500MB max)",
-    feat_qr: "Secure QR Codes",
-    feat_logs: "Encrypted logs",
-    feat_ai: "Integrated AI",
-    feat_native: "Native Windows desktop app",
-    feat_offline: "Works offline",
-    feat_local: "Secure local storage",
-    feat_auto: "Automatic updates",
-    feat_compat: "Windows 10/11 compatible",
-    feat_2fa: "Two-factor authentication (TOTP)",
-    feat_gen: "Password generator",
-    feat_cats: "Organized categories",
-    feat_lock: "Auto-lock feature",
-    feat_export: "Secure export/import",
-    feat_totp: "TOTP code generation",
-    feat_aes_sha: "AES-256 & SHA-256 encryption",
-    feat_qr_detect: "QR detection via screenshot",
-    feat_tz: "All timezones supported",
-    feat_local_enc: "Encrypted local storage",
-    feat_langs: "15 languages supported",
-    feat_ai_chat: "AI Chat Assistant",
-    feat_ai_auto: "Smart Automation",
-    feat_ai_sec: "Security Analysis",
-    feat_ai_multi: "Multi-language Support",
-    feat_ai_cloud: "Cloud Integration",
-    feat_ai_real: "Real-time Processing",
-    btn_launch: "Launch Web",
-    btn_download: "Download ZK",
-    btn_archive: "Download ZKP",
-    btn_download_zkpa: "Download ZKPA",
-    btn_launch_zkia: "Launch Zenkari IA",
+    zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "2FA authenticator with QR detection (Python)",
+    zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "AI Assistant & Smart Automation - Web Version",
+    feat_rsa: "RSA-3072 + AES-256 Encryption", feat_rsa4096: "RSA-4096 + AES-256 Encryption",
+    feat_signed: "Cryptographically signed messages", feat_files: "File encryption (500MB max)",
+    feat_qr: "Secure QR Codes", feat_logs: "Encrypted logs", feat_ai: "Integrated AI",
+    feat_native: "Native Windows desktop app", feat_offline: "Works offline",
+    feat_local: "Secure local storage", feat_auto: "Automatic updates",
+    feat_compat: "Windows 10/11 compatible", feat_2fa: "Two-factor authentication (TOTP)",
+    feat_gen: "Password generator", feat_cats: "Organized categories",
+    feat_lock: "Auto-lock feature", feat_export: "Secure export/import",
+    feat_totp: "TOTP code generation", feat_aes_sha: "AES-256 & SHA-256 encryption",
+    feat_qr_detect: "QR detection via screenshot", feat_tz: "All timezones supported",
+    feat_local_enc: "Encrypted local storage", feat_langs: "15 languages supported",
+    feat_ai_chat: "AI Chat Assistant", feat_ai_auto: "Smart Automation",
+    feat_ai_sec: "Security Analysis", feat_ai_multi: "Multi-language Support",
+    feat_ai_cloud: "Cloud Integration", feat_ai_real: "Real-time Processing",
+    btn_launch: "Launch Web", btn_download: "Download ZK", btn_archive: "Download ZKP",
+    btn_download_zkpa: "Download ZKPA", btn_launch_zkia: "Launch Zenkari IA",
     status_operational: "All applications are operational",
-    status_encryption: "🔒 Encryption: AES-256 / RSA-4096",
-    status_apps: "📊 6 Applications available",
+    status_encryption: "🔒 Encryption: AES-256 / RSA-4096", status_apps: "📊 6 Applications available",
     footer_copyright: "© 2026 Zenkari Menu - All rights reserved",
     footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-    ai_chat_title: "Zenkari AI Assistant",
-    btn_clear_chat: "🗑 Clear",
-    btn_export_chat: "💾 Export",
-    btn_theme_chat: "🎨 Theme",
-    btn_check_api: "🔄 Check API",
-    ai_thinking: "Tecuit...",
-    chat_placeholder: "Type your message...",
-    contact_title: "📧 Contact / Help",
-    contact_name: "Name",
-    contact_email: "Email",
-    contact_message: "Message"
+    ai_chat_title: "Zenkari AI Assistant", btn_clear_chat: "🗑 Clear", btn_export_chat: "💾 Export",
+    btn_theme_chat: "🎨 Theme", btn_check_api: "🔄 Check API", ai_thinking: "Tecuit...",
+    chat_placeholder: "Type your message...", contact_title: "📧 Contact / Help",
+    contact_name: "Name", contact_email: "Email", contact_message: "Message"
   },
   fr: {
-    title: "Menu Zenkari",
-    subtitle: "Plateforme de sécurité unifiée - Choisissez votre application",
-    zk_web_title: "ZenkariApp Web",
-    zk_web_desc: "Messagerie sécurisée & chiffrement - Version Web",
-    zk_win_title: "ZenkariApp Windows",
-    zk_win_desc: "Application Windows native - Téléchargement gratuit",
-    zkp_title: "ZenkariPass",
-    zkp_archive_desc: "Gestionnaire de mots de passe avec A2F - Archive",
+    title: "Menu Zenkari", subtitle: "Plateforme de sécurité unifiée - Choisissez votre application",
+    zk_web_title: "ZenkariApp Web", zk_web_desc: "Messagerie sécurisée & chiffrement - Version Web",
+    zk_win_title: "ZenkariApp Windows", zk_win_desc: "Application Windows native - Téléchargement gratuit",
+    zkp_title: "ZenkariPass", zkp_archive_desc: "Gestionnaire de mots de passe avec A2F - Archive",
     zkp_web_desc: "Gestionnaire de mots de passe avec A2F - Version Web",
-    zkpa_title: "ZenkariPass Authenticator",
-    zkpa_desc: "Authentificateur 2FA avec détection QR (Python)",
-    zkia_title: "Zenkari IA",
-    zkia_version: "v2.1.0 BÊTA",
-    zkia_desc: "Assistant IA & Automatisation - Version Web",
-    feat_rsa: "Chiffrement RSA-3072 + AES-256",
-    feat_rsa4096: "Chiffrement RSA-4096 + AES-256",
-    feat_signed: "Messages signés cryptographiquement",
-    feat_files: "Chiffrement de fichiers (500MB max)",
-    feat_qr: "QR Codes sécurisés",
-    feat_logs: "Logs cryptés",
-    feat_ai: "IA intégrée",
-    feat_native: "Application desktop Windows native",
-    feat_offline: "Fonctionne hors ligne",
-    feat_local: "Stockage local sécurisé",
-    feat_auto: "Mises à jour automatiques",
-    feat_compat: "Compatible Windows 10/11",
-    feat_2fa: "Authentification 2 facteurs (TOTP)",
-    feat_gen: "Générateur de mots de passe",
-    feat_cats: "Catégories organisées",
-    feat_lock: "Verrouillage automatique",
-    feat_export: "Export/Import sécurisé",
-    feat_totp: "Génération de codes TOTP",
-    feat_aes_sha: "Chiffrement AES-256 et SHA-256",
-    feat_qr_detect: "Détection QR par screenshot",
-    feat_tz: "Tous fuseaux horaires supportés",
-    feat_local_enc: "Stockage local chiffré",
-    feat_langs: "15 langues supportées",
-    feat_ai_chat: "Assistant Chat IA",
-    feat_ai_auto: "Automatisation Intelligente",
-    feat_ai_sec: "Analyse de Sécurité",
-    feat_ai_multi: "Support Multi-langues",
-    feat_ai_cloud: "Intégration Cloud",
-    feat_ai_real: "Traitement Temps Réel",
-    btn_launch: "Lancer Web",
-    btn_download: "Télécharger ZK",
-    btn_archive: "Télécharger ZKP",
-    btn_download_zkpa: "Télécharger ZKPA",
-    btn_launch_zkia: "Lancer Zenkari IA",
+    zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Authentificateur 2FA avec détection QR (Python)",
+    zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BÊTA", zkia_desc: "Assistant IA & Automatisation - Version Web",
+    feat_rsa: "Chiffrement RSA-3072 + AES-256", feat_rsa4096: "Chiffrement RSA-4096 + AES-256",
+    feat_signed: "Messages signés cryptographiquement", feat_files: "Chiffrement de fichiers (500MB max)",
+    feat_qr: "QR Codes sécurisés", feat_logs: "Logs cryptés", feat_ai: "IA intégrée",
+    feat_native: "Application desktop Windows native", feat_offline: "Fonctionne hors ligne",
+    feat_local: "Stockage local sécurisé", feat_auto: "Mises à jour automatiques",
+    feat_compat: "Compatible Windows 10/11", feat_2fa: "Authentification 2 facteurs (TOTP)",
+    feat_gen: "Générateur de mots de passe", feat_cats: "Catégories organisées",
+    feat_lock: "Verrouillage automatique", feat_export: "Export/Import sécurisé",
+    feat_totp: "Génération de codes TOTP", feat_aes_sha: "Chiffrement AES-256 et SHA-256",
+    feat_qr_detect: "Détection QR par screenshot", feat_tz: "Tous fuseaux horaires supportés",
+    feat_local_enc: "Stockage local chiffré", feat_langs: "15 langues supportées",
+    feat_ai_chat: "Assistant Chat IA", feat_ai_auto: "Automatisation Intelligente",
+    feat_ai_sec: "Analyse de Sécurité", feat_ai_multi: "Support Multi-langues",
+    feat_ai_cloud: "Intégration Cloud", feat_ai_real: "Traitement Temps Réel",
+    btn_launch: "Lancer Web", btn_download: "Télécharger ZK", btn_archive: "Télécharger ZKP",
+    btn_download_zkpa: "Télécharger ZKPA", btn_launch_zkia: "Lancer Zenkari IA",
     status_operational: "Toutes les applications sont opérationnelles",
-    status_encryption: "🔒 Chiffrement: AES-256 / RSA-4096",
-    status_apps: "📊 6 Applications disponibles",
+    status_encryption: "🔒 Chiffrement: AES-256 / RSA-4096", status_apps: "📊 6 Applications disponibles",
     footer_copyright: "© 2026 Zenkari Menu - Tous droits réservés",
     footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BÊTA",
-    ai_chat_title: "Assistant IA Zenkari",
-    btn_clear_chat: "🗑 Effacer",
-    btn_export_chat: "💾 Exporter",
-    btn_theme_chat: "🎨 Thème",
-    btn_check_api: "🔄 Vérifier API",
-    ai_thinking: "Tecuit...",
-    chat_placeholder: "Tapez votre message...",
-    contact_title: "📧 Contact / Aide",
-    contact_name: "Nom",
-    contact_email: "Email",
-    contact_message: "Message"
+    ai_chat_title: "Assistant IA Zenkari", btn_clear_chat: "🗑 Effacer", btn_export_chat: "💾 Exporter",
+    btn_theme_chat: "🎨 Thème", btn_check_api: "🔄 Vérifier API", ai_thinking: "Tecuit...",
+    chat_placeholder: "Tapez votre message...", contact_title: "📧 Contact / Aide",
+    contact_name: "Nom", contact_email: "Email", contact_message: "Message"
   }
 };
 
 const langCodes = {
-  en: '🇬🇧 EN',
-  fr: '🇫🇷 FR',
-  es: '🇪🇸 ES',
-  zh: '🇨🇳 ZH',
-  hi: '🇮🇳 HI',
-  ar: '🇸🇦 AR',
-  pt: '🇵🇹 PT',
-  bn: '🇧🇩 BN',
-  ru: '🇷🇺 RU',
-  ja: '🇯🇵 JA',
-  de: '🇩🇪 DE',
-  it: '🇮🇹 IT',
-  vi: '🇻🇳 VI',
-  ko: '🇰🇷 KO',
-  tr: '🇹🇷 TR'
+  en: '🇬🇧 EN', fr: '🇫🇷 FR', es: '🇪🇸 ES', zh: '🇨🇳 ZH', hi: '🇮🇳 HI',
+  ar: '🇸🇦 AR', pt: '🇵🇹 PT', bn: '🇧🇩 BN', ru: '🇷🇺 RU', ja: '🇯🇵 JA',
+  de: '🇩🇪 DE', it: '🇮🇹 IT', vi: '🇻🇳 VI', ko: '🇰🇷 KO', tr: '🇹🇷 TR'
 };
 
 let currentLang = 'fr';
@@ -862,32 +784,27 @@ let apiConnected = false;
 function changeLanguage() {
   const lang = document.getElementById('languageSelector').value;
   currentLang = lang;
-  
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     if (translations[lang] && translations[lang][key]) {
       element.textContent = translations[lang][key];
     }
   });
-  
   document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
     const key = element.getAttribute('data-i18n-placeholder');
     if (translations[lang] && translations[lang][key]) {
       element.placeholder = translations[lang][key];
     }
   });
-  
   document.getElementById('langIndicator').textContent = langCodes[lang] || lang.toUpperCase();
   localStorage.setItem('zenkari_lang', lang);
   updateChatWelcome();
 }
 
 function initLanguage() {
-  const savedLang = localStorage.getItem('zenkari_lang');
-  if (savedLang && translations[savedLang]) {
-    currentLang = savedLang;
-    document.getElementById('languageSelector').value = savedLang;
-  }
+  const savedLang = localStorage.getItem('zenkari_lang') || 'fr';
+  currentLang = savedLang;
+  document.getElementById('languageSelector').value = savedLang;
   changeLanguage();
 }
 
@@ -907,8 +824,7 @@ function handleContactForm(e) {
   const name = document.getElementById('contactName').value;
   const email = document.getElementById('contactEmail').value;
   const message = document.getElementById('contactMessage').value;
-  
-  const mailtoLink = `mailto:ZenkariWebService@protonmail.com?subject=Contact depuis ZenkariApp - ${encodeURIComponent(name)}&body=Nom: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
+  const mailtoLink = `mailto:ZenkariWebService@protonmail.com?subject=Contact - ${encodeURIComponent(name)}&body=Nom: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
   window.location.href = mailtoLink;
   e.target.reset();
 }
@@ -917,7 +833,6 @@ function handleContactForm(e) {
 async function checkApiConnection() {
   const statusEl = document.getElementById('chatApiStatus');
   const globalStatus = document.getElementById('apiStatus');
-  
   statusEl.classList.remove('error');
   statusEl.classList.add('connecting');
   
@@ -930,12 +845,8 @@ async function checkApiConnection() {
     
     if (response.ok || response.status === 200) {
       apiConnected = true;
-      statusEl.classList.remove('connecting');
-      statusEl.classList.remove('error');
-      if (globalStatus) {
-        globalStatus.classList.remove('error');
-        globalStatus.classList.remove('connecting');
-      }
+      statusEl.classList.remove('connecting', 'error');
+      if (globalStatus) globalStatus.classList.remove('error', 'connecting');
       addMessage('✅ API Connection successful! Zenkari Secure 10.0.0F is online.', 'tecuit');
     } else {
       throw new Error('API returned status: ' + response.status);
@@ -952,7 +863,7 @@ async function checkApiConnection() {
   }
 }
 
-// ==================== CHAT IA - REAL API CONNECTION ====================
+// ==================== CHAT IA - REAL API CONNECTION (FIXED) ====================
 function initChat() {
   const chat = document.getElementById('chat');
   const input = document.getElementById('chat-input');
@@ -963,16 +874,6 @@ function initChat() {
   
   checkApiConnection();
   updateChatWelcome();
-  
-  function addMessage(text, from) {
-    const div = document.createElement('div');
-    div.className = 'msg ' + from;
-    div.textContent = text;
-    div.id = 'msg_' + Date.now();
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div.id;
-  }
   
   async function sendMessage() {
     const text = input.value.trim();
@@ -985,22 +886,23 @@ function initChat() {
     stopGenBtn.style.display = 'inline-block';
     chat.scrollTop = chat.scrollHeight;
     
-    // Add to conversation history
+    // Add to conversation history with proper format
     conversationHistory.push({ role: 'user', content: text });
     
     try {
       abortController = new AbortController();
       
+      // FIXED: Proper OpenAI/LM Studio API format
       const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Accept': 'text/event-stream'
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
           model: API_CONFIG.model,
-          messages: conversationHistory,
-          stream: true,
+          messages: conversationHistory,  // REQUIRED field - array of message objects
+          stream: false,  // Disable streaming for simpler handling
           temperature: 0.7,
           max_tokens: 1024
         }),
@@ -1008,46 +910,29 @@ function initChat() {
       });
       
       if (!response.ok) {
-        throw new Error('API Error: ' + response.status + ' ' + response.statusText);
+        const errorData = await response.text();
+        throw new Error('API Error: ' + response.status + ' - ' + errorData);
       }
+      
+      const data = await response.json();
       
       tecuitThinking.style.display = 'none';
-      const messageId = addMessage('', 'tecuit');
-      const tecuitDiv = document.getElementById(messageId);
       
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let fullReply = "";
-      
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-        
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const dataStr = line.replace("data: ", "").trim();
-            if (dataStr === "[DONE]") break;
-            
-            try {
-              const json = JSON.parse(dataStr);
-              const content = json.choices[0].delta?.content || "";
-              fullReply += content;
-              if (tecuitDiv) {
-                tecuitDiv.innerText = fullReply;
-              }
-              chat.scrollTop = chat.scrollHeight;
-            } catch (e) {
-              // Ignore JSON parse errors for partial chunks
-            }
-          }
-        }
+      // Extract response from OpenAI format
+      let fullReply = '';
+      if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+        fullReply = data.choices[0].message.content;
+      } else if (data.response) {
+        fullReply = data.response;
+      } else {
+        fullReply = 'No response from AI';
       }
+      
+      addMessage(fullReply, 'tecuit');
       
       // Add assistant response to history
       conversationHistory.push({ role: 'assistant', content: fullReply });
+      
       stopGenBtn.style.display = 'none';
       
       const statusEl = document.getElementById('chatApiStatus');
@@ -1060,7 +945,7 @@ function initChat() {
       const statusEl = document.getElementById('chatApiStatus');
       statusEl.classList.add('error');
       
-      // Fallback response
+      // Fallback responses
       const fallbackResponses = {
         fr: [
           "Je comprends votre demande. Laissez-moi vous aider avec cela.",
@@ -1091,28 +976,21 @@ function initChat() {
     if (abortController) {
       abortController.abort();
       abortController = null;
-      console.log("Génération IA stoppée");
       document.getElementById('stopGenBtn').style.display = 'none';
     }
   }
   
   sendBtn.addEventListener('click', sendMessage);
-  fileUploadBtn.addEventListener('click', () => {
-    document.getElementById('fileInput').click();
-  });
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendMessage();
-  });
+  fileUploadBtn.addEventListener('click', () => document.getElementById('fileInput').click());
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
 }
 
 function updateTypingPreview() {
   const input = document.getElementById('chat-input');
   const preview = document.getElementById('typingPreview');
   const text = input.value.trim();
-  
   if (text) {
-    const previewText = text.length > 50 ? text.substring(0, 50) + '...' : text;
-    preview.textContent = previewText;
+    preview.textContent = text.length > 50 ? text.substring(0, 50) + '...' : text;
     preview.style.display = 'block';
   } else {
     preview.style.display = 'none';
@@ -1121,17 +999,13 @@ function updateTypingPreview() {
 
 function handleFileUpload(file) {
   if (!file) return;
-  
   if (file.size > 500 * 1024 * 1024) {
-    alert('⚠️ Le fichier est trop volumineux (max 500 Mo)');
+    alert('⚠️ File too large (max 500MB)');
     return;
   }
-  
   const reader = new FileReader();
   reader.onload = function(e) {
-    const filename = file.name;
-    const message = `📎 Fichier envoyé: ${filename}\nTaille: ${(file.size / 1024).toFixed(2)} KB`;
-    
+    const message = `📎 File: ${file.name}\nSize: ${(file.size / 1024).toFixed(2)} KB`;
     document.getElementById('chat-input').value = message;
     updateTypingPreview();
     addMessage(message, 'user');
@@ -1140,13 +1014,10 @@ function handleFileUpload(file) {
 }
 
 function clearConversation() {
-  if (!confirm("Delete the entire conversation with Tecuit?")) return;
-  
+  if (!confirm("Delete entire conversation?")) return;
   const chat = document.getElementById("chat");
   chat.innerHTML = "";
   conversationHistory = [];
-  localStorage.removeItem("tecuit_chat");
-  
   updateChatWelcome();
 }
 
@@ -1156,7 +1027,6 @@ function exportConversation() {
     from: msg.classList.contains('user') ? 'user' : 'tecuit',
     text: msg.textContent
   }));
-  
   const blob = new Blob([JSON.stringify(messages, null, 2)], { type: 'application/json' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1168,11 +1038,7 @@ function exportConversation() {
 
 function toggleAITheme() {
   const chat = document.getElementById('chat');
-  if (chat.style.background === 'rgb(42, 47, 58)') {
-    chat.style.background = '#1f1f1f';
-  } else {
-    chat.style.background = '#2a2f3a';
-  }
+  chat.style.background = chat.style.background === 'rgb(42, 47, 58)' ? '#1f1f1f' : '#2a2f3a';
 }
 
 function addMessage(text, from) {
