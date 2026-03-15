@@ -404,8 +404,7 @@ body {
 .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes typingDots {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0; } 50% { opacity: 1; }
 }
 #typingPreview {
   color: #6b7280;
@@ -447,6 +446,10 @@ body {
 .api-status.error {
   background: #ef4444;
 }
+.api-status.connecting {
+  background: #fbbf24;
+  animation: blink 0.5s infinite;
+}
 @media (max-width: 768px) {
   .header h1 { font-size: 32px; }
   .header p { font-size: 14px; }
@@ -474,21 +477,21 @@ body {
 <body>
 <div class="header">
   <select class="lang-selector" id="languageSelector" onchange="changeLanguage()">
-    <option value="en">🇬 English</option>
+    <option value="en">🇬🇧 English</option>
     <option value="fr" selected>🇫🇷 Français</option>
-    <option value="es">🇪 Español</option>
-    <option value="zh">🇨 中文</option>
-    <option value="hi">🇮 हिन्दी</option>
-    <option value="ar">🇸 العربية</option>
-    <option value="pt">🇵 Português</option>
+    <option value="es">🇪🇸 Español</option>
+    <option value="zh">🇨🇳 中文</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇸🇦 العربية</option>
+    <option value="pt">🇵🇹 Português</option>
     <option value="bn">🇧🇩 বাংলা</option>
-    <option value="ru">🇷 Русский</option>
-    <option value="ja">🇯 日本語</option>
+    <option value="ru">🇷🇺 Русский</option>
+    <option value="ja">🇯🇵 日本語</option>
     <option value="de">🇩🇪 Deutsch</option>
     <option value="it">🇮🇹 Italiano</option>
     <option value="vi">🇻🇳 Tiếng Việt</option>
     <option value="ko">🇰🇷 한국어</option>
-    <option value="tr">🇹 Türkçe</option>
+    <option value="tr">🇹🇷 Türkçe</option>
   </select>
   <div class="logo-crypto">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -633,12 +636,13 @@ body {
   <section id="ai-chat-section">
     <h2>
       <span data-i18n="ai_chat_title">Zenkari AI Assistant</span>
-      <span class="api-status" id="chatApiStatus" title="Chat API Status"></span>
+      <span class="api-status connecting" id="chatApiStatus" title="Chat API Status"></span>
     </h2>
     <div class="chat-controls">
       <button class="btn btn-danger" onclick="clearConversation()" data-i18n="btn_clear_chat">🗑 Clear</button>
       <button class="btn btn-warning" onclick="exportConversation()" data-i18n="btn_export_chat">💾 Export</button>
       <button class="btn btn-teal" onclick="toggleAITheme()" data-i18n="btn_theme_chat">🎨 Theme</button>
+      <button class="btn btn-primary" onclick="checkApiConnection()" data-i18n="btn_check_api">🔄 Check API</button>
     </div>
     <div id="chat"></div>
     <div id="tecuit-thinking">
@@ -692,6 +696,15 @@ body {
 </div>
 <div class="lang-indicator" id="langIndicator">🇫🇷 FR</div>
 <script>
+// ==================== CONFIGURATION API ====================
+const API_CONFIG = {
+  baseUrl: 'https://zenkaritecuitai.ngrok.app',
+  endpoint: '/v1/chat/completions',
+  model: 'nousresearch/nous-hermes-2-mistral-7b-dpo',
+  timeout: 30000,
+  maxRetries: 3
+};
+
 // ==================== TRANSLATIONS (15 LANGUAGES) ====================
 const translations = {
   en: {
@@ -745,13 +758,14 @@ const translations = {
     btn_launch_zkia: "Launch Zenkari IA",
     status_operational: "All applications are operational",
     status_encryption: "🔒 Encryption: AES-256 / RSA-4096",
-    status_apps: " 6 Applications available",
+    status_apps: "📊 6 Applications available",
     footer_copyright: "© 2026 Zenkari Menu - All rights reserved",
     footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
     ai_chat_title: "Zenkari AI Assistant",
     btn_clear_chat: "🗑 Clear",
     btn_export_chat: "💾 Export",
     btn_theme_chat: "🎨 Theme",
+    btn_check_api: "🔄 Check API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Type your message...",
     contact_title: "📧 Contact / Help",
@@ -810,13 +824,14 @@ const translations = {
     btn_launch_zkia: "Lancer Zenkari IA",
     status_operational: "Toutes les applications sont opérationnelles",
     status_encryption: "🔒 Chiffrement: AES-256 / RSA-4096",
-    status_apps: " 6 Applications disponibles",
+    status_apps: "📊 6 Applications disponibles",
     footer_copyright: "© 2026 Zenkari Menu - Tous droits réservés",
     footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BÊTA",
     ai_chat_title: "Assistant IA Zenkari",
     btn_clear_chat: "🗑 Effacer",
     btn_export_chat: "💾 Exporter",
     btn_theme_chat: "🎨 Thème",
+    btn_check_api: "🔄 Vérifier API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Tapez votre message...",
     contact_title: "📧 Contact / Aide",
@@ -875,13 +890,14 @@ const translations = {
     btn_launch_zkia: "Lanzar Zenkari IA",
     status_operational: "Todas las aplicaciones están operativas",
     status_encryption: "🔒 Cifrado: AES-256 / RSA-4096",
-    status_apps: " 6 Aplicaciones disponibles",
+    status_apps: "📊 6 Aplicaciones disponibles",
     footer_copyright: "© 2026 Zenkari Menu - Todos los derechos reservados",
     footer_versions: "Hecho por LE$TER | Versiones: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
     ai_chat_title: "Asistente IA Zenkari",
     btn_clear_chat: "🗑 Limpiar",
     btn_export_chat: "💾 Exportar",
     btn_theme_chat: "🎨 Tema",
+    btn_check_api: "🔄 Verificar API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Escribe tu mensaje...",
     contact_title: "📧 Contacto / Ayuda",
@@ -947,6 +963,7 @@ const translations = {
     btn_clear_chat: "🗑 清除",
     btn_export_chat: "💾 导出",
     btn_theme_chat: "🎨 主题",
+    btn_check_api: "🔄 检查 API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "输入您的消息...",
     contact_title: "📧 联系/帮助",
@@ -1012,6 +1029,7 @@ const translations = {
     btn_clear_chat: "🗑 साफ़ करें",
     btn_export_chat: "💾 निर्यात",
     btn_theme_chat: "🎨 थीम",
+    btn_check_api: "🔄 API जांचें",
     ai_thinking: "Tecuit...",
     chat_placeholder: "अपना संदेश टाइप करें...",
     contact_title: "📧 संपर्क / सहायता",
@@ -1077,6 +1095,7 @@ const translations = {
     btn_clear_chat: "🗑 مسح",
     btn_export_chat: "💾 تصدير",
     btn_theme_chat: "🎨 سمة",
+    btn_check_api: "🔄 التحقق من API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "اكتب رسالتك...",
     contact_title: "📧 اتصال / مساعدة",
@@ -1142,6 +1161,7 @@ const translations = {
     btn_clear_chat: "🗑 Limpar",
     btn_export_chat: "💾 Exportar",
     btn_theme_chat: "🎨 Tema",
+    btn_check_api: "🔄 Verificar API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Digite sua mensagem...",
     contact_title: "📧 Contato / Ajuda",
@@ -1207,6 +1227,7 @@ const translations = {
     btn_clear_chat: "🗑 পরিষ্কার করুন",
     btn_export_chat: "💾 এক্সপোর্ট",
     btn_theme_chat: "🎨 থিম",
+    btn_check_api: "🔄 API চেক করুন",
     ai_thinking: "Tecuit...",
     chat_placeholder: "আপনার বার্তা টাইপ করুন...",
     contact_title: "📧 যোগাযোগ / সাহায্য",
@@ -1272,6 +1293,7 @@ const translations = {
     btn_clear_chat: "🗑 Очистить",
     btn_export_chat: "💾 Экспорт",
     btn_theme_chat: "🎨 Тема",
+    btn_check_api: "🔄 Проверить API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Введите ваше сообщение...",
     contact_title: "📧 Контакт / Помощь",
@@ -1337,6 +1359,7 @@ const translations = {
     btn_clear_chat: "🗑 クリア",
     btn_export_chat: "💾 エクスポート",
     btn_theme_chat: "🎨 テーマ",
+    btn_check_api: "🔄 API を確認",
     ai_thinking: "Tecuit...",
     chat_placeholder: "メッセージを入力...",
     contact_title: "📧 お問い合わせ/ヘルプ",
@@ -1402,6 +1425,7 @@ const translations = {
     btn_clear_chat: "🗑 Löschen",
     btn_export_chat: "💾 Exportieren",
     btn_theme_chat: "🎨 Thema",
+    btn_check_api: "🔄 API prüfen",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Nachricht eingeben...",
     contact_title: "📧 Kontakt / Hilfe",
@@ -1467,6 +1491,7 @@ const translations = {
     btn_clear_chat: "🗑 Cancella",
     btn_export_chat: "💾 Esporta",
     btn_theme_chat: "🎨 Tema",
+    btn_check_api: "🔄 Verifica API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Digita il tuo messaggio...",
     contact_title: "📧 Contatto / Aiuto",
@@ -1532,6 +1557,7 @@ const translations = {
     btn_clear_chat: "🗑 Xóa",
     btn_export_chat: "💾 Xuất",
     btn_theme_chat: "🎨 Chủ Đề",
+    btn_check_api: "🔄 Kiểm tra API",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Nhập tin nhắn của bạn...",
     contact_title: "📧 Liên Hệ / Trợ Giúp",
@@ -1541,7 +1567,7 @@ const translations = {
   },
   ko: {
     title: "Zenkari 메뉴",
-    subtitle: "통합 보안 플랫폼 - 애플리케이션 택",
+    subtitle: "통합 보안 플랫폼 - 애플리케이션 선택",
     zk_web_title: "ZenkariApp 웹",
     zk_web_desc: "안전한 메시징 및 암호화 - 웹 버전",
     zk_win_title: "ZenkariApp Windows",
@@ -1597,6 +1623,7 @@ const translations = {
     btn_clear_chat: "🗑 지우기",
     btn_export_chat: "💾 내보내기",
     btn_theme_chat: "🎨 테마",
+    btn_check_api: "🔄 API 확인",
     ai_thinking: "Tecuit...",
     chat_placeholder: "메시지 입력...",
     contact_title: "📧 연락처 / 도움말",
@@ -1662,6 +1689,7 @@ const translations = {
     btn_clear_chat: "🗑 Temizle",
     btn_export_chat: "💾 Dışa Aktar",
     btn_theme_chat: "🎨 Tema",
+    btn_check_api: "🔄 API'yi Kontrol Et",
     ai_thinking: "Tecuit...",
     chat_placeholder: "Mesajınızı yazın...",
     contact_title: "📧 İletişim / Yardım",
@@ -1672,19 +1700,19 @@ const translations = {
 };
 
 const langCodes = {
-  en: '🇬 EN',
+  en: '🇬🇧 EN',
   fr: '🇫🇷 FR',
   es: '🇪🇸 ES',
-  zh: '🇨 ZH',
+  zh: '🇨🇳 ZH',
   hi: '🇮🇳 HI',
   ar: '🇸🇦 AR',
-  pt: '🇵 PT',
+  pt: '🇵🇹 PT',
   bn: '🇧🇩 BN',
-  ru: '🇷 RU',
+  ru: '🇷🇺 RU',
   ja: '🇯🇵 JA',
   de: '🇩🇪 DE',
   it: '🇮🇹 IT',
-  vi: '🇻 VI',
+  vi: '🇻🇳 VI',
   ko: '🇰🇷 KO',
   tr: '🇹🇷 TR'
 };
@@ -1718,8 +1746,6 @@ function changeLanguage() {
   document.getElementById('langIndicator').textContent = langCodes[lang] || lang.toUpperCase();
   localStorage.setItem('zenkari_lang', lang);
   showLangNotification(lang);
-  
-  // Update chat welcome message
   updateChatWelcome();
 }
 
@@ -1783,6 +1809,47 @@ function addSystemLog(eventType, data) {
   }
 }
 
+// ==================== API CONNECTION ====================
+async function checkApiConnection() {
+  const statusEl = document.getElementById('chatApiStatus');
+  const globalStatus = document.getElementById('apiStatus');
+  
+  statusEl.classList.remove('error');
+  statusEl.classList.add('connecting');
+  
+  try {
+    const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
+      method: 'OPTIONS',
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(5000)
+    });
+    
+    if (response.ok || response.status === 200) {
+      apiConnected = true;
+      statusEl.classList.remove('connecting');
+      statusEl.classList.remove('error');
+      if (globalStatus) {
+        globalStatus.classList.remove('error');
+        globalStatus.classList.remove('connecting');
+      }
+      addMessage('✅ API Connection successful! Zenkari Secure 10.0.0F is online.', 'tecuit');
+      addSystemLog('api_check', { status: 'connected', endpoint: API_CONFIG.baseUrl });
+    } else {
+      throw new Error('API returned status: ' + response.status);
+    }
+  } catch (err) {
+    apiConnected = false;
+    statusEl.classList.remove('connecting');
+    statusEl.classList.add('error');
+    if (globalStatus) {
+      globalStatus.classList.remove('connecting');
+      globalStatus.classList.add('error');
+    }
+    addMessage('⚠️ API Connection failed. Using fallback mode. Error: ' + err.message, 'tecuit');
+    addSystemLog('api_check', { status: 'failed', error: err.message });
+  }
+}
+
 // ==================== CHAT IA - REAL API CONNECTION ====================
 function initChat() {
   const chat = document.getElementById('chat');
@@ -1792,10 +1859,7 @@ function initChat() {
   const tecuitThinking = document.getElementById('tecuit-thinking');
   const stopGenBtn = document.getElementById('stopGenBtn');
   
-  // Check API status
-  checkApiStatus();
-  
-  // Initialize with welcome message
+  checkApiConnection();
   updateChatWelcome();
   
   function addMessage(text, from) {
@@ -1819,46 +1883,29 @@ function initChat() {
     stopGenBtn.style.display = 'inline-block';
     chat.scrollTop = chat.scrollHeight;
     
-    // Store in conversation history
     conversationHistory.push({ role: 'user', content: text });
     
     try {
-      // Try to connect to Zenkari Secure 10.0.0F API
-      const apiEndpoints = [
-        '/api/chat',
-        'https://tecuit-ia.vercel.app/api/chat',
-        'https://zenkari-app-free.vercel.app/api/chat'
-      ];
+      abortController = new AbortController();
       
-      let response = null;
-      let usedEndpoint = '';
+      const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream'
+        },
+        body: JSON.stringify({
+          model: API_CONFIG.model,
+          messages: conversationHistory,
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 1024
+        }),
+        signal: abortController.signal
+      });
       
-      for (const endpoint of apiEndpoints) {
-        try {
-          abortController = new AbortController();
-          response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              model: 'nousresearch/nous-hermes-2-mistral-7b-dpo',
-              messages: conversationHistory,
-              stream: true
-            }),
-            signal: abortController.signal
-          });
-          
-          if (response.ok) {
-            usedEndpoint = endpoint;
-            break;
-          }
-        } catch (e) {
-          console.log(`Endpoint ${endpoint} failed:`, e);
-          continue;
-        }
-      }
-      
-      if (!response || !response.ok) {
-        throw new Error('No API endpoint available');
+      if (!response.ok) {
+        throw new Error('API Error: ' + response.status + ' ' + response.statusText);
       }
       
       tecuitThinking.style.display = 'none';
@@ -1896,25 +1943,27 @@ function initChat() {
         }
       }
       
-      // Add to conversation history
       conversationHistory.push({ role: 'assistant', content: fullReply });
-      
       stopGenBtn.style.display = 'none';
-      updateApiStatus(true);
+      
+      const statusEl = document.getElementById('chatApiStatus');
+      statusEl.classList.remove('error');
       
       addSystemLog('chat_message', {
         user: currentUser.username,
         message: text,
         response: fullReply,
-        endpoint: usedEndpoint
+        endpoint: API_CONFIG.baseUrl
       });
       
     } catch (err) {
       tecuitThinking.style.display = 'none';
       stopGenBtn.style.display = 'none';
-      updateApiStatus(false);
       
-      // Fallback response if API fails
+      const statusEl = document.getElementById('chatApiStatus');
+      statusEl.classList.add('error');
+      
+      // Fallback response
       const fallbackResponses = {
         fr: [
           "Je comprends votre demande. Laissez-moi vous aider avec cela.",
@@ -1934,7 +1983,7 @@ function initChat() {
       
       const responses = fallbackResponses[currentLang] || fallbackResponses['en'];
       const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-      const fullReply = randomResponse + " (ZenKari IA v2.1.0 BÊTA - Mode Local)";
+      const fullReply = randomReply + " (ZenKari IA v2.1.0 BÊTA - Mode Local)";
       
       addMessage(fullReply, 'tecuit');
       conversationHistory.push({ role: 'assistant', content: fullReply });
@@ -1963,31 +2012,6 @@ function initChat() {
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') sendMessage();
   });
-}
-
-function checkApiStatus() {
-  fetch('/api/chat', { method: 'HEAD' })
-    .then(() => {
-      apiConnected = true;
-      updateApiStatus(true);
-    })
-    .catch(() => {
-      apiConnected = false;
-      updateApiStatus(false);
-    });
-}
-
-function updateApiStatus(connected) {
-  const statusEl = document.getElementById('chatApiStatus');
-  const globalStatus = document.getElementById('apiStatus');
-  
-  if (connected) {
-    statusEl.classList.remove('error');
-    if (globalStatus) globalStatus.classList.remove('error');
-  } else {
-    statusEl.classList.add('error');
-    if (globalStatus) globalStatus.classList.add('error');
-  }
 }
 
 function updateTypingPreview() {
@@ -2073,7 +2097,6 @@ function toggleAITheme() {
   addSystemLog('toggle_ai_theme', { user: currentUser?.username });
 }
 
-// Helper function for addMessage in global scope
 function addMessage(text, from) {
   const chat = document.getElementById('chat');
   const div = document.createElement('div');
@@ -2090,7 +2113,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initLanguage();
   initChat();
   
-  // Animate app cards
   const cards = document.querySelectorAll('.app-card');
   cards.forEach((card, index) => {
     card.style.opacity = '0';
@@ -2103,7 +2125,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Make app cards clickable
 document.querySelectorAll('.app-card').forEach(card => {
   card.addEventListener('click', function(e) {
     if (!e.target.classList.contains('launch-btn') && !e.target.closest('.launch-btn')) {
