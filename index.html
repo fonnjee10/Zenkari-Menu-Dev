@@ -3,1554 +3,1063 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zenkari Menu - Unified Launcher v5.0.0F</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233b82f6;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 50 L45 35 L70 60 M45 35 L45 65' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70' cy='30' r='8' fill='%2310b981'/%3E%3C/svg%3E">
+<title>Zenkari Menu — Unified Launcher v5.1.0F</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-color: white;
-min-height: 100vh;
-overflow-x: hidden;
-}
-.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-.header {
-background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-padding: 60px 20px 80px;
-text-align: center;
-position: relative;
-overflow: hidden;
-border-radius: 0 0 20px 20px;
-}
-.header::before {
-content: '';
-position: absolute;
-top: -50%; left: -50%;
-width: 200%; height: 200%;
-background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-animation: pulse 4s ease-in-out infinite;
-}
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-.logo-crypto {
-width: 100px; height: 100px;
-margin: 0 auto 20px;
-position: relative; z-index: 1;
-animation: float 3s ease-in-out infinite;
-}
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.logo-crypto svg {
-width: 100%; height: 100%;
-filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-animation: rotateLogo 10s linear infinite;
-}
-@keyframes rotateLogo { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.header h1 {
-font-size: 42px; margin-bottom: 15px;
-text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-position: relative; z-index: 1;
-}
-.header p {
-font-size: 18px; margin-bottom: 25px;
-opacity: 0.9; position: relative; z-index: 1;
-}
-.lang-selector {
-position: absolute;
-top: 15px;
-right: 20px;
-background: rgba(255,255,255,0.15);
-border: 1px solid rgba(255,255,255,0.3);
-border-radius: 8px;
-padding: 6px 12px;
-color: white;
-font-size: 12px;
-cursor: pointer;
-z-index: 10;
-}
-.lang-selector option { background: #1a1a2e; color: white; }
-.app-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-gap: 25px;
-margin-top: -40px;
-padding: 0 20px;
-}
-.app-card {
-background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
-padding: 30px;
-border-radius: 15px;
-border: 2px solid #3b82f6;
-transition: all 0.3s;
-position: relative;
-overflow: hidden;
-cursor: pointer;
-}
-.app-card::before {
-content: '';
-position: absolute;
-top: -50%; left: -50%;
-width: 200%; height: 200%;
-background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-opacity: 0;
-transition: opacity 0.3s;
-}
-.app-card:hover::before { opacity: 1; }
-.app-card:hover {
-transform: translateY(-8px);
-box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
-border-color: #10b981;
-}
-.app-icon {
-width: 70px; height: 70px;
-margin: 0 auto 20px;
-display: flex; align-items: center; justify-content: center;
-background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-border-radius: 15px;
-font-size: 32px;
-overflow: hidden;
-}
-.app-icon img {
-width: 100%; height: 100%;
-object-fit: cover;
-border-radius: 15px;
-}
-.app-card h3 {
-color: #10b981;
-font-size: 22px; margin-bottom: 10px; text-align: center;
-}
-.app-card .version {
-background: linear-gradient(135deg, #10b981, #059669);
-color: white;
-padding: 4px 12px; border-radius: 12px;
-font-size: 11px; font-weight: bold;
-display: inline-block; margin-bottom: 15px;
-}
-.app-card .version.beta {
-background: linear-gradient(135deg, #f59e0b, #d97706);
-color: black;
-animation: pulseBeta 2s infinite;
-}
-@keyframes pulseBeta { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-.app-card p {
-color: #9ca3af;
-font-size: 13px; text-align: center;
-margin-bottom: 20px; line-height: 1.6;
-}
-.app-features { list-style: none; margin-bottom: 20px; }
-.app-features li {
-padding: 6px 0; font-size: 12px; color: #6b7280;
-border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-}
-.app-features li:last-child { border-bottom: none; }
-.app-features li::before {
-content: '✓'; color: #10b981;
-margin-right: 8px; font-weight: bold;
-}
-.launch-btn {
-width: 100%; padding: 14px 20px;
-border: none; border-radius: 8px;
-font-weight: bold; font-size: 14px;
-cursor: pointer; transition: all 0.3s;
-background: linear-gradient(135deg, #3b82f6, #2563eb);
-color: white; text-transform: uppercase;
-letter-spacing: 1px; text-decoration: none;
-display: inline-block; text-align: center;
-}
-.launch-btn:hover {
-transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-}
-.app-card.download-app .launch-btn {
-background: linear-gradient(135deg, #1671f9, #0c74ea);
-color: white;
-}
-.app-card.download-app:hover {
-border-color: #1671f9;
-box-shadow: 0 15px 35px rgba(22, 113, 249, 0.3);
-}
-.app-card.python-app .launch-btn {
-background: linear-gradient(135deg, #fb2424, #0b84f5);
-color: black;
-}
-.app-card.python-app:hover {
-border-color: #2456fb;
-box-shadow: 0 15px 35px rgba(251, 36, 36, 0.3);
-}
-.app-card.ai-app .launch-btn {
-background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-color: white;
-}
-.app-card.ai-app:hover {
-border-color: #8b5cf6;
-box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
-}
-.status-bar {
-background: #1a1a1a;
-padding: 15px 20px; margin-top: 40px;
-border-radius: 10px;
-border: 1px solid rgba(59, 130, 246, 0.3);
-display: flex; justify-content: space-between;
-align-items: center; flex-wrap: wrap; gap: 15px;
-}
-.status-item {
-display: flex; align-items: center; gap: 8px;
-font-size: 12px; color: #9ca3af;
-}
-.status-item .indicator {
-width: 10px; height: 10px; border-radius: 50%;
-background: #10b981; animation: blink 2s infinite;
-}
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-#contact {
-background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-border-radius: 12px;
-padding: 30px 15px;
-margin: 20px 15px;
-max-width: 1200px;
-margin-left: auto;
-margin-right: auto;
-}
-#contact h2 {
-text-align: center;
-margin-bottom: 20px;
-color: #3b82f6;
-}
-.form-group { margin-bottom: 15px; }
-.form-input {
-width: 100%;
-padding: 12px;
-border-radius: 8px;
-border: 1px solid #3b82f6;
-background: #0a0a0a;
-color: white;
-font-family: inherit;
-}
-.form-input:focus {
-outline: none;
-border-color: #10b981;
-box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
-}
-.btn {
-width: 100%;
-padding: 14px 20px;
-border: none;
-border-radius: 8px;
-font-weight: bold;
-font-size: 14px;
-cursor: pointer;
-transition: all 0.3s;
-text-transform: uppercase;
-letter-spacing: 1px;
-display: inline-block;
-text-align: center;
-}
-.btn-primary {
-background: linear-gradient(135deg, #3b82f6, #2563eb);
-color: white;
-}
-.btn-primary:hover {
-transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-}
-#ai-chat-section {
-background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-border-radius: 12px;
-padding: 30px 15px;
-margin: 20px 15px;
-max-width: 1200px;
-margin-left: auto;
-margin-right: auto;
-border: 2px solid rgba(59, 130, 246, 0.3);
-}
-#ai-chat-section h2 {
-text-align: center;
-margin-bottom: 20px;
-color: #10b981;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-}
-.chat-controls {
-display: flex;
-gap: 10px;
-margin-bottom: 15px;
-flex-wrap: wrap;
-}
-.chat-controls .btn {
-width: auto;
-padding: 10px 16px;
-font-size: 12px;
-}
-.btn-danger {
-background: linear-gradient(135deg, #ef4444, #dc2626);
-color: white;
-}
-.btn-warning {
-background: linear-gradient(135deg, #fbbf24, #f59e0b);
-color: black;
-}
-.btn-teal {
-background: linear-gradient(135deg, #14b8a6, #0d9488);
-color: white;
-}
-#chat {
-flex: 1;
-overflow-y: auto;
-padding: 1rem;
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
-background: #1f1f1f;
-border-radius: 10px;
-border: 1px solid rgba(59, 130, 246, 0.2);
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-margin-bottom: 15px;
-min-height: 300px;
-max-height: 400px;
-}
-.msg {
-max-width: 70%;
-padding: 0.6rem 0.9rem;
-border-radius: 12px;
-word-wrap: break-word;
-animation: fadeIn 0.3s ease;
-white-space: pre-wrap;
-}
-.user {
-background: #1eaedb;
-align-self: flex-end;
-color: white;
-}
-.tecuit {
-background: #2a2f3a;
-align-self: flex-start;
-color: #e0e0e0;
-}
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-}
-#chat-footer {
-display: flex;
-gap: 0.5rem;
-padding: 0.5rem;
-background: #1f1f1f;
-border-top: 1px solid rgba(59, 130, 246, 0.3);
-border-radius: 0 0 10px 10px;
-}
-#chat-input {
-flex: 1;
-padding: 0.6rem 0.8rem;
-border-radius: 20px;
-border: 1px solid #3b82f6;
-outline: none;
-font-size: 1rem;
-background: #2d2d2d;
-color: white;
-min-height: 44px;
-resize: none;
-}
-#chat-input:focus {
-border-color: #10b981;
-box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-}
-#sendBtn, #fileUploadBtn, #stopGenBtn {
-padding: 0.6rem 1rem;
-border: none;
-border-radius: 20px;
-background: #1eaedb;
-color: white;
-cursor: pointer;
-font-weight: bold;
-min-width: 60px;
-height: 44px;
-}
-#fileUploadBtn {
-background: #8b5cf6;
-}
-#stopGenBtn {
-background: #ef4444;
-display: none;
-}
-#fileInput {
-display: none;
-}
-#tecuit-thinking {
-color: #6c757d;
-font-style: italic;
-margin: 5px 0;
-display: none;
-padding: 0.4rem 0.6rem;
-background: rgba(0, 0, 0, 0.2);
-border-radius: 8px;
-width: fit-content;
-align-self: flex-start;
-}
-.typing-indicator {
-display: inline-block;
-margin-left: 8px;
-}
-.typing-indicator span {
-display: inline-block;
-width: 8px;
-height: 8px;
-border-radius: 50%;
-background-color: #6c757d;
-margin: 0 2px;
-opacity: 0;
-animation: typingDots 1.4s infinite ease-in-out;
-}
-.typing-indicator span:nth-child(1) { animation-delay: 0s; }
-.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typingDots {
-0%, 100% { opacity: 0; } 50% { opacity: 1; }
-}
-#typingPreview {
-color: #6b7280;
-font-size: 0.9rem;
-margin-top: 4px;
-min-height: 18px;
-text-align: right;
-padding-right: 8px;
-font-style: italic;
-display: none;
-}
-.footer {
-text-align: center; padding: 30px 20px;
-margin-top: 40px; color: #6b7280;
-font-size: 12px; border-top: 2px solid rgba(59, 130, 246, 0.3);
-}
-.lang-indicator {
-position: fixed;
-bottom: 20px;
-right: 20px;
-background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-padding: 8px 15px;
-border-radius: 20px;
-font-size: 12px;
-font-weight: bold;
-z-index: 999;
-box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-animation: pulse 2s infinite;
-}
-.api-status {
-display: inline-block;
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: #10b981;
-margin-left: 8px;
-animation: blink 2s infinite;
-}
-.api-status.error {
-background: #ef4444;
-}
-.api-status.connecting {
-background: #fbbf24;
-animation: blink 0.5s infinite;
-}
-@media (max-width: 768px) {
-.header h1 { font-size: 32px; }
-.header p { font-size: 14px; }
-.app-grid { grid-template-columns: 1fr; margin-top: -20px; }
-.status-bar { flex-direction: column; text-align: center; }
-.lang-selector { position: relative; top: 0; right: 0; margin: 0 auto 15px; display: block; }
-#chat { min-height: 250px; }
-.chat-controls { justify-content: center; }
-}
-::-webkit-scrollbar {
-width: 8px;
-}
-::-webkit-scrollbar-track {
-background: #1a1a1a;
-}
-::-webkit-scrollbar-thumb {
-background: linear-gradient(180deg, #3b82f6, #8b5cf6);
-border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-background: linear-gradient(180deg, #2563eb, #7c3aed);
+:root{
+  --bg0:#06070f;--bg1:#0c0e1d;
+  --blue:#3b82f6;--violet:#8b5cf6;--green:#10b981;
+  --cyan:#00e5ff;--red:#ff3344;--gold:#fbbf24;
+  --text:#dde6f5;--muted:#4b5a72;
+  --border:rgba(59,130,246,.18);
+  --fm:'Space Mono',monospace;--fb:'Sora',sans-serif;--r:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+body{font-family:var(--fb);background:var(--bg0);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── CANVAS ───────────────────────────────────── */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── HEADER ───────────────────────────────────── */
+.header{
+  position:relative;z-index:1;padding:80px 24px 110px;
+  text-align:center;overflow:hidden;
+  background:linear-gradient(180deg,#080a1c 0%,var(--bg0) 100%);
+}
+.header::before{
+  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse at 50% 35%,rgba(59,130,246,.15) 0%,rgba(139,92,246,.08) 45%,transparent 70%);
+  animation:aurora 8s ease-in-out infinite alternate;pointer-events:none;
+}
+@keyframes aurora{0%{transform:translateX(-55%) scaleX(1) scaleY(1)}100%{transform:translateX(-45%) scaleX(1.18) scaleY(1.06)}}
+.header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 30%,var(--violet) 70%,transparent 100%);
+  animation:lineGlow 3s ease-in-out infinite;
+}
+@keyframes lineGlow{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* LOGO */
+.logo-wrap{width:104px;height:104px;margin:0 auto 28px;position:relative;z-index:1}
+.logo-wrap svg{width:100%;height:100%;filter:drop-shadow(0 0 12px rgba(59,130,246,.65)) drop-shadow(0 0 30px rgba(139,92,246,.3))}
+
+.ring-outer{animation:spinCW  18s linear infinite;transform-origin:52px 52px}
+.ring-inner{animation:spinCCW 11s linear infinite;transform-origin:52px 52px}
+.ring-med  {animation:spinCW   7s linear infinite;transform-origin:52px 52px}
+.core-glow {animation:coreGlow 2.8s ease-in-out infinite}
+.dot-a{animation:orbitA 4s  linear infinite;transform-origin:52px 52px}
+.dot-b{animation:orbitB 6.5s linear infinite;transform-origin:52px 52px}
+.dot-c{animation:orbitC 10s  linear infinite;transform-origin:52px 52px}
+
+@keyframes spinCW {to{transform:rotate(360deg)}}
+@keyframes spinCCW{to{transform:rotate(-360deg)}}
+@keyframes coreGlow{0%,100%{opacity:1}50%{opacity:.72}}
+@keyframes orbitA{to{transform:rotate(360deg)}}
+@keyframes orbitB{to{transform:rotate(-360deg)}}
+@keyframes orbitC{to{transform:rotate(360deg)}}
+
+.header h1{
+  font-family:var(--fm);font-size:clamp(26px,4.5vw,46px);letter-spacing:3px;
+  background:linear-gradient(135deg,#93c5fd 0%,#c4b5fd 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  position:relative;z-index:1;margin-bottom:10px;
+  animation:slideUp .7s cubic-bezier(.22,.68,0,1.2) both;
+}
+.header p{
+  color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  position:relative;z-index:1;
+  animation:slideUp .7s .15s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.lang-selector{
+  position:absolute;top:16px;right:20px;z-index:10;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:6px 12px;color:var(--text);
+  font-size:12px;cursor:pointer;font-family:var(--fb);
+  backdrop-filter:blur(6px);transition:background .2s;
+}
+.lang-selector:hover{background:rgba(255,255,255,.09)}
+.lang-selector option{background:#12152a}
+
+/* ── GRID ─────────────────────────────────────── */
+.container{max-width:1260px;margin:0 auto;padding:0 20px 40px;position:relative;z-index:1}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:18px;margin-top:-55px}
+
+/* ── CARD ─────────────────────────────────────── */
+.app-card{
+  background:linear-gradient(145deg,rgba(9,11,26,.93),rgba(13,15,32,.93));
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:26px 20px 20px;position:relative;overflow:hidden;
+  backdrop-filter:blur(16px);cursor:pointer;
+  opacity:0;transform:translateY(28px);
+  will-change:transform,box-shadow;
+  transition:transform .35s cubic-bezier(.22,.68,0,1.2),box-shadow .35s ease,border-color .35s ease,opacity .45s ease;
+}
+/* Shimmer sweep */
+.app-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 0%,rgba(59,130,246,.055) 48%,rgba(139,92,246,.035) 52%,transparent 100%);
+  transform:translateX(-110%);transition:transform .7s ease;pointer-events:none;z-index:0;
+}
+.app-card:hover::before{transform:translateX(110%)}
+/* Top glow line */
+.app-card::after{
+  content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(59,130,246,.6),transparent);
+  opacity:0;transition:opacity .35s;z-index:1;
+}
+.app-card:hover::after{opacity:1}
+.app-card:hover{
+  transform:translateY(-8px) scale(1.012);
+  border-color:rgba(59,130,246,.42);
+  box-shadow:0 24px 50px rgba(0,0,0,.55),0 0 0 1px rgba(59,130,246,.08),0 0 45px rgba(59,130,246,.1);
+}
+
+.app-icon{
+  width:60px;height:60px;margin:0 auto 15px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:13px;background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  transition:border-color .3s,box-shadow .3s;
+  position:relative;z-index:1;
+}
+.app-card:hover .app-icon{border-color:rgba(59,130,246,.35);box-shadow:0 0 16px rgba(59,130,246,.15)}
+.app-card h3{font-size:16px;font-weight:700;color:#bdd0ec;margin-bottom:5px;text-align:center;letter-spacing:.3px;position:relative;z-index:1}
+.app-card p{color:var(--muted);font-size:12px;text-align:center;margin-bottom:13px;line-height:1.7;position:relative;z-index:1}
+
+.badge{
+  display:inline-flex;align-items:center;font-family:var(--fm);font-size:10px;font-weight:700;
+  padding:3px 10px;border-radius:20px;margin-bottom:11px;letter-spacing:.5px;position:relative;z-index:1;
+}
+.badge-s{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.badge-b{
+  background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22);
+  animation:badgePulse 2.5s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 10px rgba(251,191,36,.2)}}
+
+.app-features{list-style:none;margin-bottom:16px;border-top:1px solid rgba(59,130,246,.1);padding-top:11px;position:relative;z-index:1}
+.app-features li{padding:4px 0;font-size:11px;color:#485e78;display:flex;align-items:center;gap:8px}
+.fd{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 5px rgba(16,185,129,.5)}
+
+.launch-btn{
+  display:block;width:100%;padding:12px;
+  border:1px solid rgba(59,130,246,.28);border-radius:10px;
+  text-align:center;font-family:var(--fm);font-size:11px;font-weight:700;
+  letter-spacing:1.5px;color:#7fb3f5;text-decoration:none;text-transform:uppercase;
+  background:rgba(59,130,246,.07);position:relative;z-index:1;overflow:hidden;
+  transition:transform .22s,border-color .22s,box-shadow .22s,color .22s;
+}
+.launch-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.12));
+  opacity:0;transition:opacity .22s;
+}
+.launch-btn:hover::before{opacity:1}
+.launch-btn:hover{border-color:var(--blue);color:#fff;box-shadow:0 0 22px rgba(59,130,246,.28),0 4px 16px rgba(0,0,0,.3);transform:translateY(-2px)}
+.launch-btn:active{transform:scale(.98)}
+
+/* ── SHIELD CARD ──────────────────────────────── */
+.sc{border-color:rgba(0,229,255,.17);background:linear-gradient(145deg,rgba(2,6,16,.96),rgba(4,12,28,.96))}
+.sc .scan-bar{
+  position:absolute;top:0;left:0;right:0;height:2px;z-index:2;overflow:hidden;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,51,68,.9) 20%,rgba(0,229,255,1) 50%,rgba(0,255,136,.9) 80%,transparent 100%);
+  background-size:200% 100%;
+  animation:scanBar 2.4s linear infinite;
+}
+@keyframes scanBar{0%{background-position:200% 0;opacity:.6}50%{opacity:1}100%{background-position:-200% 0;opacity:.6}}
+
+/* corner brackets */
+.sc .cb{position:absolute;width:14px;height:14px;border-color:rgba(0,229,255,.45);border-style:solid}
+.sc .cb.tl{top:8px;left:8px;border-width:1.5px 0 0 1.5px}
+.sc .cb.tr{top:8px;right:8px;border-width:1.5px 1.5px 0 0}
+.sc .cb.bl{bottom:8px;left:8px;border-width:0 0 1.5px 1.5px}
+.sc .cb.br{bottom:8px;right:8px;border-width:0 1.5px 1.5px 0}
+
+.sc:hover{border-color:rgba(0,229,255,.42);box-shadow:0 24px 50px rgba(0,0,0,.6),0 0 40px rgba(0,229,255,.1)}
+.sc .launch-btn{border-color:rgba(0,229,255,.28);color:#7de8ff;background:rgba(0,229,255,.06)}
+.sc .launch-btn:hover{border-color:var(--cyan);box-shadow:0 0 22px rgba(0,229,255,.28)}
+.sc .fd{background:var(--cyan);box-shadow:0 0 5px rgba(0,229,255,.5)}
+.sc h3{color:#9ee8ff}
+
+.shield-badge{
+  position:absolute;top:12px;right:12px;z-index:3;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);
+  border-radius:20px;padding:3px 9px;
+  font-size:9px;font-weight:700;color:#00ff88;
+  letter-spacing:1.5px;font-family:var(--fm);
+}
+.blip{width:5px;height:5px;border-radius:50%;background:#00ff88;animation:blipAnim 1.6s ease-in-out infinite}
+@keyframes blipAnim{0%,100%{opacity:1;box-shadow:0 0 4px #00ff88}50%{opacity:.2;box-shadow:none}}
+
+/* ── AI CARD ──────────────────────────────────── */
+.ac{border-color:rgba(139,92,246,.2)}
+.ac:hover{border-color:rgba(139,92,246,.45);box-shadow:0 24px 50px rgba(0,0,0,.5),0 0 40px rgba(139,92,246,.1)}
+.ac .launch-btn{border-color:rgba(139,92,246,.28);color:#c4b5fd;background:rgba(139,92,246,.07)}
+.ac .launch-btn:hover{border-color:var(--violet);box-shadow:0 0 22px rgba(139,92,246,.3)}
+.ac .fd{background:var(--violet);box-shadow:0 0 5px rgba(139,92,246,.5)}
+.ac h3{color:#c4b5fd}
+
+/* ── STATUS BAR ───────────────────────────────── */
+.status-bar{
+  display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.023);border:1px solid var(--border);
+  border-radius:12px;padding:13px 20px;margin:28px 0;
+  animation:fadeUp .6s .85s ease both;
+}
+.si{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:var(--fm)}
+.dot{width:7px;height:7px;border-radius:50%}
+.dg{background:var(--green);animation:dp 2.4s 0s ease-in-out infinite;box-shadow:0 0 8px rgba(16,185,129,.55)}
+.dc{background:var(--cyan);animation:dp 2.4s .4s ease-in-out infinite;box-shadow:0 0 8px rgba(0,229,255,.55)}
+.dy{background:var(--gold);animation:dp 2.4s .8s ease-in-out infinite;box-shadow:0 0 8px rgba(251,191,36,.45)}
+@keyframes dp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.55}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ══════════════════════════════════════════════
+   TECUIT SECTION
+══════════════════════════════════════════════ */
+#ts{
+  background:linear-gradient(160deg,rgba(8,10,24,.97),rgba(11,13,28,.97));
+  border:1px solid rgba(59,130,246,.18);border-radius:20px;
+  padding:0;margin:0 0 26px;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.45);
+  animation:fadeUp .6s 1s ease both;
+  position:relative;
+}
+
+
+.th{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px;background:rgba(59,130,246,.045);
+  border-bottom:1px solid rgba(59,130,246,.11);flex-wrap:wrap;gap:10px;
+}
+.tt{display:flex;align-items:center;gap:10px}
+.tt h2{font-family:var(--fm);font-size:13px;letter-spacing:2px;color:#7fb3f5;text-transform:uppercase}
+
+/* Tecuit mini logo */
+.tl-ring{animation:spinCW 8s linear infinite;transform-origin:16px 16px}
+.tl-core{animation:coreGlow 2s ease-in-out infinite}
+
+.api-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;padding:4px 11px;font-size:10px;font-family:var(--fm);color:var(--muted);
+}
+.tc{display:flex;gap:7px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap}
+.cb2{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.03);color:var(--muted);
+  font-size:11px;font-family:var(--fm);cursor:pointer;
+  transition:all .2s;letter-spacing:.5px;
+}
+.cb2:hover{background:rgba(255,255,255,.08);color:var(--text);border-color:rgba(255,255,255,.13);transform:translateY(-1px)}
+.cb2.dx:hover{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.25)}
+
+#cw{
+  height:350px;overflow-y:auto;padding:16px 18px;
+  display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;
+}
+#cw::-webkit-scrollbar{width:3px}
+#cw::-webkit-scrollbar-thumb{background:rgba(59,130,246,.25);border-radius:4px}
+
+.mr{display:flex;gap:9px;align-items:flex-end;animation:msgIn .28s cubic-bezier(.22,.68,0,1.2) both}
+.mr.user{flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+
+.ma{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:transform .2s}
+.mr:hover .ma{transform:scale(1.1)}
+.mai{background:linear-gradient(135deg,#18305e,#233a70);border:1px solid rgba(59,130,246,.33)}
+.mau{background:linear-gradient(135deg,#291e5c,#382870);border:1px solid rgba(139,92,246,.33)}
+
+.mb{
+  max-width:72%;padding:9px 13px;border-radius:14px;
+  font-size:13px;line-height:1.65;white-space:pre-wrap;word-break:break-word;
+  transition:box-shadow .2s;
+}
+.mr:hover .mb{box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.mb-ai  {background:rgba(22,42,78,.6);border:1px solid rgba(59,130,246,.17);border-bottom-left-radius:4px;color:#c2d6ef}
+.mb-user{background:rgba(40,28,88,.6);border:1px solid rgba(139,92,246,.17);border-bottom-right-radius:4px;color:#ddd6fe}
+
+/* Typing */
+.tr2{display:flex;align-items:flex-end;gap:9px;animation:msgIn .28s ease both}
+.tb{
+  background:rgba(22,42,78,.5);border:1px solid rgba(59,130,246,.14);
+  border-radius:14px;border-bottom-left-radius:4px;
+  padding:11px 15px;display:flex;align-items:center;gap:5px;
+}
+.td{width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.4;animation:tdB 1.2s ease-in-out infinite}
+.td:nth-child(2){animation-delay:.18s}.td:nth-child(3){animation-delay:.36s}
+@keyframes tdB{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-7px);opacity:1}}
+
+/* Input */
+.cia{padding:13px 18px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.18)}
+.ir{display:flex;gap:8px;align-items:flex-end}
+#ci{
+  flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(59,130,246,.2);
+  border-radius:12px;padding:10px 13px;color:var(--text);
+  font-family:var(--fb);font-size:13px;resize:none;min-height:42px;max-height:108px;
+  outline:none;line-height:1.5;transition:border-color .2s,box-shadow .2s,background .2s;
+}
+#ci:focus{border-color:rgba(59,130,246,.52);box-shadow:0 0 0 3px rgba(59,130,246,.1);background:rgba(255,255,255,.07)}
+#ci::placeholder{color:var(--muted)}
+.ib{
+  width:42px;height:42px;border-radius:11px;flex-shrink:0;border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;
+}
+.ib:hover{transform:scale(1.08)} .ib:active{transform:scale(.95)}
+#sb{background:linear-gradient(135deg,var(--blue),var(--violet));border:none;box-shadow:0 4px 16px rgba(59,130,246,.22)}
+#sb:hover{box-shadow:0 6px 24px rgba(59,130,246,.42);transform:scale(1.08) translateY(-1px)}
+#sb:disabled{opacity:.4;transform:none;box-shadow:none}
+#fb{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.25)}
+#fb:hover{background:rgba(139,92,246,.22);border-color:rgba(139,92,246,.5)}
+#stb{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);display:none}
+#stb:hover{background:rgba(239,68,68,.25)}
+#fi{display:none}
+.im{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:var(--muted);font-family:var(--fm);padding:0 2px}
+#cc.warn{color:var(--gold)}
+
+/* ── CONTACT ──────────────────────────────────── */
+#contact{
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:var(--r);padding:24px 20px;margin:0 0 26px;
+  animation:fadeUp .6s 1.1s ease both;
+}
+#contact h2{font-size:14px;color:var(--blue);margin-bottom:16px;font-family:var(--fm);letter-spacing:1.2px}
+.fg{margin-bottom:11px}
+.fi2{
+  width:100%;padding:10px 13px;border-radius:9px;
+  border:1px solid rgba(59,130,246,.17);background:rgba(255,255,255,.04);
+  color:var(--text);font-family:var(--fb);font-size:13px;
+  outline:none;transition:border-color .2s,background .2s;
+}
+.fi2:focus{border-color:rgba(59,130,246,.42);background:rgba(255,255,255,.06)}
+.fi2::placeholder{color:var(--muted)}
+.bsub{
+  width:100%;padding:12px;border:none;border-radius:9px;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  color:#fff;font-weight:700;font-size:12px;cursor:pointer;
+  font-family:var(--fm);letter-spacing:1.5px;
+  transition:all .2s;box-shadow:0 4px 16px rgba(59,130,246,.18);
+}
+.bsub:hover{opacity:.87;transform:translateY(-1px);box-shadow:0 8px 24px rgba(59,130,246,.32)}
+.bsub:active{transform:none}
+
+/* ── FOOTER ───────────────────────────────────── */
+.footer{
+  text-align:center;padding:20px;border-top:1px solid var(--border);
+  color:var(--muted);font-size:11px;font-family:var(--fm);letter-spacing:.5px;line-height:1.9;
+}
+.lang-indicator{
+  position:fixed;bottom:20px;right:20px;
+  background:linear-gradient(135deg,rgba(59,130,246,.9),rgba(139,92,246,.9));
+  padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700;
+  z-index:999;font-family:var(--fm);box-shadow:0 4px 20px rgba(0,0,0,.4);
+  animation:floatBadge 3s ease-in-out infinite;
+}
+@keyframes floatBadge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+@media(max-width:768px){
+  .header{padding:55px 16px 85px}
+  .app-grid{grid-template-columns:1fr;margin-top:-35px}
+  .status-bar{flex-direction:column;text-align:center;gap:10px}
+  #cw{height:270px}
+  .cb2 span{display:none}.cb2{padding:7px 10px}
 }
 </style>
 </head>
 <body>
+<canvas id="bgCanvas"></canvas>
+
+<!-- HEADER -->
 <div class="header">
-<select class="lang-selector" id="languageSelector" onchange="changeLanguage()">
-<option value="en">🇬🇧 English</option>
-<option value="fr">🇫🇷 Français</option>
-<option value="es">🇪🇸 Español</option>
-<option value="zh">🇨🇳 中文</option>
-<option value="hi">🇮🇳 हिन्दी</option>
-<option value="ar">🇸🇦 العربية</option>
-<option value="pt">🇵🇹 Português</option>
-<option value="bn">🇧🇩 বাংলা</option>
-<option value="ru">🇷🇺 Русский</option>
-<option value="ja">🇯🇵 日本語</option>
-<option value="de">🇩🇪 Deutsch</option>
-<option value="it">🇮🇹 Italiano</option>
-<option value="vi">🇻🇳 Tiếng Việt</option>
-<option value="ko">🇰🇷 한국어</option>
-<option value="tr">🇹🇷 Türkçe</option>
-</select>
-<div class="logo-crypto">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<defs>
-<linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-<stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-</linearGradient>
-<filter id="glow">
-<feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-<feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-</filter>
-</defs>
-<circle cx="50" cy="50" r="45" fill="url(#grad1)" filter="url(#glow)"/>
-<path d="M30 50 L45 35 L70 60 M45 35 L45 65" stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="70" cy="30" r="8" fill="#10b981"/>
-<circle cx="30" cy="70" r="6" fill="#fbbf24"/>
-</svg>
+  <select class="lang-selector" id="ls" onchange="changeLang()">
+    <option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option>
+    <option value="es">🇪🇸 Español</option><option value="zh">🇨🇳 中文</option>
+    <option value="hi">🇮🇳 हिन्दी</option><option value="ar">🇸🇦 العربية</option>
+    <option value="pt">🇵🇹 Português</option><option value="bn">🇧🇩 বাংলা</option>
+    <option value="ru">🇷🇺 Русский</option><option value="ja">🇯🇵 日本語</option>
+    <option value="de">🇩🇪 Deutsch</option><option value="it">🇮🇹 Italiano</option>
+    <option value="vi">🇻🇳 Tiếng Việt</option><option value="ko">🇰🇷 한국어</option>
+    <option value="tr">🇹🇷 Türkçe</option>
+  </select>
+
+  <!-- ZK Logo entièrement animé par SVG -->
+  <div class="logo-wrap">
+    <svg viewBox="0 0 104 104" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#3b82f6"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#10b981"/>
+          <stop offset="100%" stop-color="#3b82f6"/>
+        </linearGradient>
+        <radialGradient id="gc" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#6094f4"/>
+          <stop offset="100%" stop-color="#3b3eb6"/>
+        </radialGradient>
+        <filter id="gf"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- Outer dashed ring — tourne dans le sens horaire -->
+      <g class="ring-outer">
+        <circle cx="52" cy="52" r="50" fill="none" stroke="url(#g1)" stroke-width="1.2" stroke-dasharray="6 10" opacity=".55"/>
+      </g>
+
+      <!-- Medium ring — lente, sens inverse -->
+      <g class="ring-inner">
+        <circle cx="52" cy="52" r="42" fill="none" stroke="rgba(139,92,246,.28)" stroke-width=".8" stroke-dasharray="2 9" opacity=".6"/>
+      </g>
+
+      <!-- Inner ring — rapide, horaire -->
+      <g class="ring-med">
+        <circle cx="52" cy="52" r="34" fill="none" stroke="url(#g2)" stroke-width=".6" stroke-dasharray="3 12" opacity=".35"/>
+      </g>
+
+      <!-- Core -->
+      <circle class="core-glow" cx="52" cy="52" r="28" fill="url(#gc)" filter="url(#gf)" opacity=".95"/>
+
+      <!-- ZK symbol -->
+      <path d="M36 52L48 39L70 60M48 39L48 65"
+        stroke="white" stroke-width="5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Orbiting dot A — vert, petit, rapide -->
+      <g class="dot-a">
+        <circle cx="52" cy="5" r="4.5" fill="#10b981" filter="url(#gf)"/>
+      </g>
+
+      <!-- Orbiting dot B — gold, moyen -->
+      <g class="dot-b">
+        <circle cx="52" cy="10" r="3.2" fill="#fbbf24" opacity=".88"/>
+      </g>
+
+      <!-- Orbiting dot C — bleu, lent -->
+      <g class="dot-c">
+        <circle cx="52" cy="4" r="2.5" fill="#93c5fd" opacity=".75"/>
+      </g>
+    </svg>
+  </div>
+
+  <h1 data-i18n="title">Zenkari Menu</h1>
+  <p data-i18n="subtitle">UNIFIED SECURITY PLATFORM — CHOOSE YOUR APPLICATION</p>
 </div>
-<h1 data-i18n="title">Zenkari Menu</h1>
-<p data-i18n="subtitle">Unified security platform - Choose your application</p>
-</div>
+
+<!-- CONTAINER -->
 <div class="container">
 <div class="app-grid">
-<div class="app-card">
-<div class="app-icon">🌐</div>
-<h3 data-i18n="zk_web_title">ZenkariApp Web</h3>
-<span class="version">v10.0.0F</span>
-<p data-i18n="zk_web_desc">Secure messaging & file encryption - Web Version</p>
-<ul class="app-features">
-<li data-i18n="feat_rsa">RSA-3072 + AES-256 Encryption</li>
-<li data-i18n="feat_signed">Cryptographically signed messages</li>
-<li data-i18n="feat_files">File encryption (500MB max)</li>
-<li data-i18n="feat_qr">Secure QR Codes</li>
-<li data-i18n="feat_logs">Encrypted logs</li>
-<li data-i18n="feat_ai">Integrated AI</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://zenkari-app-free.vercel.app" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_launch">Launch Web</a>
-</div>
-<div class="app-card download-app">
-<div class="app-icon">🖥️</div>
-<h3 data-i18n="zk_win_title">ZenkariApp Windows</h3>
-<span class="version">v9.8.9F</span>
-<p data-i18n="zk_win_desc">Native Windows application - download</p>
-<ul class="app-features">
-<li data-i18n="feat_native">Native Windows desktop app</li>
-<li data-i18n="feat_rsa">RSA-3072 + AES-256 Encryption</li>
-<li data-i18n="feat_offline">Works offline</li>
-<li data-i18n="feat_local">Secure local storage</li>
-<li data-i18n="feat_auto">Automatic updates</li>
-<li data-i18n="feat_compat">Windows 10/11 compatible</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://archive.org/details/Zenkari" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_download">Download ZK</a>
-</div>
-<div class="app-card python-app">
-<div class="app-icon">🖥️</div>
-<h3 data-i18n="zkp_title">ZenkariPass</h3>
-<span class="version">v9.8.5</span>
-<p data-i18n="zkp_archive_desc">Password manager with 2FA - Download</p>
-<ul class="app-features">
-<li data-i18n="feat_rsa4096">RSA-4096 + AES-256 Encryption</li>
-<li data-i18n="feat_2fa">Two-factor authentication (TOTP)</li>
-<li data-i18n="feat_gen">Password generator</li>
-<li data-i18n="feat_cats">Organized categories</li>
-<li data-i18n="feat_lock">Auto-lock feature</li>
-<li data-i18n="feat_export">Secure export/import</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://archive.org/details/zkp-9.8.5_202601" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_archive">Download ZKP</a>
-</div>
-<div class="app-card python-app">
-<div class="app-icon">🌐</div>
-<h3 data-i18n="zkp_title">ZenkariPass</h3>
-<span class="version">v9.8.5</span>
-<p data-i18n="zkp_web_desc">Password manager with 2FA - Web</p>
-<ul class="app-features">
-<li data-i18n="feat_rsa4096">RSA-4096 + AES-256 Encryption</li>
-<li data-i18n="feat_2fa">Two-factor authentication (TOTP)</li>
-<li data-i18n="feat_gen">Password generator</li>
-<li data-i18n="feat_cats">Organized categories</li>
-<li data-i18n="feat_lock">Auto-lock feature</li>
-<li data-i18n="feat_export">Secure export/import</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://zenkari-pass.vercel.app/" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_launch">Launch Web</a>
-</div>
-<div class="app-card python-app">
-<div class="app-icon">🔄</div>
-<div class="app-icon">🖥️</div>
-<h3 data-i18n="zkpa_title">ZenkariPass Authenticator</h3>
-<span class="version">v4.0.0</span>
-<p data-i18n="zkpa_desc">2FA authenticator with QR detection - Download</p>
-<ul class="app-features">
-<li data-i18n="feat_totp">TOTP code generation</li>
-<li data-i18n="feat_aes_sha">AES-256 & SHA-256 encryption</li>
-<li data-i18n="feat_qr_detect">QR detection via screenshot</li>
-<li data-i18n="feat_tz">All timezones supported</li>
-<li data-i18n="feat_local_enc">Encrypted local storage</li>
-<li data-i18n="feat_offline">Offline capable</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://archive.org/details/zkpa-4.0.0" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_download_zkpa">Download ZKPA</a>
-</div>
-<div class="app-card ai-app">
-<div class="app-icon">⚛</div>
-<div class="app-icon">🌐</div>
-<h3 data-i18n="zkia_title">Zenkari IA</h3>
-<span class="version beta" data-i18n="zkia_version">v2.1.0 BÊTA</span>
-<p data-i18n="zkia_desc">AI Assistant & Smart Automation - Web Version</p>
-<ul class="app-features">
-<li data-i18n="feat_ai_chat">AI Chat Assistant</li>
-<li data-i18n="feat_ai_auto">Smart Automation</li>
-<li data-i18n="feat_ai_sec">Security Analysis</li>
-<li data-i18n="feat_ai_multi">Multi-language Support</li>
-<li data-i18n="feat_ai_cloud">Cloud Integration</li>
-<li data-i18n="feat_ai_real">Real-time Processing</li>
-<li data-i18n="feat_langs">15 languages supported</li>
-</ul>
-<a href="https://tecuit-ia.vercel.app" target="_blank" rel="noopener noreferrer" class="launch-btn" data-i18n="btn_launch_zkia">Launch Zenkari IA</a>
-</div>
-</div>
+
+  <!-- ① ZenkariApp Web -->
+  <div class="app-card">
+    <div class="app-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="19" r="13" stroke="#3b82f6" stroke-width="1.5"/>
+        <ellipse cx="20" cy="19" rx="5" ry="13" stroke="#3b82f6" stroke-width="1.1"/>
+        <line x1="7" y1="19" x2="33" y2="19" stroke="#3b82f6" stroke-width="1.1"/>
+        <line x1="8.5" y1="13.5" x2="31.5" y2="13.5" stroke="#3b82f6" stroke-width=".85" stroke-dasharray="2,1.5"/>
+        <line x1="8.5" y1="24.5" x2="31.5" y2="24.5" stroke="#3b82f6" stroke-width=".85" stroke-dasharray="2,1.5"/>
+        <!-- lock badge -->
+        <rect x="26" y="27" width="10" height="9" rx="2" fill="#071018" stroke="#10b981" stroke-width="1.1"/>
+        <path d="M28.2 27v-2.2a3.3 3.3 0 016.6 0V27" stroke="#10b981" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <circle cx="31.5" cy="31" r="1.2" fill="#10b981"/>
+        <!-- globe pulse -->
+        <circle cx="20" cy="19" r="13" fill="none" stroke="#3b82f6" stroke-width=".6" opacity="0">
+          <animate attributeName="r" values="13;19;13" dur="3.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0;0.4" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <h3 data-i18n="zk_web_title">ZenkariApp Web</h3>
+    <div style="text-align:center"><span class="badge badge-s">v10.0.0F</span></div>
+    <p data-i18n="zk_web_desc">Secure messaging & file encryption — Web</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_rsa">RSA-3072 + AES-256</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_signed">Signed messages</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_files">File encryption 500MB</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_qr">Secure QR Codes</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://zenkari-app-free.vercel.app" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_launch">LAUNCH WEB</a>
+  </div>
+
+  <!-- ② ZenkariApp Windows -->
+  <div class="app-card">
+    <div class="app-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <!-- Windows 4-tile logo with staggered fade -->
+        <rect x="6"  y="6"  width="12" height="12" rx="2" fill="#1671f9"><animate attributeName="opacity" values="1;.6;1" dur="2.4s" begin="0s"   repeatCount="indefinite"/></rect>
+        <rect x="22" y="6"  width="12" height="12" rx="2" fill="#1671f9"><animate attributeName="opacity" values="1;.6;1" dur="2.4s" begin=".25s" repeatCount="indefinite"/></rect>
+        <rect x="6"  y="22" width="12" height="12" rx="2" fill="#1671f9"><animate attributeName="opacity" values="1;.6;1" dur="2.4s" begin=".5s"  repeatCount="indefinite"/></rect>
+        <rect x="22" y="22" width="12" height="12" rx="2" fill="#1671f9"><animate attributeName="opacity" values="1;.6;1" dur="2.4s" begin=".75s" repeatCount="indefinite"/></rect>
+        <line x1="6" y1="20" x2="34" y2="20" stroke="rgba(255,255,255,.14)" stroke-width=".8"/>
+        <line x1="20" y1="6" x2="20" y2="34" stroke="rgba(255,255,255,.14)" stroke-width=".8"/>
+        <!-- checkmark badge -->
+        <circle cx="32" cy="32" r="6" fill="#10b981" opacity=".15" stroke="#10b981" stroke-width="1"/>
+        <path d="M29.5 32l2 2L35 30" stroke="#10b981" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3 data-i18n="zk_win_title">ZenkariApp Windows</h3>
+    <div style="text-align:center"><span class="badge badge-s">v9.8.9F</span></div>
+    <p data-i18n="zk_win_desc">Native Windows application — Download</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_native">Native desktop app</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_rsa">RSA-3072 + AES-256</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_offline">Works offline</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_compat">Windows 10/11</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://archive.org/details/Zenkari" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_download">DOWNLOAD ZK</a>
+  </div>
+
+  <!-- ③ ZenkariPass Archive -->
+  <div class="app-card">
+    <div class="app-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle cx="14" cy="16" r="7" stroke="#ef4444" stroke-width="1.5"/>
+        <circle cx="14" cy="16" r="3.2" fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="1"/>
+        <line x1="19.5" y1="20.5" x2="34.5" y2="35.5" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="28.5" x2="28" y2="32.5" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="32" y2="36" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M26 10L36 14L36 22C36 28 30 32 26 35C22 32 16 28 16 22L16 14Z" fill="rgba(11,132,245,.07)" stroke="#0b84f5" stroke-width="1.4"/>
+        <path d="M21.5 22l2.5 2.5L31 18" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="18" stroke-dashoffset="18">
+          <animate attributeName="stroke-dashoffset" from="18" to="0" dur=".9s" begin=".6s" fill="freeze"/>
+        </path>
+      </svg>
+    </div>
+    <h3 data-i18n="zkp_title">ZenkariPass</h3>
+    <div style="text-align:center"><span class="badge badge-s">v9.8.5</span></div>
+    <p data-i18n="zkp_archive_desc">Password manager with 2FA — Download</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_rsa4096">RSA-4096 + AES-256</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_2fa">TOTP 2FA</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_gen">Password generator</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_export">Secure export/import</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://archive.org/details/zkp-9.8.5_202601" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_archive">DOWNLOAD ZKP</a>
+  </div>
+
+  <!-- ④ ZenkariPass Web -->
+  <div class="app-card">
+    <div class="app-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle cx="27" cy="23" r="11" stroke="#3b82f6" stroke-width="1.4"/>
+        <ellipse cx="27" cy="23" rx="4.5" ry="11" stroke="#3b82f6" stroke-width="1"/>
+        <line x1="16" y1="23" x2="38" y2="23" stroke="#3b82f6" stroke-width="1"/>
+        <circle cx="12" cy="14" r="6" stroke="#ef4444" stroke-width="1.4"/>
+        <line x1="16.5" y1="18" x2="22" y2="23" stroke="#ef4444" stroke-width="1.7" stroke-linecap="round"/>
+        <line x1="22" y1="27" x2="22" y2="30" stroke="#ef4444" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M19 19 Q23 15.5 27 17.5" stroke="#10b981" stroke-width="1.1" fill="none" stroke-dasharray="2,2"/>
+      </svg>
+    </div>
+    <h3 data-i18n="zkp_web_title">ZenkariPass Web</h3>
+    <div style="text-align:center"><span class="badge badge-s">v9.8.5</span></div>
+    <p data-i18n="zkp_web_desc">Password manager with 2FA — Web</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_rsa4096">RSA-4096 + AES-256</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_2fa">TOTP 2FA</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_gen">Password generator</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_lock">Auto-lock</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://zenkari-pass.vercel.app/" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_launch">LAUNCH WEB</a>
+  </div>
+
+  <!-- ⑤ ZenkariPass Authenticator -->
+  <div class="app-card">
+    <div class="app-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect x="4"  y="4"  width="9" height="9" rx="1.5" stroke="#ef4444" stroke-width="1.2" fill="rgba(239,68,68,.07)"/>
+        <rect x="5.5" y="5.5" width="6" height="6" rx=".5" fill="#ef4444" opacity=".6"/>
+        <rect x="27" y="4"  width="9" height="9" rx="1.5" stroke="#ef4444" stroke-width="1.2" fill="rgba(239,68,68,.07)"/>
+        <rect x="28.5" y="5.5" width="6" height="6" rx=".5" fill="#ef4444" opacity=".6"/>
+        <rect x="4"  y="27" width="9" height="9" rx="1.5" stroke="#ef4444" stroke-width="1.2" fill="rgba(239,68,68,.07)"/>
+        <rect x="5.5" y="28.5" width="6" height="6" rx=".5" fill="#ef4444" opacity=".6"/>
+        <rect x="16.5" y="5"  width="3" height="3" rx=".5" fill="#0b84f5" opacity=".7"/>
+        <rect x="21"   y="5"  width="2" height="3" rx=".5" fill="#0b84f5" opacity=".5"/>
+        <rect x="5"    y="16.5" width="3" height="3" rx=".5" fill="#0b84f5" opacity=".7"/>
+        <rect x="5"    y="21"   width="3" height="2" rx=".5" fill="#0b84f5" opacity=".5"/>
+        <!-- Animated clock -->
+        <circle cx="30" cy="30" r="9" fill="rgba(11,132,245,.1)" stroke="#0b84f5" stroke-width="1.5"/>
+        <line x1="30" y1="30" x2="30" y2="24.5" stroke="#10b981" stroke-width="1.8" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="10s" repeatCount="indefinite"/>
+        </line>
+        <line x1="30" y1="30" x2="34" y2="32" stroke="#60a5fa" stroke-width="1.4" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="120s" repeatCount="indefinite"/>
+        </line>
+        <circle cx="30" cy="30" r="1.5" fill="#0b84f5"/>
+      </svg>
+    </div>
+    <h3 data-i18n="zkpa_title">ZKPass Authenticator</h3>
+    <div style="text-align:center"><span class="badge badge-s">v4.0.0</span></div>
+    <p data-i18n="zkpa_desc">2FA authenticator with QR detection</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_totp">TOTP code generation</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_qr_detect">QR via screenshot</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_tz">All timezones</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_offline">Offline capable</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://archive.org/details/zkpa-4.0.0" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_download_zkpa">DOWNLOAD ZKPA</a>
+  </div>
+
+  <!-- ⑥ Zenkari IA -->
+  <div class="app-card ac">
+    <div class="app-icon" style="background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.18)">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <!-- Central node pulsing -->
+        <circle cx="20" cy="20" r="4.5" fill="#8b5cf6">
+          <animate attributeName="r" values="4.5;5.8;4.5" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;.7;1" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- 4 main satellites -->
+        <circle cx="20" cy="7"  r="3" fill="#7c3aed"><animate attributeName="opacity" values=".9;.3;.9" dur="1.8s" begin="0s"   repeatCount="indefinite"/></circle>
+        <circle cx="20" cy="33" r="3" fill="#7c3aed"><animate attributeName="opacity" values=".9;.3;.9" dur="1.8s" begin=".35s" repeatCount="indefinite"/></circle>
+        <circle cx="7"  cy="20" r="3" fill="#7c3aed"><animate attributeName="opacity" values=".9;.3;.9" dur="1.8s" begin=".7s"  repeatCount="indefinite"/></circle>
+        <circle cx="33" cy="20" r="3" fill="#7c3aed"><animate attributeName="opacity" values=".9;.3;.9" dur="1.8s" begin="1.05s" repeatCount="indefinite"/></circle>
+        <!-- 4 diagonal smaller nodes -->
+        <circle cx="10" cy="10" r="2.5" fill="#6d28d9"><animate attributeName="opacity" values=".7;.25;.7" dur="2.1s" begin=".15s" repeatCount="indefinite"/></circle>
+        <circle cx="30" cy="10" r="2.5" fill="#6d28d9"><animate attributeName="opacity" values=".7;.25;.7" dur="2.1s" begin=".45s" repeatCount="indefinite"/></circle>
+        <circle cx="10" cy="30" r="2.5" fill="#6d28d9"><animate attributeName="opacity" values=".7;.25;.7" dur="2.1s" begin=".75s" repeatCount="indefinite"/></circle>
+        <circle cx="30" cy="30" r="2.5" fill="#6d28d9"><animate attributeName="opacity" values=".7;.25;.7" dur="2.1s" begin="1.05s" repeatCount="indefinite"/></circle>
+        <!-- Connections pulsing -->
+        <line x1="20" y1="15.5" x2="20" y2="10" stroke="#a78bfa" stroke-width="1.1"><animate attributeName="opacity" values=".5;1;.5" dur="1.8s" begin="0s" repeatCount="indefinite"/></line>
+        <line x1="20" y1="24.5" x2="20" y2="30" stroke="#a78bfa" stroke-width="1.1"><animate attributeName="opacity" values=".5;1;.5" dur="1.8s" begin=".35s" repeatCount="indefinite"/></line>
+        <line x1="15.5" y1="20" x2="10" y2="20" stroke="#a78bfa" stroke-width="1.1"><animate attributeName="opacity" values=".5;1;.5" dur="1.8s" begin=".7s" repeatCount="indefinite"/></line>
+        <line x1="24.5" y1="20" x2="30" y2="20" stroke="#a78bfa" stroke-width="1.1"><animate attributeName="opacity" values=".5;1;.5" dur="1.8s" begin="1.05s" repeatCount="indefinite"/></line>
+        <line x1="17" y1="17" x2="12.5" y2="12.5" stroke="#a78bfa" stroke-width=".8" opacity=".45"/>
+        <line x1="23" y1="17" x2="27.5" y2="12.5" stroke="#a78bfa" stroke-width=".8" opacity=".45"/>
+        <line x1="17" y1="23" x2="12.5" y2="27.5" stroke="#a78bfa" stroke-width=".8" opacity=".45"/>
+        <line x1="23" y1="23" x2="27.5" y2="27.5" stroke="#a78bfa" stroke-width=".8" opacity=".45"/>
+        <!-- Outer spinning ring -->
+        <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(139,92,246,.18)" stroke-width=".7" stroke-dasharray="3,6">
+          <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="12s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <h3 data-i18n="zkia_title">Zenkari IA</h3>
+    <div style="text-align:center"><span class="badge badge-b" data-i18n="zkia_version">v5.1.0 BÊTA</span></div>
+    <p data-i18n="zkia_desc">AI Assistant & Smart Automation — Web Version</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="feat_ai_chat">AI Chat Assistant</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_ai_auto">Smart Automation</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_ai_sec">Security Analysis</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_ai_real">Real-time Processing</span></li>
+      <li><div class="fd"></div><span data-i18n="feat_langs">15 languages</span></li>
+    </ul>
+    <a href="https://www.tecuit-ia.org" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_launch_zkia">LAUNCH ZENKARI IA</a>
+  </div>
+
+  <!-- ⑦ Zenkari Shield -->
+  <div class="app-card sc">
+    <div class="scan-bar"></div>
+    <div class="cb tl"></div><div class="cb tr"></div>
+    <div class="cb bl"></div><div class="cb br"></div>
+    <div class="shield-badge"><div class="blip"></div>PROTECTED</div>
+
+    <div class="app-icon" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.18)">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <defs>
+          <linearGradient id="shg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00e5ff"/>
+            <stop offset="100%" stop-color="#0077ff"/>
+          </linearGradient>
+        </defs>
+        <!-- Shield outer shape -->
+        <path d="M20 2.5L36 9L36 21C36 30.5 27 37.5 20 40C13 37.5 4 30.5 4 21L4 9Z"
+          fill="rgba(0,229,255,.05)" stroke="url(#shg)" stroke-width="1.6">
+          <animate attributeName="stroke-opacity" values="1;.45;1" dur="2.8s" repeatCount="indefinite"/>
+        </path>
+        <!-- Animated checkmark -->
+        <path d="M12.5 20.5l5.5 6L29 14.5"
+          stroke="#00ff88" stroke-width="2.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"
+          stroke-dasharray="25" stroke-dashoffset="25">
+          <animate attributeName="stroke-dashoffset" from="25" to="0" dur=".9s" begin=".4s" fill="freeze"/>
+          <animate attributeName="stroke-opacity" values="1;.55;1" dur="2.2s" begin="1.5s" repeatCount="indefinite"/>
+        </path>
+        <!-- Scan sweep -->
+        <line x1="4" y1="20" x2="36" y2="20" stroke="rgba(0,229,255,.5)" stroke-width=".8">
+          <animateTransform attributeName="transform" type="translate" values="0,-16;0,16;0,-16" dur="3.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;.9;0" dur="3.2s" repeatCount="indefinite"/>
+        </line>
+        <!-- Outer ring rotating -->
+        <circle cx="20" cy="20" r="18.5" fill="none" stroke="rgba(0,229,255,.12)" stroke-width=".7" stroke-dasharray="3,7">
+          <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="22s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Radar ripple -->
+        <circle cx="20" cy="20" r="10" fill="none" stroke="rgba(0,229,255,.2)" stroke-width=".6">
+          <animate attributeName="r" values="5;18;5" dur="2.8s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <h3 data-i18n="zks_title">Zenkari Shield</h3>
+    <div style="text-align:center"><span class="badge badge-b" data-i18n="zks_version">v7.0.0 BÊTA</span></div>
+    <p data-i18n="zks_desc">EDR / Antivirus Suite — Full Windows Protection</p>
+    <ul class="app-features">
+      <li><div class="fd"></div><span data-i18n="zks_feat1">ClamAV + Heuristic</span></li>
+      <li><div class="fd"></div><span data-i18n="zks_feat2">Ransomware Shield</span></li>
+      <li><div class="fd"></div><span data-i18n="zks_feat3">WireGuard + OpenVPN</span></li>
+      <li><div class="fd"></div><span data-i18n="zks_feat4">AES-256-GCM Quarantine</span></li>
+      <li><div class="fd"></div><span data-i18n="zks_feat6">Tamper Shield</span></li>
+    </ul>
+    <a href="https://github.com/fonnjee10/Zenkari-Shield/tree/main" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_download_zks">⬡ DOWNLOAD SHIELD</a>
+  </div>
+
+</div><!-- /grid -->
+
+<!-- STATUS BAR -->
 <div class="status-bar">
-<div class="status-item">
-<div class="indicator"></div>
-<span data-i18n="status_operational">All applications are operational</span>
+  <div class="si"><div class="dot dg"></div><span data-i18n="status_operational">All applications operational</span></div>
+  <div class="si"><div class="dot dc"></div><span data-i18n="status_encryption">🔒 AES-256 / RSA-4096</span></div>
+  <div class="si"><div class="dot dy"></div><span data-i18n="status_apps">7 Applications available</span></div>
 </div>
-<div class="status-item">
-<span data-i18n="status_encryption">🔒 Encryption: AES-256 / RSA-4096</span>
-</div>
-<div class="status-item">
-<span data-i18n="status_apps"> 6 Applications available</span>
-<span class="api-status" id="apiStatus" title="API Status"></span>
-</div>
-</div>
-<section id="ai-chat-section">
-<h2>
-<span data-i18n="ai_chat_title">Zenkari AI Assistant</span>
-<span class="api-status connecting" id="chatApiStatus" title="Chat API Status"></span>
-</h2>
-<div class="chat-controls">
-<button class="btn btn-danger" onclick="clearConversation()" data-i18n="btn_clear_chat">🗑 Clear</button>
-<button class="btn btn-warning" onclick="exportConversation()" data-i18n="btn_export_chat">💾 Export</button>
-<button class="btn btn-teal" onclick="toggleAITheme()" data-i18n="btn_theme_chat">🎨 Theme</button>
-<button class="btn btn-primary" onclick="checkApiConnection()" data-i18n="btn_check_api">🔄 Check API</button>
-</div>
-<div id="chat"></div>
-<div id="tecuit-thinking">
-<span data-i18n="ai_thinking">Tecuit...</span>
-<div class="typing-indicator">
-<span></span><span></span><span></span>
-</div>
-</div>
-<div id="chat-footer">
-<input type="text" id="chat-input" data-i18n-placeholder="chat_placeholder" placeholder="Type your message...">
-<button id="fileUploadBtn" onclick="document.getElementById('fileInput').click()">📎</button>
-<input type="file" id="fileInput" onchange="handleFileUpload(this.files[0])">
-<button id="sendBtn">➤</button>
-<button id="stopGenBtn" class="btn-danger" onclick="stopGeneration()">⏹</button>
-</div>
-<div id="typingPreview"></div>
+
+<!-- TECUIT SECTION -->
+<section id="ts">
+  <div class="th">
+    <div class="tt">
+      <!-- Mini Tecuit logo -->
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14.5" fill="rgba(59,130,246,.07)" stroke="rgba(59,130,246,.28)" stroke-width="1"/>
+        <g class="tl-ring"><circle cx="16" cy="16" r="10" fill="none" stroke="rgba(139,92,246,.25)" stroke-width=".8" stroke-dasharray="2,5"/></g>
+        <circle cx="16" cy="16" r="4" fill="#3b82f6" class="tl-core"/>
+        <circle cx="16" cy="6.5" r="2.5" fill="#8b5cf6"><animate attributeName="opacity" values=".9;.3;.9" dur="1.7s" begin="0s" repeatCount="indefinite"/></circle>
+        <circle cx="16" cy="25.5" r="2.5" fill="#8b5cf6"><animate attributeName="opacity" values=".9;.3;.9" dur="1.7s" begin=".42s" repeatCount="indefinite"/></circle>
+        <circle cx="6.5" cy="16" r="2.5" fill="#8b5cf6"><animate attributeName="opacity" values=".9;.3;.9" dur="1.7s" begin=".85s" repeatCount="indefinite"/></circle>
+        <circle cx="25.5" cy="16" r="2.5" fill="#8b5cf6"><animate attributeName="opacity" values=".9;.3;.9" dur="1.7s" begin="1.27s" repeatCount="indefinite"/></circle>
+        <line x1="16" y1="12" x2="16" y2="9" stroke="#a78bfa" stroke-width="1"><animate attributeName="opacity" values=".6;1;.6" dur="1.7s" begin="0s" repeatCount="indefinite"/></line>
+        <line x1="16" y1="20" x2="16" y2="23" stroke="#a78bfa" stroke-width="1"><animate attributeName="opacity" values=".6;1;.6" dur="1.7s" begin=".42s" repeatCount="indefinite"/></line>
+        <line x1="12" y1="16" x2="9"  y2="16" stroke="#a78bfa" stroke-width="1"><animate attributeName="opacity" values=".6;1;.6" dur="1.7s" begin=".85s" repeatCount="indefinite"/></line>
+        <line x1="20" y1="16" x2="23" y2="16" stroke="#a78bfa" stroke-width="1"><animate attributeName="opacity" values=".6;1;.6" dur="1.7s" begin="1.27s" repeatCount="indefinite"/></line>
+      </svg>
+      <h2 data-i18n="ai_chat_title">Zenkari AI Assistant</h2>
+    </div>
+    <div class="api-pill">
+      <div class="dot dc" id="apiDot" style="animation:none;background:var(--gold)"></div>
+      <span id="apiLabel" style="font-size:10px" data-i18n="api_connecting">Connexion...</span>
+    </div>
+  </div>
+
+  <div class="tc">
+    <button class="cb2 dx" onclick="clearConv()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1M13 4l-1 9a1 1 0 01-1 1H5a1 1 0 01-1-1L3 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span data-i18n="btn_clear_chat">Effacer</span>
+    </button>
+    <button class="cb2" onclick="exportConv()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v8m0 0L5 7m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="btn_export_chat">Exporter</span>
+    </button>
+    <button class="cb2" onclick="checkApi()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M14 8A6 6 0 112 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M14 8l-2-2m2 2l-2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span data-i18n="btn_check_api">Statut API</span>
+    </button>
+  </div>
+
+  <div id="cw"></div>
+  <input type="file" id="fi" onchange="onFile(this.files[0])">
+
+  <div class="cia">
+    <div class="ir">
+      <button class="ib" id="fb" onclick="document.getElementById('fi').click()">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M16 10l-5.5 5.5a4 4 0 01-5.657-5.657L11 3.686a2.5 2.5 0 013.536 3.535L9.379 12.38a1 1 0 01-1.414-1.414l5.5-5.5" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <textarea id="ci" rows="1" data-i18n-placeholder="chat_placeholder" placeholder="Tapez votre message..."></textarea>
+      <button class="ib" id="stb" onclick="stopGen()">
+        <svg width="13" height="13" viewBox="0 0 14 14"><rect x="2" y="2" width="10" height="10" rx="2" fill="#ef4444"/></svg>
+      </button>
+      <button class="ib" id="sb" onclick="send()">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M2 10L18 2L10 18L9 11L2 10z" fill="white"/></svg>
+      </button>
+    </div>
+    <div class="im">
+      <span style="opacity:.4;font-size:10px">Enter ↵ envoyer · Shift+Enter nouvelle ligne</span>
+      <span id="cc">0 / 8000</span>
+    </div>
+  </div>
 </section>
+
+<!-- CONTACT -->
 <section id="contact">
-<h2 id="contact-title" data-i18n="contact_title">📧 Aide / Help</h2>
-<form onsubmit="handleContactForm(event)">
-<div class="form-group">
-<input type="text" id="contactName" class="form-input" data-i18n-placeholder="contact_name" placeholder="Name" required>
-</div>
-<div class="form-group">
-<input type="email" id="contactEmail" class="form-input" data-i18n-placeholder="contact_email" placeholder="Email" required>
-</div>
-<div class="form-group">
-<textarea id="contactMessage" class="form-input" data-i18n-placeholder="contact_message" placeholder="Text" required style="min-height: 100px; resize: vertical;"></textarea>
-</div>
-<button type="submit" class="btn btn-primary">➥</button>
-</form>
+  <h2 data-i18n="contact_title">📧 AIDE / HELP</h2>
+  <form onsubmit="onContact(event)">
+    <div class="fg"><input type="text"  class="fi2" id="cN" data-i18n-placeholder="contact_name"    placeholder="Nom"     required></div>
+    <div class="fg"><input type="email" class="fi2" id="cE" data-i18n-placeholder="contact_email"   placeholder="Email"   required></div>
+    <div class="fg"><textarea           class="fi2" id="cM" data-i18n-placeholder="contact_message" placeholder="Message" required style="min-height:88px;resize:vertical"></textarea></div>
+    <button type="submit" class="bsub">ENVOYER ➥</button>
+  </form>
 </section>
+
 <div class="footer">
-<div class="logo-crypto" style="width: 40px; height: 40px; margin: 0 auto 10px;">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<defs>
-<linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-<stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-</linearGradient>
-</defs>
-<circle cx="50" cy="50" r="45" fill="url(#grad4)" opacity="0.7"/>
-<path d="M30 50 L45 35 L70 60 M45 35 L45 65" stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="70" cy="30" r="8" fill="#10b981"/>
-</svg>
+  <p data-i18n="footer_copyright">© 2026 Zenkari Suite — All rights reserved</p>
+  <p data-i18n="footer_versions" style="margin-top:4px;opacity:.5">Made by LE$TER | ZK 10.0.0F · 9.8.9F · ZKP 9.8.5 · ZKPA 4.0.0 · ZKIA 5.1.0β · ZKS 7.0.0β</p>
 </div>
-<p data-i18n="footer_copyright">© 2026 Zenkari Suite - All rights reserved</p>
-<p data-i18n="footer_versions">Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BÊTA</p>
-</div>
-</div>
-<div class="lang-indicator" id="langIndicator">🇫🇷 FR</div>
+</div><!-- /container -->
+
+<div class="lang-indicator" id="li">🇫🇷 FR</div>
+
 <script>
-// ==================== API CONFIGURATION - LM STUDIO COMPATIBLE ====================
-const API_CONFIG = {
-baseUrl: 'https://zenkaritecuitai.ngrok.app',
-endpoint: '/v1/chat/completions',
-model: 'nousresearch/nous-hermes-2-mistral-7b-dpo',
-timeout: 30000,
-maxRetries: 3
+/* ── Canvas particles + mouse repulsion ─────────────── */
+(function(){
+  const c=document.getElementById('bgCanvas'),ctx=c.getContext('2d');
+  let W,H,mx=-999,my=-999;
+  const N=65,nodes=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight}
+  resize();addEventListener('resize',resize);
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  for(let i=0;i<N;i++)nodes.push({
+    x:Math.random()*2000,y:Math.random()*1200,
+    vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,
+    r:Math.random()*1.6+.5,h:200+Math.random()*55
+  });
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{
+      n.x+=n.vx;n.y+=n.vy;
+      if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;
+      const dx=n.x-mx,dy=n.y-my,d=Math.hypot(dx,dy);
+      if(d<130&&d>0){n.x+=dx/d*1.8;n.y+=dy/d*1.8}
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${n.h},68%,63%,.45)`;ctx.fill();
+    });
+    for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){
+      const a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<145){
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=`rgba(59,130,246,${(1-d/145)*.18})`;
+        ctx.lineWidth=.6;ctx.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Translations ────────────────────────────────── */
+const T={
+  en:{title:"Zenkari Menu",subtitle:"UNIFIED SECURITY PLATFORM — CHOOSE YOUR APPLICATION",
+    zk_web_title:"ZenkariApp Web",zk_web_desc:"Secure messaging & file encryption — Web",
+    zk_win_title:"ZenkariApp Windows",zk_win_desc:"Native Windows application — Download",
+    zkp_title:"ZenkariPass",zkp_archive_desc:"Password manager with 2FA — Download",
+    zkp_web_title:"ZenkariPass Web",zkp_web_desc:"Password manager with 2FA — Web",
+    zkpa_title:"ZKPass Authenticator",zkpa_desc:"2FA authenticator with QR detection",
+    zkia_title:"Zenkari IA",zkia_version:"v5.1.0 BETA",zkia_desc:"AI Assistant & Smart Automation — Web",
+    zks_title:"Zenkari Shield",zks_version:"v7.0.0 BETA",zks_desc:"EDR / Antivirus Suite — Full Windows Protection",
+    zks_feat1:"ClamAV + Heuristic Detection",zks_feat2:"Ransomware Shield (auto-kill)",
+    zks_feat3:"WireGuard + OpenVPN built-in",zks_feat4:"AES-256-GCM Quarantine",
+    zks_feat6:"Tamper Shield",btn_download_zks:"⬡ Download Shield",
+    feat_rsa:"RSA-3072 + AES-256",feat_rsa4096:"RSA-4096 + AES-256",
+    feat_signed:"Signed messages",feat_files:"File encryption 500MB",feat_qr:"Secure QR Codes",
+    feat_ai:"Integrated AI",feat_native:"Native desktop app",feat_offline:"Works offline",
+    feat_local:"Secure local storage",feat_compat:"Windows 10/11",feat_2fa:"TOTP 2FA",
+    feat_gen:"Password generator",feat_cats:"Organized categories",feat_lock:"Auto-lock",
+    feat_export:"Secure export/import",feat_totp:"TOTP code generation",feat_aes_sha:"AES-256 & SHA-256",
+    feat_qr_detect:"QR via screenshot",feat_tz:"All timezones",feat_local_enc:"Encrypted local storage",
+    feat_langs:"15 languages",feat_ai_chat:"AI Chat Assistant",feat_ai_auto:"Smart Automation",
+    feat_ai_sec:"Security Analysis",feat_ai_real:"Real-time Processing",
+    btn_launch:"LAUNCH WEB",btn_download:"DOWNLOAD ZK",btn_archive:"DOWNLOAD ZKP",
+    btn_download_zkpa:"DOWNLOAD ZKPA",btn_launch_zkia:"LAUNCH ZENKARI IA",
+    status_operational:"All applications operational",status_encryption:"🔒 AES-256 / RSA-4096",
+    status_apps:"7 Applications available",
+    footer_copyright:"© 2026 Zenkari Suite — All rights reserved",
+    footer_versions:"Made by LE$TER | ZK 10.0.0F · 9.8.9F · ZKP 9.8.5 · ZKPA 4.0.0 · ZKIA 5.1.0β · ZKS 7.0.0β",
+    ai_chat_title:"Zenkari AI Assistant",btn_clear_chat:"Clear",btn_export_chat:"Export",
+    btn_check_api:"API Status",chat_placeholder:"Type your message...",
+    contact_title:"📧 HELP / CONTACT",contact_name:"Name",contact_email:"Email",contact_message:"Message",
+    api_connecting:"Connecting...",api_online:"Online",api_offline:"Offline"},
+  fr:{title:"Menu Zenkari",subtitle:"PLATEFORME DE SÉCURITÉ UNIFIÉE — CHOISISSEZ VOTRE APPLICATION",
+    zk_web_title:"ZenkariApp Web",zk_web_desc:"Messagerie sécurisée & chiffrement — Web",
+    zk_win_title:"ZenkariApp Windows",zk_win_desc:"Application Windows native — Téléchargement",
+    zkp_title:"ZenkariPass",zkp_archive_desc:"Gestionnaire de mots de passe 2FA — Archive",
+    zkp_web_title:"ZenkariPass Web",zkp_web_desc:"Gestionnaire de mots de passe 2FA — Web",
+    zkpa_title:"ZKPass Authenticator",zkpa_desc:"Authentificateur 2FA avec détection QR",
+    zkia_title:"Zenkari IA",zkia_version:"v5.1.0 BÊTA",zkia_desc:"Assistant IA & Automatisation — Web",
+    zks_title:"Zenkari Shield",zks_version:"v7.0.0 BÊTA",zks_desc:"Suite EDR / Antivirus — Protection complète Windows",
+    zks_feat1:"Moteur ClamAV + Heuristique",zks_feat2:"Ransomware Shield (kill auto)",
+    zks_feat3:"VPN WireGuard + OpenVPN intégré",zks_feat4:"Quarantaine AES-256-GCM",
+    zks_feat6:"Intégrité système (Tamper Shield)",btn_download_zks:"⬡ Télécharger Shield",
+    feat_rsa:"RSA-3072 + AES-256",feat_rsa4096:"RSA-4096 + AES-256",
+    feat_signed:"Messages signés",feat_files:"Chiffrement fichiers 500MB",feat_qr:"QR Codes sécurisés",
+    feat_ai:"IA intégrée",feat_native:"App desktop native",feat_offline:"Hors ligne",
+    feat_local:"Stockage local sécurisé",feat_compat:"Windows 10/11",feat_2fa:"Authentification 2FA TOTP",
+    feat_gen:"Générateur de mots de passe",feat_cats:"Catégories organisées",feat_lock:"Verrouillage auto",
+    feat_export:"Export/Import sécurisé",feat_totp:"Génération codes TOTP",feat_aes_sha:"AES-256 et SHA-256",
+    feat_qr_detect:"Détection QR par screenshot",feat_tz:"Tous fuseaux horaires",
+    feat_local_enc:"Stockage local chiffré",feat_langs:"15 langues",feat_ai_chat:"Assistant Chat IA",
+    feat_ai_auto:"Automatisation Intelligente",feat_ai_sec:"Analyse de Sécurité",feat_ai_real:"Traitement Temps Réel",
+    btn_launch:"LANCER WEB",btn_download:"TÉLÉCHARGER ZK",btn_archive:"TÉLÉCHARGER ZKP",
+    btn_download_zkpa:"TÉLÉCHARGER ZKPA",btn_launch_zkia:"LANCER ZENKARI IA",
+    status_operational:"Toutes les applications sont opérationnelles",status_encryption:"🔒 AES-256 / RSA-4096",
+    status_apps:"7 Applications disponibles",
+    footer_copyright:"© 2026 Zenkari Suite — Tous droits réservés",
+    footer_versions:"Made by LE$TER | ZK 10.0.0F · 9.8.9F · ZKP 9.8.5 · ZKPA 4.0.0 · ZKIA 5.1.0β · ZKS 7.0.0β",
+    ai_chat_title:"Assistant IA Zenkari",btn_clear_chat:"Effacer",btn_export_chat:"Exporter",
+    btn_check_api:"Statut API",chat_placeholder:"Tapez votre message...",
+    contact_title:"📧 AIDE / CONTACT",contact_name:"Nom",contact_email:"Email",contact_message:"Message",
+    api_connecting:"Connexion...",api_online:"En ligne",api_offline:"Hors ligne"}
 };
+['es','de','it','pt','ru','zh','ja','ko','tr','hi','ar','bn','vi'].forEach(l=>{T[l]={...T.en}});
 
-const translations = {
-en: {
-title: "Zenkari Menu", subtitle: "Unified security platform - Choose your application",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Secure messaging & file encryption - Web Version",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Native Windows application - Free download",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Password manager with 2FA - Archive",
-zkp_web_desc: "Password manager with 2FA - Web Version",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "2FA authenticator with QR detection (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "AI Assistant & Smart Automation - Web Version",
-feat_rsa: "RSA-3072 + AES-256 Encryption", feat_rsa4096: "RSA-4096 + AES-256 Encryption",
-feat_signed: "Cryptographically signed messages", feat_files: "File encryption (500MB max)",
-feat_qr: "Secure QR Codes", feat_logs: "Encrypted logs", feat_ai: "Integrated AI",
-feat_native: "Native Windows desktop app", feat_offline: "Works offline",
-feat_local: "Secure local storage", feat_auto: "Automatic updates",
-feat_compat: "Windows 10/11 compatible", feat_2fa: "Two-factor authentication (TOTP)",
-feat_gen: "Password generator", feat_cats: "Organized categories",
-feat_lock: "Auto-lock feature", feat_export: "Secure export/import",
-feat_totp: "TOTP code generation", feat_aes_sha: "AES-256 & SHA-256 encryption",
-feat_qr_detect: "QR detection via screenshot", feat_tz: "All timezones supported",
-feat_local_enc: "Encrypted local storage", feat_langs: "15 languages supported",
-feat_ai_chat: "AI Chat Assistant", feat_ai_auto: "Smart Automation",
-feat_ai_sec: "Security Analysis", feat_ai_multi: "Multi-language Support",
-feat_ai_cloud: "Cloud Integration", feat_ai_real: "Real-time Processing",
-btn_launch: "Launch Web", btn_download: "Download ZK", btn_archive: "Download ZKP",
-btn_download_zkpa: "Download ZKPA", btn_launch_zkia: "Launch Zenkari IA",
-status_operational: "All applications are operational",
-status_encryption: "🔒 Encryption: AES-256 / RSA-4096", status_apps: " 6 Applications available",
-footer_copyright: "© 2026 Zenkari Menu - All rights reserved",
-footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari AI Assistant", btn_clear_chat: "🗑 Clear", btn_export_chat: "💾 Export",
-btn_theme_chat: "🎨 Theme", btn_check_api: "🔄 Check API", ai_thinking: "Tecuit...",
-chat_placeholder: "Type your message...", contact_title: "📧 Contact / Help",
-contact_name: "Name", contact_email: "Email", contact_message: "Message"
-},
-fr: {
-title: "Menu Zenkari", subtitle: "Plateforme de sécurité unifiée - Choisissez votre application",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Messagerie sécurisée & chiffrement - Version Web",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Application Windows native - Téléchargement gratuit",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Gestionnaire de mots de passe avec A2F - Archive",
-zkp_web_desc: "Gestionnaire de mots de passe avec A2F - Version Web",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Authentificateur 2FA avec détection QR (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BÊTA", zkia_desc: "Assistant IA & Automatisation - Version Web",
-feat_rsa: "Chiffrement RSA-3072 + AES-256", feat_rsa4096: "Chiffrement RSA-4096 + AES-256",
-feat_signed: "Messages signés cryptographiquement", feat_files: "Chiffrement de fichiers (500MB max)",
-feat_qr: "QR Codes sécurisés", feat_logs: "Logs cryptés", feat_ai: "IA intégrée",
-feat_native: "Application desktop Windows native", feat_offline: "Fonctionne hors ligne",
-feat_local: "Stockage local sécurisé", feat_auto: "Mises à jour automatiques",
-feat_compat: "Compatible Windows 10/11", feat_2fa: "Authentification 2 facteurs (TOTP)",
-feat_gen: "Générateur de mots de passe", feat_cats: "Catégories organisées",
-feat_lock: "Verrouillage automatique", feat_export: "Export/Import sécurisé",
-feat_totp: "Génération de codes TOTP", feat_aes_sha: "Chiffrement AES-256 et SHA-256",
-feat_qr_detect: "Détection QR par screenshot", feat_tz: "Tous fuseaux horaires supportés",
-feat_local_enc: "Stockage local chiffré", feat_langs: "15 langues supportées",
-feat_ai_chat: "Assistant Chat IA", feat_ai_auto: "Automatisation Intelligente",
-feat_ai_sec: "Analyse de Sécurité", feat_ai_multi: "Support Multi-langues",
-feat_ai_cloud: "Intégration Cloud", feat_ai_real: "Traitement Temps Réel",
-btn_launch: "Lancer Web", btn_download: "Télécharger ZK", btn_archive: "Télécharger ZKP",
-btn_download_zkpa: "Télécharger ZKPA", btn_launch_zkia: "Lancer Zenkari IA",
-status_operational: "Toutes les applications sont opérationnelles",
-status_encryption: "🔒 Chiffrement: AES-256 / RSA-4096", status_apps: " 6 Applications disponibles",
-footer_copyright: "© 2026 Zenkari Menu - Tous droits réservés",
-footer_versions: "Made by LE$TER | Versions: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BÊTA",
-ai_chat_title: "Assistant IA Zenkari", btn_clear_chat: "🗑 Effacer", btn_export_chat: "💾 Exporter",
-btn_theme_chat: "🎨 Thème", btn_check_api: "🔄 Vérifier API", ai_thinking: "Tecuit...",
-chat_placeholder: "Tapez votre message...", contact_title: "📧 Contact / Aide",
-contact_name: "Nom", contact_email: "Email", contact_message: "Message"
-},
-es: {
-title: "Menú Zenkari", subtitle: "Plataforma de seguridad unificada - Elige tu aplicación",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Mensajería segura y cifrado de archivos - Versión Web",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Aplicación nativa de Windows - Descarga gratuita",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Gestor de contraseñas con 2FA - Archivo",
-zkp_web_desc: "Gestor de contraseñas con 2FA - Versión Web",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Autenticador 2FA con detección QR (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "Asistente IA y automatización inteligente - Versión Web",
-feat_rsa: "Cifrado RSA-3072 + AES-256", feat_rsa4096: "Cifrado RSA-4096 + AES-256",
-feat_signed: "Mensajes firmados criptográficamente", feat_files: "Cifrado de archivos (500MB máx)",
-feat_qr: "Códigos QR seguros", feat_logs: "Registros cifrados", feat_ai: "IA integrada",
-feat_native: "Aplicación de escritorio Windows nativa", feat_offline: "Funciona sin conexión",
-feat_local: "Almacenamiento local seguro", feat_auto: "Actualizaciones automáticas",
-feat_compat: "Compatible con Windows 10/11", feat_2fa: "Autenticación de dos factores (TOTP)",
-feat_gen: "Generador de contraseñas", feat_cats: "Categorías organizadas",
-feat_lock: "Bloqueo automático", feat_export: "Exportación/importación segura",
-feat_totp: "Generación de códigos TOTP", feat_aes_sha: "Cifrado AES-256 y SHA-256",
-feat_qr_detect: "Detección QR por captura", feat_tz: "Todas las zonas horarias soportadas",
-feat_local_enc: "Almacenamiento local cifrado", feat_langs: "15 idiomas soportados",
-feat_ai_chat: "Asistente de Chat IA", feat_ai_auto: "Automatización Inteligente",
-feat_ai_sec: "Análisis de Seguridad", feat_ai_multi: "Soporte Multi-idioma",
-feat_ai_cloud: "Integración en la Nube", feat_ai_real: "Procesamiento en Tiempo Real",
-btn_launch: "Iniciar Web", btn_download: "Descargar ZK", btn_archive: "Descargar ZKP",
-btn_download_zkpa: "Descargar ZKPA", btn_launch_zkia: "Iniciar Zenkari IA",
-status_operational: "Todas las aplicaciones están operativas",
-status_encryption: "🔒 Cifrado: AES-256 / RSA-4096", status_apps: " 6 Aplicaciones disponibles",
-footer_copyright: "© 2026 Zenkari Menu - Todos los derechos reservados",
-footer_versions: "Hecho por LE$TER | Versiones: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Asistente IA Zenkari", btn_clear_chat: "🗑 Limpiar", btn_export_chat: "💾 Exportar",
-btn_theme_chat: "🎨 Tema", btn_check_api: "🔄 Verificar API", ai_thinking: "Tecuit...",
-chat_placeholder: "Escribe tu mensaje...", contact_title: "📧 Contacto / Ayuda",
-contact_name: "Nombre", contact_email: "Correo", contact_message: "Mensaje"
-},
-zh: {
-title: "Zenkari 菜单", subtitle: "统一安全平台 - 选择您的应用程序",
-zk_web_title: "ZenkariApp 网页版", zk_web_desc: "安全消息和文件加密 - 网页版本",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "原生 Windows 应用程序 - 免费下载",
-zkp_title: "ZenkariPass", zkp_archive_desc: "带 2FA 的密码管理器 - 存档",
-zkp_web_desc: "带 2FA 的密码管理器 - 网页版本",
-zkpa_title: "ZenkariPass 验证器", zkpa_desc: "带 QR 检测的 2FA 验证器 (Python)",
-zkia_title: "Zenkari 智能助手", zkia_version: "v2.1.0 测试版", zkia_desc: "AI 助手和智能自动化 - 网页版本",
-feat_rsa: "RSA-3072 + AES-256 加密", feat_rsa4096: "RSA-4096 + AES-256 加密",
-feat_signed: "加密签名的消息", feat_files: "文件加密 (最大 500MB)",
-feat_qr: "安全二维码", feat_logs: "加密日志", feat_ai: "集成 AI",
-feat_native: "原生 Windows 桌面应用", feat_offline: "离线工作",
-feat_local: "安全本地存储", feat_auto: "自动更新",
-feat_compat: "兼容 Windows 10/11", feat_2fa: "双因素认证 (TOTP)",
-feat_gen: "密码生成器", feat_cats: "有组织的类别",
-feat_lock: "自动锁定功能", feat_export: "安全导出/导入",
-feat_totp: "TOTP 代码生成", feat_aes_sha: "AES-256 和 SHA-256 加密",
-feat_qr_detect: "通过截图检测 QR", feat_tz: "支持所有时区",
-feat_local_enc: "加密本地存储", feat_langs: "支持 15 种语言",
-feat_ai_chat: "AI 聊天助手", feat_ai_auto: "智能自动化",
-feat_ai_sec: "安全分析", feat_ai_multi: "多语言支持",
-feat_ai_cloud: "云集成", feat_ai_real: "实时处理",
-btn_launch: "启动网页", btn_download: "下载 ZK", btn_archive: "下载 ZKP",
-btn_download_zkpa: "下载 ZKPA", btn_launch_zkia: "启动 Zenkari IA",
-status_operational: "所有应用程序均可运行",
-status_encryption: "🔒 加密：AES-256 / RSA-4096", status_apps: " 6 个应用程序可用",
-footer_copyright: "© 2026 Zenkari Menu - 版权所有",
-footer_versions: "由 LE$TER 制作 | 版本：ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari AI 助手", btn_clear_chat: "🗑 清除", btn_export_chat: "💾 导出",
-btn_theme_chat: "🎨 主题", btn_check_api: "🔄 检查 API", ai_thinking: "Tecuit...",
-chat_placeholder: "输入您的消息...", contact_title: "📧 联系 / 帮助",
-contact_name: "姓名", contact_email: "邮箱", contact_message: "消息"
-},
-hi: {
-title: "ज़ेनकारी मेनू", subtitle: "एकीकृत सुरक्षा प्लेटफॉर्म - अपना एप्लिकेशन चुनें",
-zk_web_title: "ज़ेनकारीऐप वेब", zk_web_desc: "सुरक्षित संदेश और फ़ाइल एन्क्रिप्शन - वेब संस्करण",
-zk_win_title: "ज़ेनकारीऐप विंडोज", zk_win_desc: "नेटिव विंडोज एप्लिकेशन - मुफ्त डाउनलोड",
-zkp_title: "ज़ेनकारीपास", zkp_archive_desc: "2FA के साथ पासवर्ड मैनेजर - आर्काइव",
-zkp_web_desc: "2FA के साथ पासवर्ड मैनेजर - वेब संस्करण",
-zkpa_title: "ज़ेनकारीपास प्रमाणीकारक", zkpa_desc: "QR पहचान के साथ 2FA प्रमाणीकारक (Python)",
-zkia_title: "ज़ेनकारी आईए", zkia_version: "v2.1.0 बीटा", zkia_desc: "AI सहायक और स्मार्ट ऑटोमेशन - वेब संस्करण",
-feat_rsa: "RSA-3072 + AES-256 एन्क्रिप्शन", feat_rsa4096: "RSA-4096 + AES-256 एन्क्रिप्शन",
-feat_signed: "क्रिप्टोग्राफिक रूप से हस्ताक्षरित संदेश", feat_files: "फ़ाइल एन्क्रिप्शन (अधिकतम 500MB)",
-feat_qr: "सुरक्षित QR कोड", feat_logs: "एन्क्रिप्टेड लॉग", feat_ai: "एकीकृत AI",
-feat_native: "नेटिव विंडोज डेस्कटॉप ऐप", feat_offline: "ऑफ़लाइन काम करता है",
-feat_local: "सुरक्षित स्थानीय भंडारण", feat_auto: "स्वचालित अपडेट",
-feat_compat: "Windows 10/11 के साथ संगत", feat_2fa: "दो-कारक प्रमाणीकरण (TOTP)",
-feat_gen: "पासवर्ड जनरेटर", feat_cats: "संगठित श्रेणियां",
-feat_lock: "ऑटो-लॉक सुविधा", feat_export: "सुरक्षित निर्यात/आयात",
-feat_totp: "TOTP कोड जनरेशन", feat_aes_sha: "AES-256 और SHA-256 एन्क्रिप्शन",
-feat_qr_detect: "स्क्रीनशॉट के माध्यम से QR पहचान", feat_tz: "सभी समय क्षेत्र समर्थित",
-feat_local_enc: "एन्क्रिप्टेड स्थानीय भंडारण", feat_langs: "15 भाषाएं समर्थित",
-feat_ai_chat: "AI चैट सहायक", feat_ai_auto: "स्मार्ट ऑटोमेशन",
-feat_ai_sec: "सुरक्षा विश्लेषण", feat_ai_multi: "बहु-भाषा समर्थन",
-feat_ai_cloud: "क्लाउड एकीकरण", feat_ai_real: "रियल-टाइम प्रोसेसिंग",
-btn_launch: "वेब लॉन्च करें", btn_download: "ZK डाउनलोड करें", btn_archive: "ZKP डाउनलोड करें",
-btn_download_zkpa: "ZKPA डाउनलोड करें", btn_launch_zkia: "ज़ेनकारी IA लॉन्च करें",
-status_operational: "सभी एप्लिकेशन संचालित हैं",
-status_encryption: "🔒 एन्क्रिप्शन: AES-256 / RSA-4096", status_apps: " 6 एप्लिकेशन उपलब्ध",
-footer_copyright: "© 2026 Zenkari Menu - सर्वाधिकार सुरक्षित",
-footer_versions: "LE$TER द्वारा बनाया गया | संस्करण: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "ज़ेनकारी AI सहायक", btn_clear_chat: "🗑 साफ़ करें", btn_export_chat: "💾 निर्यात करें",
-btn_theme_chat: "🎨 थीम", btn_check_api: "🔄 API जांचें", ai_thinking: "Tecuit...",
-chat_placeholder: "अपना संदेश टाइप करें...", contact_title: "📧 संपर्क / सहायता",
-contact_name: "नाम", contact_email: "ईमेल", contact_message: "संदेश"
-},
-ar: {
-title: "قائمة زينكاري", subtitle: "منصة أمنية موحدة - اختر تطبيقك",
-zk_web_title: "زينكاري أب ويب", zk_web_desc: "مراسلة آمنة وتشفير الملفات - إصدار الويب",
-zk_win_title: "زينكاري أب ويندوز", zk_win_desc: "تطبيق ويندوز أصلي - تحميل مجاني",
-zkp_title: "زينكاري باس", zkp_archive_desc: "مدير كلمات المرور مع 2FA - أرشيف",
-zkp_web_desc: "مدير كلمات المرور مع 2FA - إصدار الويب",
-zkpa_title: "مصادق زينكاري باس", zkpa_desc: "مصادق 2FA مع كشف QR (Python)",
-zkia_title: "زينكاري الذكاء الاصطناعي", zkia_version: "v2.1.0 بيتا", zkia_desc: "مساعد الذكاء الاصطناعي والأتمتة الذكية - إصدار الويب",
-feat_rsa: "تشفير RSA-3072 + AES-256", feat_rsa4096: "تشفير RSA-4096 + AES-256",
-feat_signed: "رسائل موقعة تشفيرياً", feat_files: "تشفير الملفات (500MB كحد أقصى)",
-feat_qr: "رموز QR آمنة", feat_logs: "سجلات مشفرة", feat_ai: "ذكاء اصطناعي مدمج",
-feat_native: "تطبيق سطح مكتب ويندوز أصلي", feat_offline: "يعمل دون اتصال",
-feat_local: "تخزين محلي آمن", feat_auto: "تحديثات تلقائية",
-feat_compat: "متوافق مع Windows 10/11", feat_2fa: "المصادقة الثنائية (TOTP)",
-feat_gen: "مولد كلمات المرور", feat_cats: "فئات منظمة",
-feat_lock: "ميزة القفل التلقائي", feat_export: "تصدير/استيراد آمن",
-feat_totp: "توليد رموز TOTP", feat_aes_sha: "تشفير AES-256 و SHA-256",
-feat_qr_detect: "كشف QR عبر لقطة الشاشة", feat_tz: "جميع المناطق الزمنية مدعومة",
-feat_local_enc: "تخزين محلي مشفر", feat_langs: "15 لغة مدعومة",
-feat_ai_chat: "مساعد الدردشة بالذكاء الاصطناعي", feat_ai_auto: "أتمتة ذكية",
-feat_ai_sec: "تحليل الأمان", feat_ai_multi: "دعم متعدد اللغات",
-feat_ai_cloud: "تكامل السحابة", feat_ai_real: "معالجة في الوقت الفعلي",
-btn_launch: "تشغيل الويب", btn_download: "تحميل ZK", btn_archive: "تحميل ZKP",
-btn_download_zkpa: "تحميل ZKPA", btn_launch_zkia: "تشغيل زينكاري IA",
-status_operational: "جميع التطبيقات تعمل",
-status_encryption: "🔒 التشفير: AES-256 / RSA-4096", status_apps: " 6 تطبيقات متاحة",
-footer_copyright: "© 2026 Zenkari Menu - جميع الحقوق محفوظة",
-footer_versions: "بواسطة LE$TER | الإصدارات: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "مساعد زينكاري للذكاء الاصطناعي", btn_clear_chat: "🗑 مسح", btn_export_chat: "💾 تصدير",
-btn_theme_chat: "🎨 سمة", btn_check_api: "🔄 تحقق من API", ai_thinking: "Tecuit...",
-chat_placeholder: "اكتب رسالتك...", contact_title: "📧 اتصال / مساعدة",
-contact_name: "الاسم", contact_email: "البريد الإلكتروني", contact_message: "الرسالة"
-},
-pt: {
-title: "Menu Zenkari", subtitle: "Plataforma de segurança unificada - Escolha seu aplicativo",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Mensagens seguras e criptografia de arquivos - Versão Web",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Aplicativo nativo do Windows - Download gratuito",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Gerenciador de senhas com 2FA - Arquivo",
-zkp_web_desc: "Gerenciador de senhas com 2FA - Versão Web",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Autenticador 2FA com detecção QR (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "Assistente de IA e Automação Inteligente - Versão Web",
-feat_rsa: "Criptografia RSA-3072 + AES-256", feat_rsa4096: "Criptografia RSA-4096 + AES-256",
-feat_signed: "Mensagens assinadas criptograficamente", feat_files: "Criptografia de arquivos (500MB máx)",
-feat_qr: "Códigos QR seguros", feat_logs: "Logs criptografados", feat_ai: "IA integrada",
-feat_native: "Aplicativo de desktop Windows nativo", feat_offline: "Funciona offline",
-feat_local: "Armazenamento local seguro", feat_auto: "Atualizações automáticas",
-feat_compat: "Compatível com Windows 10/11", feat_2fa: "Autenticação de dois fatores (TOTP)",
-feat_gen: "Gerador de senhas", feat_cats: "Categorias organizadas",
-feat_lock: "Recurso de bloqueio automático", feat_export: "Exportação/importação segura",
-feat_totp: "Geração de códigos TOTP", feat_aes_sha: "Criptografia AES-256 e SHA-256",
-feat_qr_detect: "Detecção QR via captura de tela", feat_tz: "Todos os fusos horários suportados",
-feat_local_enc: "Armazenamento local criptografado", feat_langs: "15 idiomas suportados",
-feat_ai_chat: "Assistente de Chat IA", feat_ai_auto: "Automação Inteligente",
-feat_ai_sec: "Análise de Segurança", feat_ai_multi: "Suporte Multi-idioma",
-feat_ai_cloud: "Integração em Nuvem", feat_ai_real: "Processamento em Tempo Real",
-btn_launch: "Iniciar Web", btn_download: "Baixar ZK", btn_archive: "Baixar ZKP",
-btn_download_zkpa: "Baixar ZKPA", btn_launch_zkia: "Iniciar Zenkari IA",
-status_operational: "Todos os aplicativos estão operacionais",
-status_encryption: "🔒 Criptografia: AES-256 / RSA-4096", status_apps: " 6 Aplicativos disponíveis",
-footer_copyright: "© 2026 Zenkari Menu - Todos os direitos reservados",
-footer_versions: "Feito por LE$TER | Versões: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Assistente IA Zenkari", btn_clear_chat: "🗑 Limpar", btn_export_chat: "💾 Exportar",
-btn_theme_chat: "🎨 Tema", btn_check_api: "🔄 Verificar API", ai_thinking: "Tecuit...",
-chat_placeholder: "Digite sua mensagem...", contact_title: "📧 Contato / Ajuda",
-contact_name: "Nome", contact_email: "Email", contact_message: "Mensagem"
-},
-bn: {
-title: "জেনকারি মেনু", subtitle: "একীভূত নিরাপত্তা প্ল্যাটফর্ম - আপনার অ্যাপ্লিকেশন চয়ন করুন",
-zk_web_title: "জেনকারিঅ্যাপ ওয়েব", zk_web_desc: "নিরাপদ বার্তা এবং ফাইল এনক্রিপশন - ওয়েব সংস্করণ",
-zk_win_title: "জেনকারিঅ্যাপ উইন্ডোজ", zk_win_desc: "নেটিভ উইন্ডোজ অ্যাপ্লিকেশন - বিনামূল্যে ডাউনলোড",
-zkp_title: "জেনকারিপাস", zkp_archive_desc: "2FA সহ পাসওয়ার্ড ম্যানেজার - আর্কাইভ",
-zkp_web_desc: "2FA সহ পাসওয়ার্ড ম্যানেজার - ওয়েব সংস্করণ",
-zkpa_title: "জেনকারিপাস প্রমাণকারী", zkpa_desc: "QR সনাক্তকরণ সহ 2FA প্রমাণকারী (Python)",
-zkia_title: "জেনকারি আইএ", zkia_version: "v2.1.0 বিটা", zkia_desc: "AI সহকারী এবং স্মার্ট অটোমেশন - ওয়েব সংস্করণ",
-feat_rsa: "RSA-3072 + AES-256 এনক্রিপশন", feat_rsa4096: "RSA-4096 + AES-256 এনক্রিপশন",
-feat_signed: "ক্রিপ্টোগ্রাফিকভাবে স্বাক্ষরিত বার্তা", feat_files: "ফাইল এনক্রিপশন (সর্বোচ্চ 500MB)",
-feat_qr: "নিরাপদ QR কোড", feat_logs: "এনক্রিপ্টেড লগ", feat_ai: "একীভূত AI",
-feat_native: "নেটিভ উইন্ডোজ ডেস্কটপ অ্যাপ", feat_offline: "অফলাইনে কাজ করে",
-feat_local: "নিরাপদ স্থানীয় স্টোরেজ", feat_auto: "স্বয়ংক্রিয় আপডেট",
-feat_compat: "Windows 10/11 এর সাথে সামঞ্জস্যপূর্ণ", feat_2fa: "দুই-ফ্যাক্টর প্রমাণীকরণ (TOTP)",
-feat_gen: "পাসওয়ার্ড জেনারেটর", feat_cats: "সংগঠিত বিভাগ",
-feat_lock: "স্বয়ংক্রিয় লক বৈশিষ্ট্য", feat_export: "নিরাপদ রপ্তানি/আমদানি",
-feat_totp: "TOTP কোড জেনারেশন", feat_aes_sha: "AES-256 এবং SHA-256 এনক্রিপশন",
-feat_qr_detect: "স্ক্রিনশটের মাধ্যমে QR সনাক্তকরণ", feat_tz: "সমস্ত সময় অঞ্চল সমর্থিত",
-feat_local_enc: "এনক্রিপ্টেড স্থানীয় স্টোরেজ", feat_langs: "15টি ভাষা সমর্থিত",
-feat_ai_chat: "AI চ্যাট সহকারী", feat_ai_auto: "স্মার্ট অটোমেশন",
-feat_ai_sec: "নিরাপত্তা বিশ্লেষণ", feat_ai_multi: "মাল্টি-ভাষা সমর্থন",
-feat_ai_cloud: "ক্লাউড ইন্টিগ্রেশন", feat_ai_real: "রিয়েল-টাইম প্রসেসিং",
-btn_launch: "ওয়েব লঞ্চ করুন", btn_download: "ZK ডাউনলোড করুন", btn_archive: "ZKP ডাউনলোড করুন",
-btn_download_zkpa: "ZKPA ডাউনলোড করুন", btn_launch_zkia: "জেনকারি IA লঞ্চ করুন",
-status_operational: "সমস্ত অ্যাপ্লিকেশন পরিচালনাযোগ্য",
-status_encryption: "🔒 এনক্রিপশন: AES-256 / RSA-4096", status_apps: " 6টি অ্যাপ্লিকেশন উপলব্ধ",
-footer_copyright: "© 2026 Zenkari Menu - সর্বস্বত্ব সংরক্ষিত",
-footer_versions: "LE$TER দ্বারা তৈরি | সংস্করণ: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "জেনকারি AI সহকারী", btn_clear_chat: "🗑 পরিষ্কার করুন", btn_export_chat: "💾 রপ্তানি করুন",
-btn_theme_chat: "🎨 থিম", btn_check_api: "🔄 API চেক করুন", ai_thinking: "Tecuit...",
-chat_placeholder: "আপনার বার্তা টাইপ করুন...", contact_title: "📧 যোগাযোগ / সাহায্য",
-contact_name: "নাম", contact_email: "ইমেইল", contact_message: "বার্তা"
-},
-ru: {
-title: "Меню Zenkari", subtitle: "Единая платформа безопасности - Выберите ваше приложение",
-zk_web_title: "ZenkariApp Веб", zk_web_desc: "Безопасные сообщения и шифрование файлов - Веб версия",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Нативное приложение Windows - Бесплатная загрузка",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Менеджер паролей с 2FA - Архив",
-zkp_web_desc: "Менеджер паролей с 2FA - Веб версия",
-zkpa_title: "ZenkariPass Аутентификатор", zkpa_desc: "2FA аутентификатор с обнаружением QR (Python)",
-zkia_title: "Zenkari ИИ", zkia_version: "v2.1.0 БЕТА", zkia_desc: "ИИ помощник и умная автоматизация - Веб версия",
-feat_rsa: "Шифрование RSA-3072 + AES-256", feat_rsa4096: "Шифрование RSA-4096 + AES-256",
-feat_signed: "Криптографически подписанные сообщения", feat_files: "Шифрование файлов (макс 500MB)",
-feat_qr: "Безопасные QR коды", feat_logs: "Зашифрованные логи", feat_ai: "Встроенный ИИ",
-feat_native: "Нативное настольное приложение Windows", feat_offline: "Работает офлайн",
-feat_local: "Безопасное локальное хранилище", feat_auto: "Автоматические обновления",
-feat_compat: "Совместимо с Windows 10/11", feat_2fa: "Двухфакторная аутентификация (TOTP)",
-feat_gen: "Генератор паролей", feat_cats: "Организованные категории",
-feat_lock: "Функция автоблокировки", feat_export: "Безопасный экспорт/импорт",
-feat_totp: "Генерация кодов TOTP", feat_aes_sha: "Шифрование AES-256 и SHA-256",
-feat_qr_detect: "Обнаружение QR через скриншот", feat_tz: "Все часовые пояса поддерживаются",
-feat_local_enc: "Зашифрованное локальное хранилище", feat_langs: "Поддерживается 15 языков",
-feat_ai_chat: "ИИ чат помощник", feat_ai_auto: "Умная автоматизация",
-feat_ai_sec: "Анализ безопасности", feat_ai_multi: "Многоязычная поддержка",
-feat_ai_cloud: "Облачная интеграция", feat_ai_real: "Обработка в реальном времени",
-btn_launch: "Запустить Веб", btn_download: "Скачать ZK", btn_archive: "Скачать ZKP",
-btn_download_zkpa: "Скачать ZKPA", btn_launch_zkia: "Запустить Zenkari IA",
-status_operational: "Все приложения работают",
-status_encryption: "🔒 Шифрование: AES-256 / RSA-4096", status_apps: " 6 приложений доступно",
-footer_copyright: "© 2026 Zenkari Menu - Все права защищены",
-footer_versions: "Сделано LE$TER | Версии: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari ИИ Помощник", btn_clear_chat: "🗑 Очистить", btn_export_chat: "💾 Экспорт",
-btn_theme_chat: "🎨 Тема", btn_check_api: "🔄 Проверить API", ai_thinking: "Tecuit...",
-chat_placeholder: "Введите ваше сообщение...", contact_title: "📧 Контакт / Помощь",
-contact_name: "Имя", contact_email: "Email", contact_message: "Сообщение"
-},
-ja: {
-title: "Zenkari メニュー", subtitle: "統合セキュリティプラットフォーム - アプリケーションを選択",
-zk_web_title: "ZenkariApp ウェブ", zk_web_desc: "安全なメッセージとファイル暗号化 - ウェブ版",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "ネイティブ Windows アプリ - 無料ダウンロード",
-zkp_title: "ZenkariPass", zkp_archive_desc: "2FA 付きパスワードマネージャー - アーカイブ",
-zkp_web_desc: "2FA 付きパスワードマネージャー - ウェブ版",
-zkpa_title: "ZenkariPass 認証アプリ", zkpa_desc: "QR 検出付き 2FA 認証アプリ (Python)",
-zkia_title: "Zenkari AI", zkia_version: "v2.1.0 ベータ", zkia_desc: "AI アシスタントとスマート自動化 - ウェブ版",
-feat_rsa: "RSA-3072 + AES-256 暗号化", feat_rsa4096: "RSA-4096 + AES-256 暗号化",
-feat_signed: "暗号化署名されたメッセージ", feat_files: "ファイル暗号化 (最大 500MB)",
-feat_qr: "安全な QR コード", feat_logs: "暗号化ログ", feat_ai: "統合 AI",
-feat_native: "ネイティブ Windows デスクトップアプリ", feat_offline: "オフラインで動作",
-feat_local: "安全なローカルストレージ", feat_auto: "自動更新",
-feat_compat: "Windows 10/11 対応", feat_2fa: "二要素認証 (TOTP)",
-feat_gen: "パスワードジェネレーター", feat_cats: "整理されたカテゴリ",
-feat_lock: "自動ロック機能", feat_export: "安全なエクスポート/インポート",
-feat_totp: "TOTP コード生成", feat_aes_sha: "AES-256 および SHA-256 暗号化",
-feat_qr_detect: "スクリーンショットによる QR 検出", feat_tz: "すべてのタイムゾーン対応",
-feat_local_enc: "暗号化ローカルストレージ", feat_langs: "15 言語対応",
-feat_ai_chat: "AI チャットアシスタント", feat_ai_auto: "スマート自動化",
-feat_ai_sec: "セキュリティ分析", feat_ai_multi: "多言語サポート",
-feat_ai_cloud: "クラウド統合", feat_ai_real: "リアルタイム処理",
-btn_launch: "ウェブを起動", btn_download: "ZK をダウンロード", btn_archive: "ZKP をダウンロード",
-btn_download_zkpa: "ZKPA をダウンロード", btn_launch_zkia: "Zenkari IA を起動",
-status_operational: "すべてのアプリケーションが稼働中",
-status_encryption: "🔒 暗号化：AES-256 / RSA-4096", status_apps: " 6 つのアプリケーション利用可能",
-footer_copyright: "© 2026 Zenkari Menu - 全著作権所有",
-footer_versions: "LE$TER 作 | バージョン：ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari AI アシスタント", btn_clear_chat: "🗑 クリア", btn_export_chat: "💾 エクスポート",
-btn_theme_chat: "🎨 テーマ", btn_check_api: "🔄 API を確認", ai_thinking: "Tecuit...",
-chat_placeholder: "メッセージを入力...", contact_title: "📧 お問い合わせ / ヘルプ",
-contact_name: "名前", contact_email: "メール", contact_message: "メッセージ"
-},
-de: {
-title: "Zenkari Menü", subtitle: "Vereinheitlichte Sicherheitsplattform - Wählen Sie Ihre Anwendung",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Sichere Nachrichten & Dateiverschlüsselung - Web-Version",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Native Windows-Anwendung - Kostenloser Download",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Passwort-Manager mit 2FA - Archiv",
-zkp_web_desc: "Passwort-Manager mit 2FA - Web-Version",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "2FA-Authenticator mit QR-Erkennung (Python)",
-zkia_title: "Zenkari KI", zkia_version: "v2.1.0 BETA", zkia_desc: "KI-Assistent & Smart-Automatisierung - Web-Version",
-feat_rsa: "RSA-3072 + AES-256 Verschlüsselung", feat_rsa4096: "RSA-4096 + AES-256 Verschlüsselung",
-feat_signed: "Kryptografisch signierte Nachrichten", feat_files: "Dateiverschlüsselung (max 500MB)",
-feat_qr: "Sichere QR-Codes", feat_logs: "Verschlüsselte Logs", feat_ai: "Integrierte KI",
-feat_native: "Native Windows-Desktop-App", feat_offline: "Funktioniert offline",
-feat_local: "Sicherer lokaler Speicher", feat_auto: "Automatische Updates",
-feat_compat: "Windows 10/11 kompatibel", feat_2fa: "Zwei-Faktor-Authentifizierung (TOTP)",
-feat_gen: "Passwort-Generator", feat_cats: "Organisierte Kategorien",
-feat_lock: "Auto-Lock-Funktion", feat_export: "Sicherer Export/Import",
-feat_totp: "TOTP-Code-Generierung", feat_aes_sha: "AES-256 & SHA-256 Verschlüsselung",
-feat_qr_detect: "QR-Erkennung via Screenshot", feat_tz: "Alle Zeitzonen unterstützt",
-feat_local_enc: "Verschlüsselter lokaler Speicher", feat_langs: "15 Sprachen unterstützt",
-feat_ai_chat: "KI-Chat-Assistent", feat_ai_auto: "Smart-Automatisierung",
-feat_ai_sec: "Sicherheitsanalyse", feat_ai_multi: "Mehrsprachige Unterstützung",
-feat_ai_cloud: "Cloud-Integration", feat_ai_real: "Echtzeit-Verarbeitung",
-btn_launch: "Web starten", btn_download: "ZK herunterladen", btn_archive: "ZKP herunterladen",
-btn_download_zkpa: "ZKPA herunterladen", btn_launch_zkia: "Zenkari IA starten",
-status_operational: "Alle Anwendungen sind betriebsbereit",
-status_encryption: "🔒 Verschlüsselung: AES-256 / RSA-4096", status_apps: " 6 Anwendungen verfügbar",
-footer_copyright: "© 2026 Zenkari Menu - Alle Rechte vorbehalten",
-footer_versions: "Erstellt von LE$TER | Versionen: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari KI-Assistent", btn_clear_chat: "🗑 Löschen", btn_export_chat: "💾 Exportieren",
-btn_theme_chat: "🎨 Thema", btn_check_api: "🔄 API prüfen", ai_thinking: "Tecuit...",
-chat_placeholder: "Nachricht eingeben...", contact_title: "📧 Kontakt / Hilfe",
-contact_name: "Name", contact_email: "E-Mail", contact_message: "Nachricht"
-},
-it: {
-title: "Menu Zenkari", subtitle: "Piattaforma di sicurezza unificata - Scegli la tua applicazione",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Messaggistica sicura e crittografia file - Versione Web",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Applicazione Windows nativa - Download gratuito",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Gestore password con 2FA - Archivio",
-zkp_web_desc: "Gestore password con 2FA - Versione Web",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Autenticatore 2FA con rilevamento QR (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "Assistente IA e Automazione Intelligente - Versione Web",
-feat_rsa: "Crittografia RSA-3072 + AES-256", feat_rsa4096: "Crittografia RSA-4096 + AES-256",
-feat_signed: "Messaggi firmati crittograficamente", feat_files: "Crittografia file (500MB max)",
-feat_qr: "Codici QR sicuri", feat_logs: "Log crittografati", feat_ai: "IA integrata",
-feat_native: "App desktop Windows nativa", feat_offline: "Funziona offline",
-feat_local: "Archiviazione locale sicura", feat_auto: "Aggiornamenti automatici",
-feat_compat: "Compatibile con Windows 10/11", feat_2fa: "Autenticazione a due fattori (TOTP)",
-feat_gen: "Generatore di password", feat_cats: "Categorie organizzate",
-feat_lock: "Funzione di blocco automatico", feat_export: "Esportazione/importazione sicura",
-feat_totp: "Generazione codici TOTP", feat_aes_sha: "Crittografia AES-256 e SHA-256",
-feat_qr_detect: "Rilevamento QR tramite screenshot", feat_tz: "Tutti i fusi orari supportati",
-feat_local_enc: "Archiviazione locale crittografata", feat_langs: "15 lingue supportate",
-feat_ai_chat: "Assistente Chat IA", feat_ai_auto: "Automazione Intelligente",
-feat_ai_sec: "Analisi di Sicurezza", feat_ai_multi: "Supporto Multi-lingua",
-feat_ai_cloud: "Integrazione Cloud", feat_ai_real: "Elaborazione in Tempo Reale",
-btn_launch: "Avvia Web", btn_download: "Scarica ZK", btn_archive: "Scarica ZKP",
-btn_download_zkpa: "Scarica ZKPA", btn_launch_zkia: "Avvia Zenkari IA",
-status_operational: "Tutte le applicazioni sono operative",
-status_encryption: "🔒 Crittografia: AES-256 / RSA-4096", status_apps: " 6 Applicazioni disponibili",
-footer_copyright: "© 2026 Zenkari Menu - Tutti i diritti riservati",
-footer_versions: "Creato da LE$TER | Versioni: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Assistente IA Zenkari", btn_clear_chat: "🗑 Pulisci", btn_export_chat: "💾 Esporta",
-btn_theme_chat: "🎨 Tema", btn_check_api: "🔄 Controlla API", ai_thinking: "Tecuit...",
-chat_placeholder: "Scrivi il tuo messaggio...", contact_title: "📧 Contatto / Aiuto",
-contact_name: "Nome", contact_email: "Email", contact_message: "Messaggio"
-},
-vi: {
-title: "Menu Zenkari", subtitle: "Nền tảng bảo mật thống nhất - Chọn ứng dụng của bạn",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Nhắn tin an toàn & mã hóa tệp - Phiên bản Web",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Ứng dụng Windows gốc - Tải xuống miễn phí",
-zkp_title: "ZenkariPass", zkp_archive_desc: "Quản lý mật khẩu với 2FA - Lưu trữ",
-zkp_web_desc: "Quản lý mật khẩu với 2FA - Phiên bản Web",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "Trình xác thực 2FA với phát hiện QR (Python)",
-zkia_title: "Zenkari IA", zkia_version: "v2.1.0 BETA", zkia_desc: "Trợ lý AI & Tự động hóa thông minh - Phiên bản Web",
-feat_rsa: "Mã hóa RSA-3072 + AES-256", feat_rsa4096: "Mã hóa RSA-4096 + AES-256",
-feat_signed: "Tin nhắn được ký mã hóa", feat_files: "Mã hóa tệp (tối đa 500MB)",
-feat_qr: "Mã QR an toàn", feat_logs: "Nhật ký được mã hóa", feat_ai: "AI tích hợp",
-feat_native: "Ứng dụng máy tính để bàn Windows gốc", feat_offline: "Hoạt động ngoại tuyến",
-feat_local: "Lưu trữ cục bộ an toàn", feat_auto: "Cập nhật tự động",
-feat_compat: "Tương thích Windows 10/11", feat_2fa: "Xác thực hai yếu tố (TOTP)",
-feat_gen: "Trình tạo mật khẩu", feat_cats: "Danh mục được tổ chức",
-feat_lock: "Tính năng tự động khóa", feat_export: "Xuất/nhập an toàn",
-feat_totp: "Tạo mã TOTP", feat_aes_sha: "Mã hóa AES-256 và SHA-256",
-feat_qr_detect: "Phát hiện QR qua ảnh chụp màn hình", feat_tz: "Hỗ trợ tất cả múi giờ",
-feat_local_enc: "Lưu trữ cục bộ được mã hóa", feat_langs: "Hỗ trợ 15 ngôn ngữ",
-feat_ai_chat: "Trợ lý trò chuyện AI", feat_ai_auto: "Tự động hóa thông minh",
-feat_ai_sec: "Phân tích bảo mật", feat_ai_multi: "Hỗ trợ đa ngôn ngữ",
-feat_ai_cloud: "Tích hợp đám mây", feat_ai_real: "Xử lý thời gian thực",
-btn_launch: "Khởi chạy Web", btn_download: "Tải xuống ZK", btn_archive: "Tải xuống ZKP",
-btn_download_zkpa: "Tải xuống ZKPA", btn_launch_zkia: "Khởi chạy Zenkari IA",
-status_operational: "Tất cả ứng dụng đang hoạt động",
-status_encryption: "🔒 Mã hóa: AES-256 / RSA-4096", status_apps: " 6 ứng dụng có sẵn",
-footer_copyright: "© 2026 Zenkari Menu - Tất cả quyền được bảo lưu",
-footer_versions: "Thực hiện bởi LE$TER | Phiên bản: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Trợ lý AI Zenkari", btn_clear_chat: "🗑 Xóa", btn_export_chat: "💾 Xuất",
-btn_theme_chat: "🎨 Chủ đề", btn_check_api: "🔄 Kiểm tra API", ai_thinking: "Tecuit...",
-chat_placeholder: "Nhập tin nhắn của bạn...", contact_title: "📧 Liên hệ / Trợ giúp",
-contact_name: "Tên", contact_email: "Email", contact_message: "Tin nhắn"
-},
-ko: {
-title: "Zenkari 메뉴", subtitle: "통합 보안 플랫폼 - 애플리케이션 선택",
-zk_web_title: "ZenkariApp 웹", zk_web_desc: "보안 메시징 및 파일 암호화 - 웹 버전",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "네이티브 Windows 애플리케이션 - 무료 다운로드",
-zkp_title: "ZenkariPass", zkp_archive_desc: "2FA 가 포함된 비밀번호 관리자 - 아카이브",
-zkp_web_desc: "2FA 가 포함된 비밀번호 관리자 - 웹 버전",
-zkpa_title: "ZenkariPass 인증기", zkpa_desc: "QR 감지 기능이 있는 2FA 인증기 (Python)",
-zkia_title: "Zenkari AI", zkia_version: "v2.1.0 베타", zkia_desc: "AI 어시스턴트 및 스마트 자동화 - 웹 버전",
-feat_rsa: "RSA-3072 + AES-256 암호화", feat_rsa4096: "RSA-4096 + AES-256 암호화",
-feat_signed: "암호화 서명된 메시지", feat_files: "파일 암호화 (최대 500MB)",
-feat_qr: "보안 QR 코드", feat_logs: "암호화된 로그", feat_ai: "통합 AI",
-feat_native: "네이티브 Windows 데스크톱 앱", feat_offline: "오프라인 작동",
-feat_local: "보안 로컬 스토리지", feat_auto: "자동 업데이트",
-feat_compat: "Windows 10/11 호환", feat_2fa: "이중 인증 (TOTP)",
-feat_gen: "비밀번호 생성기", feat_cats: "정리된 카테고리",
-feat_lock: "자동 잠금 기능", feat_export: "보안 내보내기/가져오기",
-feat_totp: "TOTP 코드 생성", feat_aes_sha: "AES-256 및 SHA-256 암호화",
-feat_qr_detect: "스크린샷을 통한 QR 감지", feat_tz: "모든 시간대 지원",
-feat_local_enc: "암호화된 로컬 스토리지", feat_langs: "15 개 언어 지원",
-feat_ai_chat: "AI 채팅 어시스턴트", feat_ai_auto: "스마트 자동화",
-feat_ai_sec: "보안 분석", feat_ai_multi: "다국어 지원",
-feat_ai_cloud: "클라우드 통합", feat_ai_real: "실시간 처리",
-btn_launch: "웹 실행", btn_download: "ZK 다운로드", btn_archive: "ZKP 다운로드",
-btn_download_zkpa: "ZKPA 다운로드", btn_launch_zkia: "Zenkari IA 실행",
-status_operational: "모든 애플리케이션이 작동 중입니다",
-status_encryption: "🔒 암호화: AES-256 / RSA-4096", status_apps: " 6 개 애플리케이션 사용 가능",
-footer_copyright: "© 2026 Zenkari Menu - 모든 권리 보유",
-footer_versions: "LE$TER 제작 | 버전: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari AI 어시스턴트", btn_clear_chat: "🗑 지우기", btn_export_chat: "💾 내보내기",
-btn_theme_chat: "🎨 테마", btn_check_api: "🔄 API 확인", ai_thinking: "Tecuit...",
-chat_placeholder: "메시지를 입력하세요...", contact_title: "📧 연락처 / 도움말",
-contact_name: "이름", contact_email: "이메일", contact_message: "메시지"
-},
-tr: {
-title: "Zenkari Menüsü", subtitle: "Birleşik güvenlik platformu - Uygulamanızı seçin",
-zk_web_title: "ZenkariApp Web", zk_web_desc: "Güvenli mesajlaşma ve dosya şifreleme - Web Sürümü",
-zk_win_title: "ZenkariApp Windows", zk_win_desc: "Yerel Windows uygulaması - Ücretsiz indirme",
-zkp_title: "ZenkariPass", zkp_archive_desc: "2FA ile şifre yöneticisi - Arşiv",
-zkp_web_desc: "2FA ile şifre yöneticisi - Web Sürümü",
-zkpa_title: "ZenkariPass Authenticator", zkpa_desc: "QR algılama ile 2FA kimlik doğrulayıcı (Python)",
-zkia_title: "Zenkari YZ", zkia_version: "v2.1.0 BETA", zkia_desc: "YZ Asistanı ve Akıllı Otomasyon - Web Sürümü",
-feat_rsa: "RSA-3072 + AES-256 Şifreleme", feat_rsa4096: "RSA-4096 + AES-256 Şifreleme",
-feat_signed: "Kriptografik olarak imzalanmış mesajlar", feat_files: "Dosya şifreleme (maks 500MB)",
-feat_qr: "Güvenli QR Kodları", feat_logs: "Şifreli günlükler", feat_ai: "Entegre YZ",
-feat_native: "Yerel Windows masaüstü uygulaması", feat_offline: "Çevrimdışı çalışır",
-feat_local: "Güvenli yerel depolama", feat_auto: "Otomatik güncellemeler",
-feat_compat: "Windows 10/11 uyumlu", feat_2fa: "İki faktörlü kimlik doğrulama (TOTP)",
-feat_gen: "Şifre oluşturucu", feat_cats: "Düzenlenmiş kategoriler",
-feat_lock: "Otomatik kilitleme özelliği", feat_export: "Güvenli dışa/içe aktarma",
-feat_totp: "TOTP kodu oluşturma", feat_aes_sha: "AES-256 ve SHA-256 şifreleme",
-feat_qr_detect: "Ekran görüntüsü ile QR algılama", feat_tz: "Tüm saat dilimleri desteklenir",
-feat_local_enc: "Şifreli yerel depolama", feat_langs: "15 dil desteklenir",
-feat_ai_chat: "YZ Sohbet Asistanı", feat_ai_auto: "Akıllı Otomasyon",
-feat_ai_sec: "Güvenlik Analizi", feat_ai_multi: "Çok Dilli Destek",
-feat_ai_cloud: "Bulut Entegrasyonu", feat_ai_real: "Gerçek Zamanlı İşleme",
-btn_launch: "Web'i Başlat", btn_download: "ZK İndir", btn_archive: "ZKP İndir",
-btn_download_zkpa: "ZKPA İndir", btn_launch_zkia: "Zenkari IA'yı Başlat",
-status_operational: "Tüm uygulamalar çalışıyor",
-status_encryption: "🔒 Şifreleme: AES-256 / RSA-4096", status_apps: " 6 Uygulama mevcut",
-footer_copyright: "© 2026 Zenkari Menu - Tüm hakları saklıdır",
-footer_versions: "LE$TER tarafından yapıldı | Sürümler: ZK 10.0.0F | ZK 9.8.9 | ZKP 9.8.5 | ZKPA 4.0.0 | ZKIA 2.1.0 BETA",
-ai_chat_title: "Zenkari YZ Asistanı", btn_clear_chat: "🗑 Temizle", btn_export_chat: "💾 Dışa Aktar",
-btn_theme_chat: "🎨 Tema", btn_check_api: "🔄 API'yi Kontrol Et", ai_thinking: "Tecuit...",
-chat_placeholder: "Mesajınızı yazın...", contact_title: "📧 İletişim / Yardım",
-contact_name: "Ad", contact_email: "E-posta", contact_message: "Mesaj"
+const FL={en:'🇬🇧 EN',fr:'🇫🇷 FR',es:'🇪🇸 ES',zh:'🇨🇳 ZH',hi:'🇮🇳 HI',ar:'🇸🇦 AR',
+         pt:'🇵🇹 PT',bn:'🇧🇩 BN',ru:'🇷🇺 RU',ja:'🇯🇵 JA',de:'🇩🇪 DE',it:'🇮🇹 IT',
+         vi:'🇻🇳 VI',ko:'🇰🇷 KO',tr:'🇹🇷 TR'};
+
+let lang='fr',hist=[],gen=false,ac=null;
+function t(k){return(T[lang]||T.en)[k]||k}
+
+function applyLang(l){
+  const tr=T[l]||T.en;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(tr[k]!==undefined)el.textContent=tr[k]});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.getAttribute('data-i18n-placeholder');if(tr[k]!==undefined)el.placeholder=tr[k]});
+  document.getElementById('li').textContent=FL[l]||l;
+  document.documentElement.lang=l;
+  document.documentElement.dir=l==='ar'?'rtl':'ltr';
 }
-};
+function changeLang(){lang=document.getElementById('ls').value;applyLang(lang);localStorage.setItem('zk_lang',lang)}
 
-const langCodes = {
-en: '🇬🇧 EN', fr: '🇫🇷 FR', es: '🇪🇸 ES', zh: '🇨🇳 ZH', hi: '🇮🇳 HI',
-ar: '🇸🇦 AR', pt: '🇵🇹 PT', bn: '🇧🇩 BN', ru: '🇷🇺 RU', ja: '🇯🇵 JA',
-de: '🇩🇪 DE', it: '🇮🇹 IT', vi: '🇻🇳 VI', ko: '🇰🇷 KO', tr: '🇹🇷 TR'
-};
-let currentLang = 'fr';
-let conversationHistory = [];
-let isGenerating = false;
-let abortController = null;
-let currentUser = { username: 'user' };
-let apiConnected = false;
-let currentStreamMessageId = null;
-
-// ==================== LANGUAGE MANAGEMENT ====================
-function changeLanguage() {
-const lang = document.getElementById('languageSelector').value;
-currentLang = lang;
-document.querySelectorAll('[data-i18n]').forEach(element => {
-const key = element.getAttribute('data-i18n');
-if (translations[lang] && translations[lang][key]) {
-element.textContent = translations[lang][key];
+/* Chat */
+function addMsg(text,who){
+  const w=document.getElementById('cw');
+  const row=document.createElement('div');row.className='mr '+who;
+  const av=document.createElement('div');av.className='ma ma'+(who==='ai'?'i':'u');av.textContent=who==='ai'?'⚡':'👤';
+  const bub=document.createElement('div');bub.className='mb mb-'+who;bub.textContent=text;
+  if(who==='ai'){row.appendChild(av);row.appendChild(bub)}else{row.appendChild(bub);row.appendChild(av)}
+  w.appendChild(row);w.scrollTop=w.scrollHeight;return bub;
 }
+function showTyp(){
+  const w=document.getElementById('cw');
+  const r=document.createElement('div');r.className='tr2';r.id='tr';
+  r.innerHTML='<div class="ma mai">⚡</div><div class="tb"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+  w.appendChild(r);w.scrollTop=w.scrollHeight;
+}
+function hideTyp(){const r=document.getElementById('tr');if(r)r.remove()}
+
+async function send(){
+  const inp=document.getElementById('ci'),tx=inp.value.trim();
+  if(!tx||gen)return;
+  gen=true;inp.value='';updCC();
+  document.getElementById('sb').disabled=true;
+  document.getElementById('stb').style.display='flex';
+  addMsg(tx,'user');hist.push({role:'user',content:tx});
+  showTyp();
+  const w=document.getElementById('cw');let bub=null,full='';
+  try{
+    ac=new AbortController();
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:hist,temperature:.7,max_tokens:1024}),
+      signal:ac.signal
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    hideTyp();
+    const row=document.createElement('div');row.className='mr ai';
+    const av=document.createElement('div');av.className='ma mai';av.textContent='⚡';
+    bub=document.createElement('div');bub.className='mb mb-ai';bub.textContent='';
+    row.appendChild(av);row.appendChild(bub);w.appendChild(row);
+    const reader=res.body.getReader(),dec=new TextDecoder();
+    outer:while(true){
+      const{done,value}=await reader.read();if(done)break;
+      for(const line of dec.decode(value,{stream:true}).split('\n')){
+        if(!line.startsWith('data: '))continue;
+        const d=line.slice(6);if(d==='[DONE]')break outer;
+        try{
+          const p=JSON.parse(d);
+          if(p?.error){bub.textContent='⚠ '+p.error;break outer}
+          const ch=p?.choices?.[0]?.delta?.content;
+          if(ch){full+=ch;bub.textContent=full;w.scrollTop=w.scrollHeight}
+        }catch{}
+      }
+    }
+    hist.push({role:'assistant',content:full});
+  }catch(e){
+    hideTyp();
+    if(e.name!=='AbortError'){
+      const fb=lang==='fr'?'⚠ Connexion impossible au proxy. Vérifiez que server.js est démarré.':'⚠ Cannot reach proxy. Make sure server.js is running (node server.js).';
+      if(bub)bub.textContent=fb;else addMsg(fb,'ai');
+    }
+  }finally{
+    gen=false;ac=null;
+    document.getElementById('sb').disabled=false;
+    document.getElementById('stb').style.display='none';
+  }
+}
+function stopGen(){if(ac){ac.abort();ac=null}}
+
+async function checkApi(){
+  const dot=document.getElementById('apiDot'),lbl=document.getElementById('apiLabel');
+  dot.style.background='var(--gold)';lbl.textContent=t('api_connecting');
+  try{
+    const r=await fetch('/api/tecuit-status',{signal:AbortSignal.timeout(10000)});
+    const d=await r.json();
+    if(d.online){
+      dot.style.background='var(--green)';dot.style.animation='';
+      lbl.textContent=t('api_online');
+      addMsg('✅ Tecuit IA — '+t('api_online'),'ai');
+    }else{
+      dot.style.background='var(--red)';lbl.textContent=t('api_offline');
+      addMsg('⚠ Tecuit IA — '+t('api_offline'),'ai');
+    }
+  }catch{dot.style.background='var(--red)';lbl.textContent=t('api_offline')}
+}
+
+function clearConv(){
+  if(!confirm(lang==='fr'?'Effacer toute la conversation ?':'Clear the whole conversation?'))return;
+  document.getElementById('cw').innerHTML='';hist=[];welcome();
+}
+function welcome(){
+  addMsg(lang==='fr'?'👋 Bonjour ! Je suis l\'assistant Zenkari IA — Propulsé par Tecuit. Comment puis-je vous aider ?':'👋 Hello! I\'m the Zenkari AI Assistant — Powered by Tecuit. How can I help?','ai');
+}
+function exportConv(){
+  const msgs=Array.from(document.querySelectorAll('.mr')).map(r=>({from:r.classList.contains('user')?'user':'ai',text:r.querySelector('.mb')?.textContent||''}));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(msgs,null,2)],{type:'application/json'}));
+  a.download='zenkari_chat_'+Date.now()+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+function onContact(e){
+  e.preventDefault();
+  const n=document.getElementById('cN').value,em=document.getElementById('cE').value,m=document.getElementById('cM').value;
+  window.location.href=`mailto:ZenkariWebService@protonmail.com?subject=Contact - ${encodeURIComponent(n)}&body=${encodeURIComponent('Nom: '+n+'\nEmail: '+em+'\n\n'+m)}`;
+  e.target.reset();
+}
+function onFile(f){
+  if(!f)return;
+  document.getElementById('ci').value=`📎 ${f.name} (${(f.size/1024).toFixed(1)} KB)`;updCC();
+}
+function updCC(){
+  const v=document.getElementById('ci').value.length;
+  const el=document.getElementById('cc');el.textContent=v+' / 8000';el.classList.toggle('warn',v>7000);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('zk_lang')||'fr';
+  lang=saved;document.getElementById('ls').value=saved;applyLang(saved);
+
+  const ci=document.getElementById('ci');
+  ci.addEventListener('input',()=>{ci.style.height='auto';ci.style.height=Math.min(ci.scrollHeight,108)+'px';updCC()});
+  ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+
+  /* Staggered card entrance */
+  document.querySelectorAll('.app-card').forEach((c,i)=>{
+    setTimeout(()=>{
+      c.style.transition='opacity .5s ease, transform .55s cubic-bezier(.22,.68,0,1.2), box-shadow .35s ease, border-color .35s ease';
+      c.style.opacity='1';c.style.transform='translateY(0)';
+    },i*90+250);
+  });
+
+  /* Card click → launch btn */
+  document.querySelectorAll('.app-card').forEach(card=>{
+    card.addEventListener('click',e=>{if(!e.target.closest('.launch-btn')){const b=card.querySelector('.launch-btn');if(b)b.click()}});
+  });
+
+  welcome();
+  setTimeout(checkApi,1500);
 });
-document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-const key = element.getAttribute('data-i18n-placeholder');
-if (translations[lang] && translations[lang][key]) {
-element.placeholder = translations[lang][key];
-}
-});
-document.getElementById('langIndicator').textContent = langCodes[lang] || lang.toUpperCase();
-localStorage.setItem('zenkari_lang', lang);
-updateChatWelcome();
-}
-
-function initLanguage() {
-const savedLang = localStorage.getItem('zenkari_lang') || 'fr';
-currentLang = savedLang;
-document.getElementById('languageSelector').value = savedLang;
-changeLanguage();
-}
-
-function updateChatWelcome() {
-const chat = document.getElementById('chat');
-if (chat.children.length === 0) {
-const welcomeMsg = currentLang === 'fr' ?
-"👋 Bonjour! Je suis l'assistant Zenkari IA v2.1.0 BÊTA. Comment puis-je vous aider aujourd'hui?" :
-"👋 Hello! I'm Zenkari IA v2.1.0 BETA Assistant. How can I help you today?";
-addMessage(welcomeMsg, 'tecuit');
-}
-}
-
-// ==================== CONTACT FORM ====================
-function handleContactForm(e) {
-e.preventDefault();
-const name = document.getElementById('contactName').value;
-const email = document.getElementById('contactEmail').value;
-const message = document.getElementById('contactMessage').value;
-const mailtoLink = `mailto:ZenkariWebService@protonmail.com?subject=Contact - ${encodeURIComponent(name)}&body=Nom: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
-window.location.href = mailtoLink;
-e.target.reset();
-}
-
-// ==================== API CONNECTION - FIXED (No OPTIONS, use POST with simple message) ====================
-async function checkApiConnection() {
-const statusEl = document.getElementById('chatApiStatus');
-const globalStatus = document.getElementById('apiStatus');
-statusEl.classList.remove('error');
-statusEl.classList.add('connecting');
-
-try {
-// Use a simple POST request instead of OPTIONS to avoid CORS preflight issues
-const testMessage = { role: 'user', content: 'ping' };
-const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
-method: 'POST',
-headers: { 
-'Content-Type': 'application/json',
-'Accept': 'application/json'
-},
-body: JSON.stringify({
-model: API_CONFIG.model,
-messages: [testMessage],
-stream: false,
-max_tokens: 5
-}),
-signal: AbortSignal.timeout(8000)
-});
-
-if (response.ok) {
-apiConnected = true;
-statusEl.classList.remove('connecting', 'error');
-statusEl.classList.add('success');
-if (globalStatus) {
-globalStatus.classList.remove('error', 'connecting');
-globalStatus.classList.add('success');
-}
-addMessage('✅ API Connection successful! Tecuit AI is online !.', 'tecuit');
-} else {
-throw new Error('API returned status: ' + response.status);
-}
-} catch (err) {
-// Don't mark as error - streaming may still work even if check fails
-apiConnected = true; // Assume connected since streaming works
-statusEl.classList.remove('connecting', 'error');
-statusEl.classList.add('success');
-if (globalStatus) {
-globalStatus.classList.remove('connecting', 'error');
-globalStatus.classList.add('success');
-}
-addMessage('✅ API is operational (streaming mode active). Zenkari AI is online.', 'tecuit');
-console.log('API Check Info:', err.message);
-}
-}
-
-// ==================== CHAT IA - STREAMING RESPONSE ====================
-function initChat() {
-const chat = document.getElementById('chat');
-const input = document.getElementById('chat-input');
-const sendBtn = document.getElementById('sendBtn');
-const fileUploadBtn = document.getElementById('fileUploadBtn');
-const tecuitThinking = document.getElementById('tecuit-thinking');
-const stopGenBtn = document.getElementById('stopGenBtn');
-
-checkApiConnection();
-updateChatWelcome();
-
-async function sendMessage() {
-const text = input.value.trim();
-if (!text || isGenerating) return;
-
-isGenerating = true;
-addMessage(text, 'user');
-input.value = '';
-document.getElementById('typingPreview').style.display = 'none';
-tecuitThinking.style.display = 'block';
-stopGenBtn.style.display = 'inline-block';
-chat.scrollTop = chat.scrollHeight;
-
-conversationHistory.push({ role: 'user', content: text });
-
-// Create empty message element for streaming
-const aiMsgDiv = document.createElement('div');
-aiMsgDiv.className = 'msg tecuit';
-aiMsgDiv.id = 'msg_' + Date.now();
-currentStreamMessageId = aiMsgDiv.id;
-chat.appendChild(aiMsgDiv);
-
-let fullReply = '';
-
-try {
-abortController = new AbortController();
-
-const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoint, {
-method: 'POST',
-headers: { 
-'Content-Type': 'application/json',
-'Accept': 'application/json'
-},
-body: JSON.stringify({
-model: API_CONFIG.model,
-messages: conversationHistory,
-stream: true,
-temperature: 0.7,
-max_tokens: 1024
-}),
-signal: abortController.signal
-});
-
-if (!response.ok) {
-const errorData = await response.text();
-throw new Error('API Error: ' + response.status + ' - ' + errorData);
-}
-
-const reader = response.body.getReader();
-const decoder = new TextDecoder('utf-8');
-
-while (true) {
-const { done, value } = await reader.read();
-if (done) break;
-
-const chunk = decoder.decode(value, { stream: true });
-const lines = chunk.split('\n');
-
-for (const line of lines) {
-if (line.startsWith('data: ')) {
-const data = line.slice(6);
-if (data === '[DONE]') break;
-
-try {
-const parsed = JSON.parse(data);
-if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
-const content = parsed.choices[0].delta.content;
-fullReply += content;
-aiMsgDiv.textContent = fullReply;
-chat.scrollTop = chat.scrollHeight;
-}
-} catch (e) {
-// Ignore JSON parse errors for incomplete chunks
-}
-}
-}
-}
-
-tecuitThinking.style.display = 'none';
-stopGenBtn.style.display = 'none';
-isGenerating = false;
-
-conversationHistory.push({ role: 'assistant', content: fullReply });
-
-const statusEl = document.getElementById('chatApiStatus');
-statusEl.classList.remove('error');
-
-} catch (err) {
-tecuitThinking.style.display = 'none';
-stopGenBtn.style.display = 'none';
-isGenerating = false;
-
-const statusEl = document.getElementById('chatApiStatus');
-statusEl.classList.add('error');
-
-// Fallback responses in 15 languages
-const fallbackResponses = {
-fr: "Je comprends votre demande. Laissez-moi vous aider avec cela. (ZenKari IA v2.1.0 BÊTA - Mode Local)",
-en: "I understand your request. Let me help you with that. (ZenKari IA v2.1.0 BETA - Local Mode)",
-es: "Entiendo tu solicitud. Déjame ayudarte con eso. (ZenKari IA v2.1.0 BETA - Modo Local)",
-zh: "我理解您的请求。让我来帮助您。(ZenKari IA v2.1.0 BETA - 本地模式)",
-hi: "मैं आपके अनुरोध को समझता हूं। मैं आपको इसमें मदद करता हूं। (ZenKari IA v2.1.0 BETA - स्थानीय मोड)",
-ar: "أفهم طلبك. دعني أساعدك في ذلك. (ZenKari IA v2.1.0 BETA - الوضع المحلي)",
-pt: "Entendo seu pedido. Deixe-me ajudá-lo com isso. (ZenKari IA v2.1.0 BETA - Modo Local)",
-bn: "আমি আপনার অনুরোধ বুঝতে পেরেছি। আমাকে আপনাকে সাহায্য করতে দিন। (ZenKari IA v2.1.0 BETA - লোকাল মোড)",
-ru: "Я понимаю ваш запрос. Позвольте мне помочь вам с этим. (ZenKari IA v2.1.0 BETA - Локальный режим)",
-ja: "ご依頼を理解しました。お手伝いさせていただきます。(ZenKari IA v2.1.0 BETA - ローカルモード)",
-de: "Ich verstehe Ihre Anfrage. Lassen Sie mich Ihnen dabei helfen. (ZenKari IA v2.1.0 BETA - Lokaler Modus)",
-it: "Capisco la tua richiesta. Lascia che ti aiuti con questo. (ZenKari IA v2.1.0 BETA - Modalità Locale)",
-vi: "Tôi hiểu yêu cầu của bạn. Để tôi giúp bạn với điều đó. (ZenKari IA v2.1.0 BETA - Chế độ cục bộ)",
-ko: "요청을 이해했습니다. 제가 도와드리겠습니다. (ZenKari IA v2.1.0 BETA - 로컬 모드)",
-tr: "İsteğinizi anlıyorum. Bununla size yardımcı olmama izin verin. (ZenKari IA v2.1.0 BETA - Yerel Mod)"
-};
-
-const fullReply = fallbackResponses[currentLang] || fallbackResponses['en'];
-aiMsgDiv.textContent = fullReply;
-conversationHistory.push({ role: 'assistant', content: fullReply });
-}
-}
-
-function stopGeneration() {
-if (abortController) {
-abortController.abort();
-abortController = null;
-document.getElementById('stopGenBtn').style.display = 'none';
-isGenerating = false;
-}
-}
-
-sendBtn.addEventListener('click', sendMessage);
-fileUploadBtn.addEventListener('click', () => document.getElementById('fileInput').click());
-input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-}
-
-function updateTypingPreview() {
-const input = document.getElementById('chat-input');
-const preview = document.getElementById('typingPreview');
-const text = input.value.trim();
-if (text) {
-preview.textContent = text.length > 50 ? text.substring(0, 50) + '...' : text;
-preview.style.display = 'block';
-} else {
-preview.style.display = 'none';
-}
-}
-
-function handleFileUpload(file) {
-if (!file) return;
-if (file.size > 500 * 1024 * 1024) {
-alert('⚠️ File too large (max 500MB)');
-return;
-}
-const reader = new FileReader();
-reader.onload = function(e) {
-const message = `📎 File: ${file.name}\nSize: ${(file.size / 1024).toFixed(2)} KB`;
-document.getElementById('chat-input').value = message;
-updateTypingPreview();
-addMessage(message, 'user');
-};
-reader.readAsText(file);
-}
-
-function clearConversation() {
-if (!confirm("Delete entire conversation?")) return;
-const chat = document.getElementById("chat");
-chat.innerHTML = "";
-conversationHistory = [];
-updateChatWelcome();
-}
-
-function exportConversation() {
-const chat = document.getElementById("chat");
-const messages = Array.from(chat.querySelectorAll('.msg')).map(msg => ({
-from: msg.classList.contains('user') ? 'user' : 'tecuit',
-text: msg.textContent
-}));
-const blob = new Blob([JSON.stringify(messages, null, 2)], { type: 'application/json' });
-const url = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = `zenkari_chat_${Date.now()}.json`;
-a.click();
-window.URL.revokeObjectURL(url);
-}
-
-function toggleAITheme() {
-const chat = document.getElementById('chat');
-chat.style.background = chat.style.background === 'rgb(42, 47, 58)' ? '#1f1f1f' : '#2a2f3a';
-}
-
-function addMessage(text, from) {
-const chat = document.getElementById('chat');
-const div = document.createElement('div');
-div.className = 'msg ' + from;
-div.textContent = text;
-div.id = 'msg_' + Date.now();
-chat.appendChild(div);
-chat.scrollTop = chat.scrollHeight;
-return div.id;
-}
-
-// ==================== INITIALIZATION ====================
-document.addEventListener('DOMContentLoaded', function() {
-initLanguage();
-initChat();
-
-const cards = document.querySelectorAll('.app-card');
-cards.forEach((card, index) => {
-card.style.opacity = '0';
-card.style.transform = 'translateY(20px)';
-setTimeout(() => {
-card.style.transition = 'all 0.5s ease';
-card.style.opacity = '1';
-card.style.transform = 'translateY(0)';
-}, index * 200);
-});
-});
-
-document.querySelectorAll('.app-card').forEach(card => {
-card.addEventListener('click', function(e) {
-if (!e.target.classList.contains('launch-btn') && !e.target.closest('.launch-btn')) {
-const btn = this.querySelector('.launch-btn');
-if (btn) btn.click();
-}
-});
-});
-
-document.getElementById('chat-input').addEventListener('input', updateTypingPreview);
 </script>
 </body>
 </html>
-
