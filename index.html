@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZKmenu – Unified Launcher v5.8.0F</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg0:#06070f;--bg1:#0c0e1d;
+--blue:#3b82f6;--violet:#8b5cf6;--green:#10b981;
+--cyan:#00e5ff;--red:#ff3344;--gold:#fbbf24;--pink:#ec4899;
+--text:#dde6f5;--muted:#4b5a72;
+--border:rgba(59,130,246,.18);
+--fm:'Space Mono',monospace;--fb:'Sora',sans-serif;--r:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+body{font-family:var(--fb);background:var(--bg0);color:var(--text);min-height:100vh;overflow-x:hidden}
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.header{
+position:relative;z-index:1;padding:80px 24px 110px;
+text-align:center;overflow:hidden;
+background:linear-gradient(180deg,#080a1c 0%,var(--bg0) 100%);
+}
+.header::before{
+content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+width:700px;height:500px;
+background:radial-gradient(ellipse at 50% 35%,rgba(59,130,246,.15) 0%,rgba(139,92,246,.08) 45%,transparent 70%);
+animation:aurora 8s ease-in-out infinite alternate;pointer-events:none;
+}
+@keyframes aurora{0%{transform:translateX(-55%) scaleX(1)}100%{transform:translateX(-45%) scaleX(1.18) scaleY(1.06)}}
+.header::after{
+content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+background:linear-gradient(90deg,transparent 0%,var(--blue) 30%,var(--violet) 70%,transparent 100%);
+animation:lineGlow 3s ease-in-out infinite;
+}
+@keyframes lineGlow{0%,100%{opacity:.3}50%{opacity:1}}
+
+.logo-wrap{width:130px;height:130px;margin:0 auto 28px;position:relative;z-index:1;cursor:pointer}
+.logo-wrap svg{width:100%;height:100%;overflow:visible;
+  filter:drop-shadow(0 0 14px rgba(96,165,250,.6)) drop-shadow(0 0 38px rgba(139,92,246,.45));
+  transition:transform .4s cubic-bezier(.22,.68,0,1.2),filter .4s}
+.logo-wrap:hover svg{transform:scale(1.07);
+  filter:drop-shadow(0 0 24px rgba(96,165,250,.9)) drop-shadow(0 0 60px rgba(139,92,246,.78)) drop-shadow(0 0 95px rgba(0,229,255,.5))}
+.logo-wrap:active svg{transform:scale(.95);transition:transform .1s ease}
+.lg-breathe{animation:lgBreathe 5s ease-in-out infinite;transform-origin:65px 58px}
+@keyframes lgBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.lg-glow{animation:lgGlow 5s ease-in-out infinite}
+@keyframes lgGlow{0%,100%{opacity:.45}50%{opacity:.85}}
+
+.header h1{
+font-family:var(--fm);font-size:clamp(26px,4.5vw,46px);letter-spacing:3px;
+background:linear-gradient(135deg,#93c5fd 0%,#c4b5fd 50%,#f0abfc 100%);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+position:relative;z-index:1;margin-bottom:10px;
+animation:slideUp .7s cubic-bezier(.22,.68,0,1.2) both;
+}
+.header p{
+color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;
+position:relative;z-index:1;
+animation:slideUp .7s .15s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.lang-selector{
+position:absolute;top:16px;right:20px;z-index:10;
+background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+border-radius:8px;padding:6px 12px;color:var(--text);
+font-size:12px;cursor:pointer;font-family:var(--fb);
+backdrop-filter:blur(6px);transition:background .2s;
+}
+.lang-selector:hover{background:rgba(255,255,255,.09)}
+.lang-selector option{background:#12152a}
+
+.container{max-width:1260px;margin:0 auto;padding:0 20px 40px;position:relative;z-index:1}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:18px;margin-top:-55px}
+
+.app-card{
+background:linear-gradient(145deg,rgba(9,11,26,.93),rgba(13,15,32,.93));
+border:1px solid var(--border);border-radius:var(--r);
+padding:26px 20px 20px;position:relative;overflow:hidden;
+backdrop-filter:blur(16px);cursor:pointer;
+opacity:1;transform:none;
+will-change:transform,box-shadow;
+transition:transform .35s cubic-bezier(.22,.68,0,1.2),box-shadow .35s ease,border-color .35s ease,opacity .45s ease;
+}
+.app-card::before{
+content:'';position:absolute;inset:0;
+background:linear-gradient(115deg,transparent 0%,rgba(59,130,246,.055) 48%,rgba(139,92,246,.035) 52%,transparent 100%);
+transform:translateX(-110%);transition:transform .7s ease;pointer-events:none;z-index:0;
+}
+.app-card:hover::before{transform:translateX(110%)}
+.app-card::after{
+content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
+background:linear-gradient(90deg,transparent,rgba(59,130,246,.6),transparent);
+opacity:0;transition:opacity .35s;z-index:1;
+}
+.app-card:hover::after{opacity:1}
+.app-card:hover{
+transform:translateY(-8px) scale(1.012);
+border-color:rgba(59,130,246,.42);
+box-shadow:0 24px 50px rgba(0,0,0,.55),0 0 0 1px rgba(59,130,246,.08),0 0 45px rgba(59,130,246,.1);
+}
+.app-icon{
+width:60px;height:60px;margin:0 auto 15px;
+display:flex;align-items:center;justify-content:center;
+border-radius:13px;background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.07);
+transition:border-color .3s,box-shadow .3s;
+position:relative;z-index:1;
+}
+.app-card:hover .app-icon{border-color:rgba(59,130,246,.5);box-shadow:0 0 22px rgba(59,130,246,.22),inset 0 0 12px rgba(59,130,246,.08)}
+.ac:hover .app-icon{border-color:rgba(139,92,246,.55);box-shadow:0 0 22px rgba(139,92,246,.25),inset 0 0 12px rgba(139,92,246,.08)}
+.sc:hover .app-icon{border-color:rgba(0,229,255,.55);box-shadow:0 0 22px rgba(0,229,255,.28),inset 0 0 12px rgba(0,229,255,.1)}
+.dc:hover .app-icon{border-color:rgba(0,229,255,.55);box-shadow:0 0 22px rgba(0,229,255,.28),inset 0 0 12px rgba(0,229,255,.1)}
+
+.app-icon{transition:border-color .35s,box-shadow .35s,transform .35s}
+.app-card:hover .app-icon{transform:translateY(-2px)}
+.app-icon svg{transition:transform .4s cubic-bezier(.22,.68,0,1.2),filter .4s;overflow:visible}
+.app-card:hover .app-icon svg{transform:scale(1.16);filter:drop-shadow(0 0 10px rgba(59,130,246,.55))}
+.ac:hover .app-icon svg{filter:drop-shadow(0 0 12px rgba(139,92,246,.6))}
+.sc:hover .app-icon svg{filter:drop-shadow(0 0 12px rgba(0,229,255,.7))}
+.dc:hover .app-icon svg{filter:drop-shadow(0 0 12px rgba(0,229,255,.7))}
+
+.ic-rot-slow{animation:icRot 14s linear infinite}
+.ic-rot-med {animation:icRot  8s linear infinite}
+.ic-rot-fast{animation:icRot  4s linear infinite}
+.ic-rot-rev {animation:icRot 10s linear infinite reverse}
+@keyframes icRot{to{transform:rotate(360deg)}}
+.ic-pls{animation:icPls 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes icPls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.85)}}
+.ic-pls-s{animation:icPlsS 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes icPlsS{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.ic-float{animation:icFloat 3s ease-in-out infinite}
+@keyframes icFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
+.ic-glow{animation:icGlow 2.6s ease-in-out infinite}
+@keyframes icGlow{0%,100%{opacity:.7}50%{opacity:1}}
+.ic-scan{animation:icScan 2.4s ease-in-out infinite}
+@keyframes icScan{0%{transform:translateY(-9px);opacity:0}25%{opacity:1}75%{opacity:1}100%{transform:translateY(9px);opacity:0}}
+.ic-blink{animation:icBlink 1.6s ease-in-out infinite}
+@keyframes icBlink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.app-card:hover .ic-rot-slow{animation-duration:3s}
+.app-card:hover .ic-rot-med{animation-duration:1.8s}
+.app-card:hover .ic-rot-fast{animation-duration:.9s}
+.app-card:hover .ic-rot-rev{animation-duration:2.2s}
+.app-card:hover .ic-pls,.app-card:hover .ic-pls-s{animation-duration:.7s}
+.app-card:hover .ic-float{animation-duration:1.2s}
+.app-card:hover .ic-glow{animation-duration:1s}
+.app-card:hover .ic-scan{animation-duration:1.2s}
+.app-card:hover .ic-blink{animation-duration:.6s}
+.app-card h3{font-size:16px;font-weight:700;color:#bdd0ec;margin-bottom:5px;text-align:center;letter-spacing:.3px;position:relative;z-index:1}
+.app-card p{color:var(--muted);font-size:12px;text-align:center;margin-bottom:13px;line-height:1.7;position:relative;z-index:1}
+.badge{
+display:inline-flex;align-items:center;font-family:var(--fm);font-size:10px;font-weight:700;
+padding:3px 10px;border-radius:20px;margin-bottom:11px;letter-spacing:.5px;position:relative;z-index:1;
+}
+.badge-s{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.badge-b{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22);animation:badgePulse 2.5s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 10px rgba(251,191,36,.2)}}
+.app-features{list-style:none;margin-bottom:16px;border-top:1px solid rgba(59,130,246,.1);padding-top:11px;position:relative;z-index:1}
+.app-features li{padding:4px 0;font-size:11px;color:#485e78;display:flex;align-items:center;gap:8px}
+.fd{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 5px rgba(16,185,129,.5)}
+.launch-btn{
+display:block;width:100%;padding:12px;
+border:1px solid rgba(59,130,246,.28);border-radius:10px;
+text-align:center;font-family:var(--fm);font-size:11px;font-weight:700;
+letter-spacing:1.5px;color:#7fb3f5;text-decoration:none;text-transform:uppercase;
+background:rgba(59,130,246,.07);position:relative;z-index:1;overflow:hidden;
+transition:transform .22s,border-color .22s,box-shadow .22s,color .22s;
+}
+.launch-btn::before{
+content:'';position:absolute;inset:0;
+background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(139,92,246,.12));
+opacity:0;transition:opacity .22s;
+}
+.launch-btn:hover::before{opacity:1}
+.launch-btn:hover{border-color:var(--blue);color:#fff;box-shadow:0 0 22px rgba(59,130,246,.28),0 4px 16px rgba(0,0,0,.3);transform:translateY(-2px)}
+.launch-btn:active{transform:scale(.98)}
+
+.sc{border-color:rgba(0,229,255,.17);background:linear-gradient(145deg,rgba(2,6,16,.96),rgba(4,12,28,.96))}
+.sc .scan-bar{
+position:absolute;top:0;left:0;right:0;height:2px;z-index:2;overflow:hidden;
+background:linear-gradient(90deg,transparent 0%,rgba(255,51,68,.9) 20%,rgba(0,229,255,1) 50%,rgba(0,255,136,.9) 80%,transparent 100%);
+background-size:200% 100%;animation:scanBar 2.4s linear infinite;
+}
+@keyframes scanBar{0%{background-position:200% 0;opacity:.6}50%{opacity:1}100%{background-position:-200% 0;opacity:.6}}
+.sc .cb{position:absolute;width:14px;height:14px;border-color:rgba(0,229,255,.45);border-style:solid}
+.sc .cb.tl{top:8px;left:8px;border-width:1.5px 0 0 1.5px}
+.sc .cb.tr{top:8px;right:8px;border-width:1.5px 1.5px 0 0}
+.sc .cb.bl{bottom:8px;left:8px;border-width:0 0 1.5px 1.5px}
+.sc .cb.br{bottom:8px;right:8px;border-width:0 1.5px 1.5px 0}
+.sc:hover{border-color:rgba(0,229,255,.42);box-shadow:0 24px 50px rgba(0,0,0,.6),0 0 40px rgba(0,229,255,.1)}
+.sc .launch-btn{border-color:rgba(0,229,255,.28);color:#7de8ff;background:rgba(0,229,255,.06)}
+.sc .launch-btn:hover{border-color:var(--cyan);box-shadow:0 0 22px rgba(0,229,255,.28)}
+.sc .fd{background:var(--cyan);box-shadow:0 0 5px rgba(0,229,255,.5)}
+.sc h3{color:#9ee8ff}
+.shield-badge{
+position:absolute;top:12px;right:12px;z-index:3;
+display:flex;align-items:center;gap:5px;
+background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);
+border-radius:20px;padding:3px 9px;
+font-size:9px;font-weight:700;color:#00ff88;letter-spacing:1.5px;font-family:var(--fm);
+}
+.blip{width:5px;height:5px;border-radius:50%;background:#00ff88;animation:blipAnim 1.6s ease-in-out infinite}
+@keyframes blipAnim{0%,100%{opacity:1;box-shadow:0 0 4px #00ff88}50%{opacity:.2;box-shadow:none}}
+
+.ac{border-color:rgba(139,92,246,.2)}
+.ac:hover{border-color:rgba(139,92,246,.45);box-shadow:0 24px 50px rgba(0,0,0,.5),0 0 40px rgba(139,92,246,.1)}
+.ac .launch-btn{border-color:rgba(139,92,246,.28);color:#c4b5fd;background:rgba(139,92,246,.07)}
+.ac .launch-btn:hover{border-color:var(--violet);box-shadow:0 0 22px rgba(139,92,246,.3)}
+.ac .fd{background:var(--violet);box-shadow:0 0 5px rgba(139,92,246,.5)}
+.ac h3{color:#c4b5fd}
+
+/* Zenkari Drive card theme */
+.dc{border-color:rgba(0,229,255,.2);background:linear-gradient(145deg,rgba(2,8,20,.96),rgba(4,14,32,.96))}
+.dc:hover{border-color:rgba(0,229,255,.45);box-shadow:0 24px 50px rgba(0,0,0,.6),0 0 40px rgba(0,229,255,.12)}
+.dc:hover .app-icon{border-color:rgba(0,229,255,.55);box-shadow:0 0 22px rgba(0,229,255,.28),inset 0 0 12px rgba(0,229,255,.1)}
+.dc .launch-btn{border-color:rgba(0,229,255,.28);color:#7de8ff;background:rgba(0,229,255,.06)}
+.dc .launch-btn:hover{border-color:var(--cyan);box-shadow:0 0 22px rgba(0,229,255,.28)}
+.dc .fd{background:var(--cyan);box-shadow:0 0 5px rgba(0,229,255,.5)}
+.dc h3{color:#9ee8ff}
+
+.ec{border-color:rgba(0,229,255,.2);background:linear-gradient(145deg,rgba(2,8,20,.96),rgba(4,14,32,.96))}
+.ec:hover{border-color:rgba(0,229,255,.45);box-shadow:0 24px 50px rgba(0,0,0,.6),0 0 40px rgba(0,229,255,.12)}
+.ec:hover .app-icon{border-color:rgba(0,229,255,.55);box-shadow:0 0 22px rgba(0,229,255,.28),inset 0 0 12px rgba(0,229,255,.1)}
+.ec:hover .app-icon svg{filter:drop-shadow(0 0 12px rgba(0,229,255,.7))}
+.ec .launch-btn{border-color:rgba(0,229,255,.28);color:#7de8ff;background:rgba(0,229,255,.06)}
+.ec .launch-btn:hover{border-color:var(--cyan);box-shadow:0 0 22px rgba(0,229,255,.28)}
+.ec .fd{background:var(--cyan);box-shadow:0 0 5px rgba(0,229,255,.5)}
+.ec h3{color:#9ee8ff}
+
+.free-badge{
+display:inline-flex;align-items:center;gap:6px;
+background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(0,229,255,.12));
+border:1px solid rgba(16,185,129,.35);
+border-radius:20px;padding:4px 11px;
+font-family:var(--fm);font-size:10px;font-weight:700;
+color:#00ff88;letter-spacing:.8px;
+margin-bottom:11px;
+animation:freePulse 3s ease-in-out infinite;
+}
+@keyframes freePulse{
+0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0);border-color:rgba(16,185,129,.35)}
+50%{box-shadow:0 0 14px rgba(16,185,129,.35);border-color:rgba(16,185,129,.65)}
+}
+.free-badge svg{flex-shrink:0}
+
+.status-bar{
+display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+background:rgba(255,255,255,.023);border:1px solid var(--border);
+border-radius:12px;padding:13px 20px;margin:28px 0;
+animation:fadeUp .6s .85s ease both;
+}
+.si{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:var(--fm)}
+.dot{width:7px;height:7px;border-radius:50%}
+.dg{background:var(--green);animation:dp 2.4s 0s ease-in-out infinite;box-shadow:0 0 8px rgba(16,185,129,.55)}
+.dc-dot{background:var(--cyan);animation:dp 2.4s .4s ease-in-out infinite;box-shadow:0 0 8px rgba(0,229,255,.55)}
+.dy{background:var(--gold);animation:dp 2.4s .8s ease-in-out infinite;box-shadow:0 0 8px rgba(251,191,36,.45)}
+@keyframes dp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.55}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+#cl{
+background:linear-gradient(160deg,rgba(7,9,22,.97),rgba(10,12,27,.97));
+border:1px solid rgba(59,130,246,.18);border-radius:20px;
+padding:0;margin:0 0 26px;overflow:hidden;
+box-shadow:0 8px 40px rgba(0,0,0,.45);
+animation:fadeUp .6s 1s ease both;
+}
+.cl-hd{
+display:flex;align-items:center;justify-content:space-between;
+padding:15px 20px;background:rgba(59,130,246,.04);
+border-bottom:1px solid rgba(59,130,246,.1);flex-wrap:wrap;gap:10px;
+}
+.cl-hd-left{display:flex;align-items:center;gap:10px}
+.cl-hd h2{font-family:var(--fm);font-size:13px;letter-spacing:2px;color:#7fb3f5;text-transform:uppercase}
+.cl-pill{
+display:flex;align-items:center;gap:6px;
+background:rgba(0,0,0,.3);border:1px solid rgba(16,185,129,.25);
+border-radius:20px;padding:4px 11px;font-size:10px;font-family:var(--fm);color:var(--green);
+}
+.cl-entries{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.cl-entry{
+background:rgba(9,11,26,.7);border:1px solid rgba(59,130,246,.1);
+border-left-width:3px;border-radius:12px;padding:14px 16px;
+position:relative;overflow:hidden;
+animation:clIn .35s cubic-bezier(.22,.68,0,1.2) both;
+transition:border-color .3s,box-shadow .3s;
+}
+@keyframes clIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.cl-entry:hover{border-color:rgba(59,130,246,.3);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.cl-entry.type-new{border-left-color:var(--green)}
+.cl-entry.type-update{border-left-color:var(--blue)}
+.cl-entry.type-soon{border-left-color:var(--gold)}
+.cl-entry-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.cl-type{
+display:inline-flex;align-items:center;
+font-family:var(--fm);font-size:9px;font-weight:700;
+padding:2px 9px;border-radius:20px;letter-spacing:.8px;
+}
+.cl-type.new{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.cl-type.update{background:rgba(59,130,246,.12);color:#7fb3f5;border:1px solid rgba(59,130,246,.25)}
+.cl-type.soon{background:rgba(251,191,36,.1);color:var(--gold);border:1px solid rgba(251,191,36,.22);animation:badgePulse 2.5s ease-in-out infinite}
+.cl-date{font-family:var(--fm);font-size:10px;color:var(--muted);margin-left:auto;letter-spacing:.5px}
+.cl-entry-title{font-size:14px;font-weight:700;color:#bdd0ec;margin-bottom:5px}
+.cl-entry-desc{font-size:12px;color:#485e78;line-height:1.8}
+
+#contact{
+background:rgba(255,255,255,.02);border:1px solid var(--border);
+border-radius:var(--r);padding:24px 20px;margin:0 0 26px;
+animation:fadeUp .6s 1.1s ease both;
+}
+#contact h2{font-size:14px;color:var(--blue);margin-bottom:6px;font-family:var(--fm);letter-spacing:1.2px}
+.contact-email-hint{
+font-size:11px;color:var(--muted);margin-bottom:14px;font-family:var(--fm);
+display:flex;align-items:center;gap:6px;
+}
+.contact-email-hint a{color:rgba(0,229,255,.7);text-decoration:none;transition:color .2s}
+.contact-email-hint a:hover{color:var(--cyan)}
+.fg{margin-bottom:11px}
+.fi2{
+width:100%;padding:10px 13px;border-radius:9px;
+border:1px solid rgba(59,130,246,.17);background:rgba(255,255,255,.04);
+color:var(--text);font-family:var(--fb);font-size:13px;
+outline:none;transition:border-color .2s,background .2s;
+}
+.fi2:focus{border-color:rgba(59,130,246,.42);background:rgba(255,255,255,.06)}
+.fi2::placeholder{color:var(--muted)}
+textarea.fi2{resize:vertical;min-height:88px}
+.bsub{
+width:100%;padding:12px;border:none;border-radius:9px;
+background:linear-gradient(135deg,var(--blue),var(--violet));
+color:#fff;font-weight:700;font-size:12px;cursor:pointer;
+font-family:var(--fm);letter-spacing:1.5px;
+transition:all .2s;box-shadow:0 4px 16px rgba(59,130,246,.18);
+}
+.bsub:hover{opacity:.87;transform:translateY(-1px);box-shadow:0 8px 24px rgba(59,130,246,.32)}
+.bsub:active{transform:none}
+.contact-ok{
+display:none;align-items:center;gap:10px;padding:13px 16px;
+background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);
+border-radius:9px;color:var(--green);font-size:13px;margin-top:11px;
+}
+.contact-ok.show{display:flex}
+
+.footer{
+text-align:center;padding:20px;border-top:1px solid var(--border);
+color:var(--muted);font-size:11px;font-family:var(--fm);letter-spacing:.5px;line-height:1.9;
+}
+.lang-indicator{
+position:fixed;bottom:20px;right:20px;
+background:linear-gradient(135deg,rgba(59,130,246,.9),rgba(139,92,246,.9));
+padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700;
+z-index:999;font-family:var(--fm);box-shadow:0 4px 20px rgba(0,0,0,.4);
+animation:floatBadge 3s ease-in-out infinite;
+}
+@keyframes floatBadge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+[dir="rtl"] .lang-selector{right:auto;left:20px}
+[dir="rtl"] .lang-indicator{right:auto;left:20px}
+[dir="rtl"] .cl-date{margin-left:0;margin-right:auto}
+
+@media(max-width:768px){
+.header{padding:55px 16px 85px}
+.app-grid{grid-template-columns:1fr;margin-top:-35px}
+.status-bar{flex-direction:column;text-align:center;gap:10px}
+.cl-hd{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="header">
+<select class="lang-selector" id="ls" onchange="changeLang()">
+  <option value="fr">🇫🇷 Français</option>
+  <option value="en">🇬🇧 English</option>
+  <option value="es">🇪🇸 Español</option>
+  <option value="de">🇩🇪 Deutsch</option>
+  <option value="it">🇮🇹 Italiano</option>
+  <option value="pt">🇵🇹 Português</option>
+  <option value="ru">🇷🇺 Русский</option>
+  <option value="zh">🇨🇳 中文</option>
+  <option value="ja">🇯🇵 日本語</option>
+  <option value="ko">🇰🇷 한국어</option>
+  <option value="tr">🇹🇷 Türkçe</option>
+  <option value="hi">🇮🇳 हिन्दी</option>
+  <option value="ar">🇸🇦 العربية</option>
+  <option value="bn">🇧🇩 বাংলা</option>
+  <option value="vi">🇻🇳 Tiếng Việt</option>
+</select>
+
+<div class="logo-wrap">
+<svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="zMain" x1="0" y1="0" x2="130" y2="130" gradientUnits="userSpaceOnUse">
+    <stop offset="0%"   stop-color="#67e8f9"/>
+    <stop offset="35%"  stop-color="#60a5fa"/>
+    <stop offset="68%"  stop-color="#a78bfa"/>
+    <stop offset="100%" stop-color="#f472b6"/>
+  </linearGradient>
+  <linearGradient id="zBloom" x1="0" y1="0" x2="130" y2="130" gradientUnits="userSpaceOnUse">
+    <stop offset="0%"   stop-color="#cffafe"/>
+    <stop offset="35%"  stop-color="#bfdbfe"/>
+    <stop offset="68%"  stop-color="#ede9fe"/>
+    <stop offset="100%" stop-color="#fce7f3"/>
+  </linearGradient>
+  <linearGradient id="zHex" x1="0" y1="0" x2="130" y2="130" gradientUnits="userSpaceOnUse">
+    <stop offset="0%"   stop-color="#67e8f9" stop-opacity=".95"/>
+    <stop offset="100%" stop-color="#f472b6" stop-opacity=".75"/>
+  </linearGradient>
+  <radialGradient id="zBg" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#0b0f28"/>
+    <stop offset="100%" stop-color="#04060f"/>
+  </radialGradient>
+  <linearGradient id="zShine" x1="50%" y1="0%" x2="50%" y2="100%">
+    <stop offset="0%"   stop-color="rgba(255,255,255,.5)"/>
+    <stop offset="55%"  stop-color="rgba(255,255,255,.06)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+  </linearGradient>
+  <filter id="zf" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="1.4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="zfb" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="7"/>
+  </filter>
+</defs>
+<polygon points="65,8 112,33 112,83 65,108 18,83 18,33" fill="url(#zBg)"/>
+<polygon points="65,8 112,33 112,83 65,108 18,83 18,33" fill="none" stroke="url(#zHex)" stroke-width="3" stroke-linejoin="round" filter="url(#zf)" class="lg-glow"/>
+<g class="lg-breathe">
+<path d="M 20,33 L 64,33 L 64,45 L 36,83 L 64,83 L 64,95 L 20,95 L 20,83 L 48,45 L 20,45 Z" fill="url(#zBloom)" filter="url(#zfb)" opacity=".7"/>
+<rect x="69" y="33" width="13" height="62" fill="url(#zBloom)" filter="url(#zfb)" opacity=".7"/>
+<path d="M 82,54 L 108,33 L 108,46 L 88,64 Z" fill="url(#zBloom)" filter="url(#zfb)" opacity=".7"/>
+<path d="M 82,66 L 88,66 L 108,87 L 108,100 Z" fill="url(#zBloom)" filter="url(#zfb)" opacity=".7"/>
+<path d="M 20,33 L 64,33 L 64,45 L 36,83 L 64,83 L 64,95 L 20,95 L 20,83 L 48,45 L 20,45 Z" fill="url(#zMain)" filter="url(#zf)"/>
+<path d="M 20,33 L 64,33 L 64,45 L 20,45 Z" fill="url(#zShine)"/>
+<rect x="69" y="33" width="13" height="62" fill="url(#zMain)" filter="url(#zf)"/>
+<path d="M 82,54 L 108,33 L 108,46 L 88,64 Z" fill="url(#zMain)" filter="url(#zf)"/>
+<path d="M 82,66 L 88,66 L 108,87 L 108,100 Z" fill="url(#zMain)" filter="url(#zf)"/>
+<rect x="69" y="33" width="13" height="25" fill="url(#zShine)"/>
+<line x1="66.5" y1="33" x2="66.5" y2="95" stroke="#04060f" stroke-width="1.5"/>
+</g>
+</svg>
+</div>
+
+<h1 data-i18n="title">ZKmenu</h1>
+<p data-i18n="subtitle">PLATEFORME DE SÉCURITÉ UNIFIÉE – CHOISISSEZ VOTRE APPLICATION</p>
+</div>
+
+<div class="container">
+<div class="app-grid">
+
+  <!-- ① Zenkari Encrypt v12F -->
+  <div class="app-card ec">
+  <div class="app-icon" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.18)">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs><filter id="enc_glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <polygon points="20,3 33,10 36,24 28,36 12,36 4,24 7,10" fill="rgba(0,229,255,0.04)" stroke="#00e5ff" stroke-width="1.3" stroke-opacity="0.6"/>
+    <polygon points="20,8 30,14 32,24 25,32 15,32 8,24 10,14" fill="rgba(0,229,255,0.03)" stroke="#00e5ff" stroke-width="0.7" stroke-opacity="0.3" stroke-dasharray="3 4"/>
+    <path d="M14 20V15.5a6 6 0 0112 0V20" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" fill="none" filter="url(#enc_glow)"/>
+    <rect x="11" y="20" width="18" height="13" rx="2.5" fill="rgba(0,10,20,0.9)" stroke="#00e5ff" stroke-width="1.6" filter="url(#enc_glow)"/>
+    <circle cx="20" cy="25.5" r="2.8" fill="none" stroke="#00e5ff" stroke-width="1.2"/>
+    <line x1="20" y1="27.5" x2="20" y2="31" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="0.5"><animate attributeName="r" values="14;22;14" dur="2.8s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="2.8s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="3.5" r="1.5" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/></circle>
+    <circle cx="35" cy="24" r="1.2" fill="#00e5ff" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.4s" repeatCount="indefinite"/></circle>
+    <circle cx="5" cy="24" r="1.2" fill="#00e5ff" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.1s" repeatCount="indefinite"/></circle>
+  </svg>
+  </div>
+  <h3 data-i18n="ze_title">Zenkari Encrypt</h3>
+  <div style="text-align:center"><span class="badge badge-s" style="background:rgba(0,229,255,.12);color:#00e5ff;border-color:rgba(0,229,255,.3)">v12F – NEW</span></div>
+  <p data-i18n="ze_desc">Messagerie chiffrée E2E, transfert de fichiers sécurisé et appels audio/vidéo chiffrés</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="ze_f1">X25519 + XChaCha20-Poly1305</span></li>
+    <li><div class="fd"></div><span data-i18n="ze_f2">Forward Secrecy (Double Ratchet)</span></li>
+    <li><div class="fd"></div><span data-i18n="ze_f3">Fingerprints d'identité</span></li>
+    <li><div class="fd"></div><span data-i18n="ze_f4">Appels audio/vidéo chiffrés</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://encrypt.zenkari-menu.org" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_encrypt">⬡ LANCER ENCRYPT</a>
+  </div>
+
+  <!-- ② ZenkariPass -->
+  <div class="app-card">
+  <div class="app-icon">
+  <svg width="40" height="40" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="i3g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#9333ea"/></linearGradient>
+      <linearGradient id="i3s" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2a2a3e"/><stop offset="50%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0a0a1e"/></linearGradient>
+      <linearGradient id="i3h" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#2a2a3e"/><stop offset="50%" stop-color="#1e1e34"/><stop offset="100%" stop-color="#2a2a3e"/></linearGradient>
+      <filter id="i3f"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <rect x="8" y="10" width="144" height="140" rx="6" fill="url(#i3s)" stroke="rgba(249,115,22,.2)" stroke-width="2"/>
+    <rect x="18" y="20" width="124" height="120" rx="4" fill="url(#i3s)" stroke="rgba(249,115,22,.12)" stroke-width="1.5"/>
+    <rect x="10" y="42" width="16" height="8" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.25)" stroke-width="1"><animate attributeName="width" values="16;22;16" dur="6s" repeatCount="indefinite"/></rect>
+    <rect x="10" y="70" width="16" height="8" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.25)" stroke-width="1"><animate attributeName="width" values="16;22;16" dur="6s" begin=".3s" repeatCount="indefinite"/></rect>
+    <rect x="10" y="98" width="16" height="8" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.25)" stroke-width="1"><animate attributeName="width" values="16;22;16" dur="6s" begin=".6s" repeatCount="indefinite"/></rect>
+    <rect x="55" y="12" width="8" height="14" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.15)" stroke-width=".8"><animate attributeName="height" values="14;19;14" dur="6s" begin="1s" repeatCount="indefinite"/></rect>
+    <rect x="95" y="12" width="8" height="14" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.15)" stroke-width=".8"><animate attributeName="height" values="14;19;14" dur="6s" begin="1.3s" repeatCount="indefinite"/></rect>
+    <rect x="55" y="134" width="8" height="14" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.15)" stroke-width=".8"><animate attributeName="height" values="14;19;14" dur="6s" begin="1.6s" repeatCount="indefinite"/></rect>
+    <rect x="95" y="134" width="8" height="14" rx="2" fill="url(#i3h)" stroke="rgba(249,115,22,.15)" stroke-width=".8"><animate attributeName="height" values="14;19;14" dur="6s" begin="1.9s" repeatCount="indefinite"/></rect>
+    <rect x="138" y="35" width="10" height="20" rx="3" fill="url(#i3h)" stroke="rgba(249,115,22,.12)" stroke-width=".8"/>
+    <rect x="138" y="100" width="10" height="20" rx="3" fill="url(#i3h)" stroke="rgba(249,115,22,.12)" stroke-width=".8"/>
+    <circle cx="80" cy="80" r="36" fill="rgba(3,2,12,.9)" stroke="url(#i3g)" stroke-width="3" filter="url(#i3f)"/>
+    <circle cx="80" cy="80" r="25" fill="none" stroke="url(#i3g)" stroke-width="1.5" opacity=".4"/>
+    <g><animateTransform attributeName="transform" type="rotate" from="0 80 80" to="360 80 80" dur="18s" repeatCount="indefinite"/>
+      <line x1="80" y1="45" x2="80" y2="56" stroke="url(#i3g)" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="80" y1="104" x2="80" y2="115" stroke="url(#i3g)" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="45" y1="80" x2="56" y2="80" stroke="url(#i3g)" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="104" y1="80" x2="115" y2="80" stroke="url(#i3g)" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="55.2" y1="55.2" x2="62.5" y2="62.5" stroke="url(#i3g)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="97.5" y1="97.5" x2="104.8" y2="104.8" stroke="url(#i3g)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="104.8" y1="55.2" x2="97.5" y2="62.5" stroke="url(#i3g)" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="62.5" y1="97.5" x2="55.2" y2="104.8" stroke="url(#i3g)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="80" cy="44" r="2.5" fill="url(#i3g)"/><circle cx="80" cy="116" r="2.5" fill="url(#i3g)"/>
+      <circle cx="44" cy="80" r="2.5" fill="url(#i3g)"/><circle cx="116" cy="80" r="2.5" fill="url(#i3g)"/>
+    </g>
+    <circle cx="80" cy="80" r="14" fill="url(#i3g)" filter="url(#i3f)"><animate attributeName="r" values="14;15.5;14" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="80" cy="80" r="9" fill="rgba(0,0,0,.7)"/>
+    <text x="80" y="82" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.5)" font-family="monospace" font-weight="bold">ZK</text>
+    <circle cx="26" cy="28" r="2.5" fill="rgba(40,40,60,.9)" stroke="rgba(249,115,22,.12)" stroke-width=".6"/>
+    <circle cx="134" cy="28" r="2.5" fill="rgba(40,40,60,.9)" stroke="rgba(249,115,22,.12)" stroke-width=".6"/>
+    <circle cx="26" cy="132" r="2.5" fill="rgba(40,40,60,.9)" stroke="rgba(249,115,22,.12)" stroke-width=".6"/>
+    <circle cx="134" cy="132" r="2.5" fill="rgba(40,40,60,.9)" stroke="rgba(249,115,22,.12)" stroke-width=".6"/>
+    <circle cx="30" cy="135" r="3" fill="#10b981"><animate attributeName="opacity" values="1;.1;1" dur="1.4s" repeatCount="indefinite"/></circle>
+    <circle cx="40" cy="135" r="3" fill="#10b981"><animate attributeName="opacity" values="1;.1;1" dur="1.4s" begin=".47s" repeatCount="indefinite"/></circle>
+    <circle cx="50" cy="135" r="3" fill="#fbbf24"><animate attributeName="opacity" values="1;.1;1" dur="1.4s" begin=".94s" repeatCount="indefinite"/></circle>
+    <rect x="90" y="128" width="46" height="14" rx="2" fill="rgba(0,0,0,.4)" stroke="rgba(249,115,22,.15)" stroke-width=".6"/>
+    <text x="113" y="137.5" text-anchor="middle" font-size="6" fill="rgba(249,115,22,.6)" font-family="monospace" letter-spacing="1.5">ZENKARI</text>
+    <line x1="22" y1="80" x2="138" y2="80" stroke="rgba(16,185,129,.35)" stroke-width=".8">
+      <animate attributeName="y1" values="25;135;25" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="25;135;25" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;.7;0" dur="4s" repeatCount="indefinite"/>
+    </line>
+  </svg>
+  </div>
+  <h3 data-i18n="zkp_title">ZenkariPass</h3>
+  <div style="text-align:center"><span class="badge badge-s">v10.1 – CRYPTO</span></div>
+  <p data-i18n="zkp_desc">Gestionnaire de mots de passe zero-knowledge avec double chiffrement AES-256 + ChaCha20</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="zkp_f1">AES-256-GCM + ChaCha20-Poly1305</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_2fa">Authentification 2FA TOTP</span></li>
+    <li><div class="fd"></div><span data-i18n="zkp_f3">PBKDF2 1M + HKDF + ECDSA P-384</span></li>
+    <li><div class="fd"></div><span data-i18n="zkp_f4">HMAC-SHA512 + Auto-lock 10min</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://pass.zenkari-menu.org" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_pass">LANCER ZKPASS</a>
+  </div>
+
+  <!-- ③ ZKPass Authenticator -->
+  <div class="app-card">
+  <div class="app-icon">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs><radialGradient id="zkpa_g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(11,132,245,.35)"/><stop offset="100%" stop-color="rgba(11,132,245,.05)"/></radialGradient></defs>
+    <g opacity=".75">
+      <rect x="3" y="3" width="9" height="9" rx="1.2" stroke="#ef4444" stroke-width="1.1" fill="rgba(239,68,68,.08)"/>
+      <rect x="5" y="5" width="5" height="5" rx=".5" fill="#ef4444"/><rect x="6.5" y="6.5" width="2" height="2" fill="rgba(255,255,255,.95)"/>
+      <rect x="28" y="3" width="9" height="9" rx="1.2" stroke="#ef4444" stroke-width="1.1" fill="rgba(239,68,68,.08)"/>
+      <rect x="30" y="5" width="5" height="5" rx=".5" fill="#ef4444"/><rect x="31.5" y="6.5" width="2" height="2" fill="rgba(255,255,255,.95)"/>
+      <rect x="3" y="28" width="9" height="9" rx="1.2" stroke="#ef4444" stroke-width="1.1" fill="rgba(239,68,68,.08)"/>
+      <rect x="5" y="30" width="5" height="5" rx=".5" fill="#ef4444"/><rect x="6.5" y="31.5" width="2" height="2" fill="rgba(255,255,255,.95)"/>
+      <rect x="15" y="4" width="1.5" height="1.5" fill="#ef4444" opacity=".6"/><rect x="18" y="4" width="1.5" height="1.5" fill="#ef4444" opacity=".4"/>
+      <rect x="21" y="4" width="1.5" height="1.5" fill="#ef4444" opacity=".6"/>
+      <rect x="4" y="15" width="1.5" height="1.5" fill="#ef4444" opacity=".6"/><rect x="4" y="18" width="1.5" height="1.5" fill="#ef4444" opacity=".4"/>
+      <rect x="4" y="21" width="1.5" height="1.5" fill="#ef4444" opacity=".6"/>
+    </g>
+    <circle cx="28" cy="28" r="10" fill="url(#zkpa_g)"/>
+    <circle cx="28" cy="28" r="9" fill="rgba(11,132,245,.12)" stroke="rgba(11,132,245,.4)" stroke-width="1"/>
+    <circle cx="28" cy="28" r="9" stroke="#10b981" stroke-width="2" fill="none" stroke-dasharray="56.5" stroke-linecap="round" transform="rotate(-90 28 28)">
+      <animate attributeName="stroke-dashoffset" from="0" to="56.5" dur="20s" repeatCount="indefinite"/>
+    </circle>
+    <g style="transform-origin:28px 28px;animation:icRot 20s linear infinite reverse">
+      <line x1="28" y1="28" x2="28" y2="20.5" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="28" cy="20.5" r="1" fill="#fbbf24"/>
+    </g>
+    <circle cx="28" cy="28" r="1.8" fill="#fbbf24"/>
+  </svg>
+  </div>
+  <h3 data-i18n="zkpa_title">ZKPass Authenticator</h3>
+  <div style="text-align:center"><span class="badge badge-s">v4.0.0</span></div>
+  <p data-i18n="zkpa_desc">Authentificateur 2FA avec scan QR et génération de codes TOTP</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="feat_totp">Génération codes TOTP</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_qr_detect">Détection QR par screenshot</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_tz">Tous fuseaux horaires</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_offline">Hors ligne</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://archive.org/details/zkpa-4.0.0" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_download_zkpa">TÉLÉCHARGER ZKPA</a>
+  </div>
+
+  <!-- ④ ZK Toolkit -->
+  <div class="app-card">
+  <div class="app-icon">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs><linearGradient id="i6a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+    <filter id="i6f"><feGaussianBlur stdDeviation=".8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <rect x="1.5" y="1.5" width="17.5" height="17.5" rx="3.5" fill="#ec4899"><animate attributeName="opacity" values="1;.65;1" dur="3.6s" begin="0s" repeatCount="indefinite"/></rect>
+    <circle cx="10.25" cy="7" r="3.5" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.4"/>
+    <rect x="9.25" y="10" width="2" height="6" rx="1" fill="rgba(255,255,255,.85)"/>
+    <circle cx="10.25" cy="15" r="1.5" fill="rgba(255,255,255,.85)"/>
+    <rect x="21" y="1.5" width="17.5" height="17.5" rx="3.5" fill="#059669"><animate attributeName="opacity" values="1;.65;1" dur="3.6s" begin=".9s" repeatCount="indefinite"/></rect>
+    <rect x="24" y="6" width="3" height="8" rx=".5" fill="rgba(255,255,255,.8)"><animate attributeName="height" values="8;12;8" dur="1s" begin="0s" repeatCount="indefinite"/><animate attributeName="y" values="6;4;6" dur="1s" begin="0s" repeatCount="indefinite"/></rect>
+    <rect x="28.5" y="7" width="3" height="6" rx=".5" fill="rgba(255,255,255,.7)"><animate attributeName="height" values="6;10;6" dur="1s" begin=".3s" repeatCount="indefinite"/><animate attributeName="y" values="7;5;7" dur="1s" begin=".3s" repeatCount="indefinite"/></rect>
+    <rect x="33" y="5" width="3" height="9" rx=".5" fill="rgba(255,255,255,.65)"><animate attributeName="height" values="9;5;9" dur="1s" begin=".6s" repeatCount="indefinite"/><animate attributeName="y" values="5;7;5" dur="1s" begin=".6s" repeatCount="indefinite"/></rect>
+    <rect x="1.5" y="21" width="17.5" height="17.5" rx="3.5" fill="#2563eb"><animate attributeName="opacity" values="1;.65;1" dur="3.6s" begin="1.8s" repeatCount="indefinite"/></rect>
+    <path d="M6 28h9M6 31h7M6 34h8" stroke="rgba(255,255,255,.75)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M13 27l2 2-2 2" stroke="rgba(255,255,255,.9)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="21" y="21" width="17.5" height="17.5" rx="3.5" fill="#0f766e"><animate attributeName="opacity" values="1;.65;1" dur="3.6s" begin="2.7s" repeatCount="indefinite"/></rect>
+    <g><animateTransform attributeName="transform" type="rotate" from="0 29.75 29.75" to="360 29.75 29.75" dur="6s" repeatCount="indefinite"/>
+      <circle cx="29.75" cy="29.75" r="5.8" stroke="rgba(255,255,255,.88)" stroke-width="2.8" fill="rgba(0,0,0,.3)" stroke-dasharray="3.6 2.4"/>
+      <circle cx="29.75" cy="29.75" r="2.3" fill="rgba(255,255,255,.95)"/>
+    </g>
+  </svg>
+  </div>
+  <h3 data-i18n="zktk_title">ZK Toolkit</h3>
+  <div style="text-align:center"><span class="badge badge-s">v1.0.0</span></div>
+  <p data-i18n="zktk_desc">Suite complète : Music Pro, Audio Engine, Converter – 60+ formats</p>
+  <ul class="app-features">
+    <li><div class="fd" style="background:#ec4899;box-shadow:0 0 5px rgba(236,72,153,.5)"></div><span>Zenkari Music Pro</span></li>
+    <li><div class="fd" style="background:#10b981;box-shadow:0 0 5px rgba(16,185,129,.5)"></div><span>ZK Audio Engine</span></li>
+    <li><div class="fd" style="background:#3b82f6;box-shadow:0 0 5px rgba(59,130,246,.5)"></div><span>Zenkari Converter</span></li>
+    <li><div class="fd" style="background:#fbbf24;box-shadow:0 0 5px rgba(251,191,36,.5)"></div><span data-i18n="zktk_all_utils">Tous les utilitaires</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://toolkit.zenkari-menu.org" target="_blank" rel="noopener" class="launch-btn" style="border-color:rgba(56,189,248,.28);color:#7dd3fc;background:rgba(56,189,248,.06)" data-i18n="btn_toolkit">LANCER TOOLKIT</a>
+  </div>
+
+  <!-- ⑤ Tecuit IA -->
+  <div class="app-card ac">
+  <div class="app-icon" style="background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.18)">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs><radialGradient id="i7r" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(139,92,246,.6)"/><stop offset="48%" stop-color="rgba(109,40,217,.14)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>
+    <radialGradient id="i7c" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="40%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#7c3aed"/></radialGradient>
+    <filter id="i7f"><feGaussianBlur stdDeviation="1.3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <circle cx="20" cy="20" r="19" fill="url(#i7r)"/>
+    <g><animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="16s" repeatCount="indefinite"/><circle cx="20" cy="20" r="16.5" stroke="rgba(139,92,246,.5)" stroke-width=".8" fill="none" stroke-dasharray="2 4"/></g>
+    <polygon points="20,5.5 33.5,12.5 33.5,27.5 20,34.5 6.5,27.5 6.5,12.5" fill="none" stroke="rgba(167,139,250,.2)" stroke-width=".7"/>
+    <line x1="20" y1="20" x2="20" y2="5.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="0s" repeatCount="indefinite"/></line>
+    <line x1="20" y1="20" x2="33.5" y2="12.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".4s" repeatCount="indefinite"/></line>
+    <line x1="20" y1="20" x2="33.5" y2="27.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".8s" repeatCount="indefinite"/></line>
+    <line x1="20" y1="20" x2="20" y2="34.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="1.2s" repeatCount="indefinite"/></line>
+    <line x1="20" y1="20" x2="6.5" y2="27.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="1.6s" repeatCount="indefinite"/></line>
+    <line x1="20" y1="20" x2="6.5" y2="12.5" stroke="#a78bfa" stroke-width="1.5"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="2s" repeatCount="indefinite"/></line>
+    <circle cx="20" cy="5.5" r="3.4" fill="#7c3aed" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="33.5" cy="12.5" r="3.4" fill="#7c3aed" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin=".4s" repeatCount="indefinite"/></circle>
+    <circle cx="33.5" cy="27.5" r="3.4" fill="#6d28d9" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin=".8s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="34.5" r="3.4" fill="#7c3aed" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin="1.2s" repeatCount="indefinite"/></circle>
+    <circle cx="6.5" cy="27.5" r="3.4" fill="#6d28d9" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin="1.6s" repeatCount="indefinite"/></circle>
+    <circle cx="6.5" cy="12.5" r="3.4" fill="#7c3aed" filter="url(#i7f)"><animate attributeName="r" values="3.4;4.4;3.4" dur="2.4s" begin="2s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="5.5" r="1.5" fill="#ddd6fe"/><circle cx="33.5" cy="12.5" r="1.5" fill="#ddd6fe"/>
+    <circle cx="33.5" cy="27.5" r="1.5" fill="#ddd6fe"/><circle cx="20" cy="34.5" r="1.5" fill="#ddd6fe"/>
+    <circle cx="6.5" cy="27.5" r="1.5" fill="#ddd6fe"/><circle cx="6.5" cy="12.5" r="1.5" fill="#ddd6fe"/>
+    <circle cx="20" cy="20" r="8" fill="#8b5cf6" filter="url(#i7f)"><animate attributeName="r" values="8;9.5;8" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.75;1" dur="2s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="20" r="4.2" fill="url(#i7c)"/>
+    <circle cx="20" cy="20" r="11" fill="none" stroke="rgba(196,181,253,.32)" stroke-width=".9"><animate attributeName="r" values="11;18;11" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0;.6" dur="2.4s" repeatCount="indefinite"/></circle>
+  </svg>
+  </div>
+  <h3 data-i18n="zkia_title">Tecuit IA</h3>
+  <div style="text-align:center"><span class="badge badge-b" data-i18n="zkia_version">v5.1.0 BÊTA</span></div>
+  <p data-i18n="zkia_desc">Assistant IA avec recherche web, Wikipedia hors ligne et OCR intégré</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="feat_ai_chat">Assistant Chat IA</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_ai_auto">Automatisation Intelligente</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_ai_sec">Analyse de Sécurité</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_ai_real">Traitement Temps Réel</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://www.tecuit-ia.org" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_launch_zkia">LANCER TECUIT IA</a>
+  </div>
+
+  <!-- ⑥ Zenkari Shield -->
+  <div class="app-card sc">
+  <div class="scan-bar"></div>
+  <div class="cb tl"></div><div class="cb tr"></div>
+  <div class="cb bl"></div><div class="cb br"></div>
+  <div class="shield-badge"><div class="blip"></div><span data-i18n="protected">PROTECTED</span></div>
+  <div class="app-icon" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.18)">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs><linearGradient id="i8a" x1="20" y1="1" x2="20" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="55%" stop-color="#0369a1"/><stop offset="100%" stop-color="#082f49"/></linearGradient>
+    <linearGradient id="i8str" x1="20" y1="1" x2="20" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
+    <radialGradient id="i8glow" cx="50%" cy="35%" r="55%"><stop offset="0%" stop-color="rgba(56,189,248,.55)"/><stop offset="100%" stop-color="rgba(3,105,161,.0)"/></radialGradient>
+    <filter id="i8f" x="-18%" y="-18%" width="136%" height="136%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <ellipse cx="20" cy="21" rx="16" ry="17" fill="url(#i8glow)"/>
+    <path d="M20 2 L36 8.5 V21 C36 31 27 37 20 39 C13 37 4 31 4 21 V8.5 Z" fill="url(#i8a)" stroke="url(#i8str)" stroke-width="1.8" stroke-linejoin="round" filter="url(#i8f)"/>
+    <path d="M20 3.5 L35 9.5 V20.5" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="6" y1="14" x2="34" y2="14" stroke="rgba(125,211,252,.75)" stroke-width="1.2" stroke-linecap="round"><animate attributeName="y1" values="10;31;10" dur="3s" repeatCount="indefinite"/><animate attributeName="y2" values="10;31;10" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.85;0" dur="3s" repeatCount="indefinite"/></line>
+    <path d="M11.5 22 L17.5 29.5 L29.5 14" stroke="#00ff88" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="38" stroke-dashoffset="38" filter="url(#i8f)"><animate attributeName="stroke-dashoffset" from="38" to="0" dur=".8s" begin=".5s" fill="freeze"/><animate attributeName="stroke-dashoffset" from="38" to="0" dur=".8s" begin="5.5s" repeatCount="indefinite"/></path>
+    <circle cx="11" cy="11" r="1.5" fill="#ff3344"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="29" cy="11" r="1.5" fill="#ff3344"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" begin=".7s" repeatCount="indefinite"/></circle>
+  </svg>
+  </div>
+  <h3 data-i18n="zks_title">Zenkari Shield</h3>
+  <div style="text-align:center"><span class="badge badge-b" data-i18n="zks_version">v7.0.0 BÊTA</span></div>
+  <p data-i18n="zks_desc">Suite EDR complète avec antivirus ClamAV, VPN intégré et quarantaine chiffrée</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="zks_feat1">Moteur ClamAV + Heuristique</span></li>
+    <li><div class="fd"></div><span data-i18n="zks_feat2">Ransomware Shield (kill auto)</span></li>
+    <li><div class="fd"></div><span data-i18n="zks_feat3">VPN WireGuard + OpenVPN intégré</span></li>
+    <li><div class="fd"></div><span data-i18n="zks_feat4">Quarantaine AES-256-GCM</span></li>
+    <li><div class="fd"></div><span data-i18n="zks_feat6">Tamper Shield</span></li>
+  </ul>
+  <a href="https://github.com/fonnjee10/Zenkari-Shield/tree/main" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_download_zks">⬡ TÉLÉCHARGER SHIELD</a>
+  </div>
+
+  <!-- ⑦ Zenkari Drive — NEW -->
+  <div class="app-card dc">
+  <div class="app-icon" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.18)">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <defs>
+      <linearGradient id="zd_cloud" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#67e8f9"/>
+        <stop offset="100%" stop-color="#0ea5e9"/>
+      </linearGradient>
+      <linearGradient id="zd_lock" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00ff88"/>
+        <stop offset="100%" stop-color="#00b368"/>
+      </linearGradient>
+      <radialGradient id="zd_glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(0,229,255,.45)"/>
+        <stop offset="100%" stop-color="rgba(0,229,255,0)"/>
+      </radialGradient>
+      <filter id="zd_f" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="1.2" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <circle cx="20" cy="20" r="18" fill="url(#zd_glow)"/>
+    <!-- Cloud body -->
+    <path d="M10 24
+             C 6 24, 6 18, 10 17
+             C 10 12, 16 10, 19 13
+             C 21 9, 28 10, 28 15
+             C 33 15, 33 22, 29 23
+             L 29 25
+             C 29 27, 27 28, 25 28
+             L 14 28
+             C 11 28, 10 26, 10 24 Z"
+          fill="rgba(0,229,255,.12)" stroke="url(#zd_cloud)" stroke-width="1.4" stroke-linejoin="round" filter="url(#zd_f)"/>
+    <!-- Cloud inner highlight -->
+    <path d="M12 22 C 10 22, 10 19, 12 18.5" stroke="rgba(255,255,255,.35)" stroke-width="1" stroke-linecap="round" fill="none"/>
+    <!-- Lock on cloud -->
+    <g transform="translate(15, 17)">
+      <path d="M2 4 V2.5 A3 3 0 0 1 8 2.5 V4" stroke="url(#zd_lock)" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <rect x="0.5" y="4" width="9" height="6.5" rx="1.2" fill="rgba(0,10,20,.85)" stroke="url(#zd_lock)" stroke-width="1.2"/>
+      <circle cx="5" cy="6.8" r="1.1" fill="url(#zd_lock)"/>
+      <line x1="5" y1="7.5" x2="5" y2="9.2" stroke="url(#zd_lock)" stroke-width="1.1" stroke-linecap="round"/>
+    </g>
+    <!-- Orbiting data particles -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="10s" repeatCount="indefinite"/>
+      <circle cx="20" cy="3" r="1.3" fill="#00e5ff" opacity=".9">
+        <animate attributeName="opacity" values=".9;.2;.9" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="37" cy="20" r="1" fill="#00ff88" opacity=".8">
+        <animate attributeName="opacity" values=".8;.2;.8" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="20" cy="37" r="1.3" fill="#00e5ff" opacity=".9">
+        <animate attributeName="opacity" values=".9;.2;.9" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="3" cy="20" r="1" fill="#00ff88" opacity=".8">
+        <animate attributeName="opacity" values=".8;.2;.8" dur="2.6s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <!-- Shield ring -->
+    <circle cx="20" cy="20" r="19" fill="none" stroke="rgba(0,229,255,.18)" stroke-width=".6" stroke-dasharray="2 3">
+      <animateTransform attributeName="transform" type="rotate" from="360 20 20" to="0 20 20" dur="20s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+  </div>
+  <h3 data-i18n="zd_title">Zenkari Drive</h3>
+  <div style="text-align:center"><span class="badge badge-s" style="background:rgba(0,229,255,.12);color:#00e5ff;border-color:rgba(0,229,255,.3)">v1.0.0 – NEW</span></div>
+  <div style="text-align:center"><span class="free-badge">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1 L7.5 4.5 L11 5 L8.5 7.5 L9 11 L6 9.5 L3 11 L3.5 7.5 L1 5 L4.5 4.5 Z" fill="#00ff88"/></svg>
+    <span data-i18n="zd_free">5 GB GRATUITS À L'INSCRIPTION</span>
+  </span></div>
+  <p data-i18n="zd_desc">Cloud personnel 100% chiffré de bout en bout. Vos fichiers, photos et documents protégés par AES-256-GCM.</p>
+  <ul class="app-features">
+    <li><div class="fd"></div><span data-i18n="zd_f1">Chiffrement AES-256-GCM côté client</span></li>
+    <li><div class="fd"></div><span data-i18n="zd_f2">Zero-knowledge : personne ne lit vos données</span></li>
+    <li><div class="fd"></div><span data-i18n="zd_f3">Sync multi-appareils sécurisée</span></li>
+    <li><div class="fd"></div><span data-i18n="zd_f4">Partage de liens chiffrés avec expiration</span></li>
+    <li><div class="fd"></div><span data-i18n="feat_langs">15 langues</span></li>
+  </ul>
+  <a href="https://drive.zenkari-menu.org" target="_blank" rel="noopener" class="launch-btn" data-i18n="btn_drive">⬡ LANCER DRIVE</a>
+  </div>
+
+</div>
+
+<div class="status-bar">
+  <div class="si"><div class="dot dg"></div><span data-i18n="status_operational">Toutes les applications sont opérationnelles</span></div>
+  <div class="si"><div class="dot dc-dot"></div><span data-i18n="status_encryption">🔒 AES-256 / RSA-4096</span></div>
+  <div class="si"><div class="dot dy"></div><span data-i18n="status_apps">7 Applications disponibles</span></div>
+</div>
+
+<section id="cl">
+  <div class="cl-hd">
+    <div class="cl-hd-left">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="12.5" fill="rgba(59,130,246,.07)" stroke="rgba(59,130,246,.28)" stroke-width="1"/>
+        <rect x="10" y="10" width="8" height="8" rx="1.5" stroke="#7fb3f5" stroke-width="1.2" fill="rgba(59,130,246,.08)"/>
+        <circle cx="14" cy="14" r="2" fill="#3b82f6"/>
+      </svg>
+      <h2 data-i18n="cl_title">NOUVEAUTÉS &amp; ROADMAP</h2>
+    </div>
+    <div class="cl-pill">
+      <div class="dot dg" style="animation:none;width:6px;height:6px"></div>
+      <span data-i18n="cl_label">Mises à jour</span>
+    </div>
+  </div>
+  <div id="clEntries" class="cl-entries"></div>
+</section>
+
+<!-- ════ SECTION CONTACT ════ -->
+<section id="contact">
+  <h2 data-i18n="contact_title">📧 AIDE / CONTACT</h2>
+  <div class="contact-email-hint">
+    <span data-i18n="contact_hint_prefix">Vos messages seront envoyés à</span>&nbsp;<a href="mailto:ZenkariWebService@protonmail.com">ZenkariWebService@protonmail.com</a>
+  </div>
+  <div id="contactForm">
+    <div class="fg"><input type="text"  class="fi2" id="cN" data-i18n-placeholder="contact_name"    placeholder="Nom"     required></div>
+    <div class="fg"><input type="email" class="fi2" id="cE" data-i18n-placeholder="contact_email"   placeholder="Email"   required></div>
+    <div class="fg"><textarea           class="fi2" id="cM" data-i18n-placeholder="contact_message" placeholder="Message" required></textarea></div>
+    <button class="bsub" onclick="onContact()" data-i18n="contact_send">ENVOYER ➥</button>
+  </div>
+  <div class="contact-ok" id="contactOk">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4L14 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span id="contactOkMsg">Votre client mail va s'ouvrir…</span>
+  </div>
+</section>
+
+<div class="footer">
+  <p data-i18n="footer_copyright">© 2026 ZKmenu – Tous droits réservés</p>
+  <p style="margin-top:4px;opacity:.5">Made by LE$TER | ZKE 12F · ZKP 10.1 · ZKPA 4.0.0 · ZKTK 1.0.0 · ZKIA 5.1.0β · ZKS 7.0.0β · ZKD 1.0.0</p>
+</div>
+</div>
+
+<div class="lang-indicator" id="li">🇫🇷 FR</div>
+
+<script>
+const CHANGELOG = [
+  {
+    date: "2026-05-30", type: "new",
+    title: { fr:"Zenkari Drive v1.0 — Cloud 100% chiffré", en:"Zenkari Drive v1.0 — 100% Encrypted Cloud", es:"Zenkari Drive v1.0 — Nube 100% cifrada", de:"Zenkari Drive v1.0 — 100% verschlüsselte Cloud", it:"Zenkari Drive v1.0 — Cloud 100% cifrato", pt:"Zenkari Drive v1.0 — Nuvem 100% criptografada", ru:"Zenkari Drive v1.0 — 100% зашифрованное облако", zh:"Zenkari Drive v1.0 — 100%加密云", ja:"Zenkari Drive v1.0 — 100%暗号化クラウド", ko:"Zenkari Drive v1.0 — 100% 암호화 클라우드", ar:"Zenkari Drive v1.0 — سحابة مشفرة 100%", hi:"Zenkari Drive v1.0 — 100% एन्क्रिप्टेड क्लाउड", bn:"Zenkari Drive v1.0 — 100% এনক্রিপ্টেড ক্লাউড", vi:"Zenkari Drive v1.0 — Đám mây mã hóa 100%", tr:"Zenkari Drive v1.0 — %100 Şifreli Bulut" },
+    desc: { fr:"Stockage cloud personnel 100% chiffré AES-256-GCM côté client. 5 GB gratuits à l'inscription. Zero-knowledge, sync multi-appareils et partage de liens chiffrés.", en:"100% client-side AES-256-GCM encrypted personal cloud storage. 5 GB free at signup. Zero-knowledge, multi-device sync and encrypted link sharing.", es:"Almacenamiento en la nube 100% cifrado AES-256-GCM del lado del cliente. 5 GB gratis al registrarse. Zero-knowledge, sincronización multi-dispositivo y enlaces cifrados.", de:"100% clientseitig AES-256-GCM verschlüsselter Cloud-Speicher. 5 GB kostenlos bei Anmeldung. Zero-Knowledge, Multi-Geräte-Sync und verschlüsselte Link-Freigabe.", it:"Archiviazione cloud personale 100% cifrata AES-256-GCM lato client. 5 GB gratuiti alla registrazione. Zero-knowledge, sync multi-dispositivo e link cifrati.", pt:"Armazenamento em nuvem pessoal 100% criptografado AES-256-GCM no cliente. 5 GB grátis no cadastro. Zero-knowledge, sincronização multi-dispositivo e links criptografados.", ru:"100% зашифрованное на стороне клиента AES-256-GCM облачное хранилище. 5 ГБ бесплатно при регистрации. Zero-knowledge, синхронизация и шифрованные ссылки.", zh:"100%客户端AES-256-GCM加密的个人云存储。注册即赠5GB免费空间。零知识、多设备同步和加密链接分享。", ja:"クライアント側100% AES-256-GCM暗号化の個人クラウドストレージ。登録時に5GB無料。ゼロ知識、マルチデバイス同期、暗号化リンク共有。", ko:"클라이언트 측 100% AES-256-GCM 암호화 개인 클라우드 저장소. 가입 시 5GB 무료. 제로 지식, 멀티 디바이스 동기화, 암호화 링크 공유.", ar:"تخزين سحابي شخصي مشفر 100% AES-256-GCM من جانب العميل. 5 جيجابايت مجانًا عند التسجيل. معرفة صفرية ومزامنة متعددة الأجهزة ومشاركة روابط مشفرة.", hi:"100% क्लाइंट-साइड AES-256-GCM एन्क्रिप्टेड व्यक्तिगत क्लाउड स्टोरेज। साइनअप पर 5 GB मुफ्त। ज़ीरो-नॉलेज, मल्टी-डिवाइस सिंक।", bn:"100% ক্লায়েন্ট-সাইড AES-256-GCM এনক্রিপ্টেড ব্যক্তিগত ক্লাউড স্টোরেজ। সাইনআপে 5 GB ফ্রি। জিরো-নলেজ, মাল্টি-ডিভাইস সিঙ্ক।", vi:"Lưu trữ đám mây cá nhân mã hóa 100% AES-256-GCM phía client. 5 GB miễn phí khi đăng ký. Zero-knowledge, đồng bộ đa thiết bị.", tr:"%100 istemci tarafı AES-256-GCM şifreli kişisel bulut depolama. Kayıtta 5 GB ücretsiz. Sıfır bilgi, çoklu cihaz senkronizasyonu." }
+  },
+  {
+    date: "2026-05-30", type: "new",
+    title: { fr:"ZenkariPass v10.1 — Crypto Militaire", en:"ZenkariPass v10.1 — Military Crypto", es:"ZenkariPass v10.1 — Cripto Militar", de:"ZenkariPass v10.1 — Militär-Krypto", it:"ZenkariPass v10.1 — Cripto Militare", pt:"ZenkariPass v10.1 — Cripto Militar", ru:"ZenkariPass v10.1 — Военная Крипто", zh:"ZenkariPass v10.1 — 军事级加密", ja:"ZenkariPass v10.1 — 軍事暗号", ko:"ZenkariPass v10.1 — 군사 암호화", ar:"ZenkariPass v10.1 — تشفير عسكري", hi:"ZenkariPass v10.1 — सैन्य क्रिप्टो", bn:"ZenkariPass v10.1 — সামরিক ক্রিপ্টো", vi:"ZenkariPass v10.1 — Mật mã Quân sự", tr:"ZenkariPass v10.1 — Askeri Kripto" },
+    desc: { fr:"Double chiffrement AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M itérations, HKDF-SHA512, ECDSA P-384, HMAC-SHA512. Score pentest: 44/46.", en:"Dual encryption AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M iterations, HKDF-SHA512, ECDSA P-384, HMAC-SHA512. Pentest score: 44/46.", es:"Doble cifrado AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M iteraciones, HKDF-SHA512, ECDSA P-384, HMAC-SHA512.", de:"Doppelverschlüsselung AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M Iterationen, HKDF-SHA512, ECDSA P-384.", it:"Doppia cifratura AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M iterazioni, HKDF-SHA512, ECDSA P-384.", pt:"Criptografia dupla AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M iterações, HKDF-SHA512, ECDSA P-384.", ru:"Двойное шифрование AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1М итераций, HKDF-SHA512, ECDSA P-384.", zh:"双重加密AES-256-GCM + XChaCha20-Poly1305，PBKDF2 100万次迭代，HKDF-SHA512，ECDSA P-384。", ja:"二重暗号化AES-256-GCM + XChaCha20-Poly1305、PBKDF2 100万回反復、HKDF-SHA512、ECDSA P-384。", ko:"이중 암호화 AES-256-GCM + XChaCha20-Poly1305, PBKDF2 100만 반복, HKDF-SHA512, ECDSA P-384.", ar:"تشفير مزدوج AES-256-GCM + XChaCha20-Poly1305، PBKDF2 مليون تكرار، HKDF-SHA512، ECDSA P-384.", hi:"दोहरा एन्क्रिप्शन AES-256-GCM + XChaCha20-Poly1305, PBKDF2 10 लाख iterations, HKDF-SHA512.", bn:"দ্বৈত এনক্রিপশন AES-256-GCM + XChaCha20-Poly1305, PBKDF2 ১০ লক্ষ iterations.", vi:"Mã hóa kép AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1 triệu lần lặp, HKDF-SHA512.", tr:"Çift şifreleme AES-256-GCM + XChaCha20-Poly1305, PBKDF2 1M iterasyon, HKDF-SHA512, ECDSA P-384." }
+  },
+  {
+    date: "2026-05-30", type: "new",
+    title: { fr:"ZK Toolkit — Music, Engine & Converter en ligne", en:"ZK Toolkit — Music, Engine & Converter online", es:"ZK Toolkit — Music, Engine y Converter en línea", de:"ZK Toolkit — Music, Engine & Converter online", it:"ZK Toolkit — Music, Engine e Converter online", pt:"ZK Toolkit — Music, Engine e Converter online", ru:"ZK Toolkit — Music, Engine и Converter онлайн", zh:"ZK Toolkit — 音乐、引擎和转换器上线", ja:"ZK Toolkit — Music、Engine & Converter オンライン", ko:"ZK Toolkit — Music, Engine & Converter 온라인", ar:"ZK Toolkit — Music و Engine و Converter متاحة", hi:"ZK Toolkit — Music, Engine & Converter ऑनलाइन", bn:"ZK Toolkit — Music, Engine ও Converter অনলাইন", vi:"ZK Toolkit — Music, Engine & Converter trực tuyến", tr:"ZK Toolkit — Music, Engine ve Converter çevrimiçi" },
+    desc: { fr:"Zenkari Music Pro, ZK Audio Engine et Zenkari Converter déployés sur toolkit.zenkari-menu.org.", en:"Zenkari Music Pro, ZK Audio Engine and Zenkari Converter deployed on toolkit.zenkari-menu.org.", es:"Zenkari Music Pro, ZK Audio Engine y Zenkari Converter desplegados en toolkit.zenkari-menu.org.", de:"Zenkari Music Pro, ZK Audio Engine und Zenkari Converter auf toolkit.zenkari-menu.org.", it:"Zenkari Music Pro, ZK Audio Engine e Zenkari Converter su toolkit.zenkari-menu.org.", pt:"Zenkari Music Pro, ZK Audio Engine e Zenkari Converter em toolkit.zenkari-menu.org.", ru:"Zenkari Music Pro, ZK Audio Engine и Zenkari Converter на toolkit.zenkari-menu.org.", zh:"Zenkari Music Pro、ZK Audio Engine和Zenkari Converter已部署在toolkit.zenkari-menu.org。", ja:"Zenkari Music Pro、ZK Audio Engine、Zenkari Converterをtoolkit.zenkari-menu.orgに展開。", ko:"Zenkari Music Pro, ZK Audio Engine, Zenkari Converter가 toolkit.zenkari-menu.org에 배포.", ar:"تم نشر Zenkari Music Pro و ZK Audio Engine و Zenkari Converter على toolkit.zenkari-menu.org.", hi:"Zenkari Music Pro, ZK Audio Engine और Zenkari Converter toolkit.zenkari-menu.org पर तैनात।", bn:"Zenkari Music Pro, ZK Audio Engine ও Converter toolkit.zenkari-menu.org-এ স্থাপিত।", vi:"Zenkari Music Pro, ZK Audio Engine và Converter được triển khai tại toolkit.zenkari-menu.org.", tr:"Zenkari Music Pro, ZK Audio Engine ve Converter toolkit.zenkari-menu.org'da yayında." }
+  },
+  {
+    date: "2026-05-30", type: "new",
+    title: { fr:"Zenkari Encrypt v12F — Appels WebRTC chiffrés", en:"Zenkari Encrypt v12F — Encrypted WebRTC Calls", es:"Zenkari Encrypt v12F — Llamadas WebRTC cifradas", de:"Zenkari Encrypt v12F — Verschlüsselte WebRTC-Anrufe", it:"Zenkari Encrypt v12F — Chiamate WebRTC cifrate", pt:"Zenkari Encrypt v12F — Chamadas WebRTC cifradas", ru:"Zenkari Encrypt v12F — Зашифрованные WebRTC звонки", zh:"Zenkari Encrypt v12F — 加密WebRTC通话", ja:"Zenkari Encrypt v12F — 暗号化WebRTC通話", ko:"Zenkari Encrypt v12F — 암호화된 WebRTC 통화", ar:"Zenkari Encrypt v12F — مكالمات WebRTC مشفرة", hi:"Zenkari Encrypt v12F — एन्क्रिप्टेड WebRTC कॉल", bn:"Zenkari Encrypt v12F — এনক্রিপ্টেড WebRTC কল", vi:"Zenkari Encrypt v12F — Cuộc gọi WebRTC mã hóa", tr:"Zenkari Encrypt v12F — Şifreli WebRTC Aramaları" },
+    desc: { fr:"Appels audio/vidéo chiffrés avec coturn STUN/TURN, X25519 + Double Ratchet et Forward Secrecy complète.", en:"Encrypted audio/video calls with coturn STUN/TURN, X25519 + Double Ratchet and full Forward Secrecy.", es:"Llamadas cifradas con coturn STUN/TURN, X25519 + Double Ratchet y Forward Secrecy completo.", de:"Verschlüsselte Anrufe mit coturn STUN/TURN, X25519 + Double Ratchet und vollständiger Forward Secrecy.", it:"Chiamate cifrate con coturn STUN/TURN, X25519 + Double Ratchet e Forward Secrecy completa.", pt:"Chamadas cifradas com coturn STUN/TURN, X25519 + Double Ratchet e Forward Secrecy completo.", ru:"Зашифрованные звонки с coturn STUN/TURN, X25519 + Double Ratchet и полной Forward Secrecy.", zh:"使用coturn STUN/TURN、X25519 + Double Ratchet和完整前向保密的加密音视频通话。", ja:"coturn STUN/TURN、X25519 + Double Ratchet、完全なForward Secrecyで暗号化通話。", ko:"coturn STUN/TURN, X25519 + Double Ratchet, 완전한 Forward Secrecy로 암호화 통화.", ar:"مكالمات مشفرة مع coturn STUN/TURN و X25519 + Double Ratchet و Forward Secrecy كاملة.", hi:"coturn STUN/TURN, X25519 + Double Ratchet और Forward Secrecy के साथ एन्क्रिप्टेड कॉल।", bn:"coturn STUN/TURN, X25519 + Double Ratchet ও Forward Secrecy সহ এনক্রিপ্টেড কল।", vi:"Cuộc gọi mã hóa với coturn STUN/TURN, X25519 + Double Ratchet và Forward Secrecy đầy đủ.", tr:"coturn STUN/TURN, X25519 + Double Ratchet ve tam Forward Secrecy ile şifreli aramalar." }
+  },
+  {
+    date: "2026-Q3", type: "soon",
+    title: { fr:"Zenkari Shield v8.0 — Détection IA", en:"Zenkari Shield v8.0 — AI Detection", es:"Zenkari Shield v8.0 — Detección IA", de:"Zenkari Shield v8.0 — KI-Erkennung", it:"Zenkari Shield v8.0 — Rilevamento IA", pt:"Zenkari Shield v8.0 — Detecção IA", ru:"Zenkari Shield v8.0 — ИИ обнаружение", zh:"Zenkari Shield v8.0 — AI检测", ja:"Zenkari Shield v8.0 — AI検出", ko:"Zenkari Shield v8.0 — AI 탐지", ar:"Zenkari Shield v8.0 — كشف الذكاء الاصطناعي", hi:"Zenkari Shield v8.0 — AI डिटेक्शन", bn:"Zenkari Shield v8.0 — AI সনাক্তকরণ", vi:"Zenkari Shield v8.0 — Phát hiện AI", tr:"Zenkari Shield v8.0 — AI Algılama" },
+    desc: { fr:"Détection comportementale des menaces par IA, analyse réseau temps réel et réponse automatique aux incidents.", en:"AI behavioral threat detection, real-time network analysis and automatic incident response.", es:"Detección conductual de amenazas por IA, análisis de red en tiempo real y respuesta automática.", de:"KI-basierte Verhaltens-Bedrohungserkennung, Echtzeit-Netzwerkanalyse und automatische Reaktion.", it:"Rilevamento comportamentale delle minacce IA, analisi di rete in tempo reale e risposta automatica.", pt:"Detecção comportamental de ameaças por IA, análise de rede em tempo real e resposta automática.", ru:"ИИ поведенческое обнаружение угроз, анализ сети в реальном времени и автоматическое реагирование.", zh:"AI行为威胁检测、实时网络分析和自动事件响应。", ja:"AI行動脅威検出、リアルタイムネットワーク分析、自動インシデント対応。", ko:"AI 행동 위협 탐지, 실시간 네트워크 분석, 자동 인시던트 대응.", ar:"كشف التهديدات السلوكية بالذكاء الاصطناعي وتحليل الشبكة في الوقت الفعلي.", hi:"AI व्यवहार खतरा पहचान, रीयल-टाइम नेटवर्क विश्लेषण और स्वचालित प्रतिक्रिया।", bn:"AI আচরণগত হুমকি সনাক্তকরণ, রিয়েল-টাইম নেটওয়ার্ক বিশ্লেষণ।", vi:"Phát hiện mối đe dọa hành vi AI, phân tích mạng thời gian thực và phản hồi tự động.", tr:"AI davranışsal tehdit tespiti, gerçek zamanlı ağ analizi ve otomatik olay müdahalesi." }
+  },
+  {
+    date: "2026-Q3", type: "soon",
+    title: { fr:"ZenkariPass v11 — Post-Quantique Natif", en:"ZenkariPass v11 — Native Post-Quantum", es:"ZenkariPass v11 — Post-Cuántico Nativo", de:"ZenkariPass v11 — Natives Post-Quanten", it:"ZenkariPass v11 — Post-Quantistico Nativo", pt:"ZenkariPass v11 — Pós-Quântico Nativo", ru:"ZenkariPass v11 — Нативный Пост-Квантовый", zh:"ZenkariPass v11 — 原生后量子", ja:"ZenkariPass v11 — ネイティブポスト量子", ko:"ZenkariPass v11 — 네이티브 포스트 양자", ar:"ZenkariPass v11 — ما بعد الكم الأصلي", hi:"ZenkariPass v11 — नेटिव पोस्ट-क्वांटम", bn:"ZenkariPass v11 — নেটিভ পোস্ট-কোয়ান্টাম", vi:"ZenkariPass v11 — Hậu lượng tử gốc", tr:"ZenkariPass v11 — Yerel Post-Kuantum" },
+    desc: { fr:"Intégration native ML-KEM (Kyber) + ML-DSA (Dilithium) via WASM. Architecture hybride ECC + PQC NIST FIPS 203/204.", en:"Native ML-KEM (Kyber) + ML-DSA (Dilithium) via WASM. Hybrid ECC + PQC NIST FIPS 203/204 architecture.", es:"ML-KEM (Kyber) + ML-DSA (Dilithium) nativo via WASM. Arquitectura híbrida ECC + PQC NIST FIPS 203/204.", de:"Natives ML-KEM (Kyber) + ML-DSA (Dilithium) via WASM. Hybride ECC + PQC NIST FIPS 203/204 Architektur.", it:"ML-KEM (Kyber) + ML-DSA (Dilithium) nativo via WASM. Architettura ibrida ECC + PQC NIST FIPS 203/204.", pt:"ML-KEM (Kyber) + ML-DSA (Dilithium) nativo via WASM. Arquitetura híbrida ECC + PQC NIST FIPS 203/204.", ru:"Нативный ML-KEM (Kyber) + ML-DSA (Dilithium) через WASM. Гибридная ECC + PQC NIST FIPS 203/204.", zh:"通过WASM集成ML-KEM(Kyber) + ML-DSA(Dilithium)。ECC + PQC NIST FIPS 203/204混合架构。", ja:"WASMによるネイティブML-KEM(Kyber) + ML-DSA(Dilithium)。ECC + PQC NIST FIPS 203/204ハイブリッド。", ko:"WASM을 통한 네이티브 ML-KEM(Kyber) + ML-DSA(Dilithium). ECC + PQC NIST FIPS 203/204 하이브리드.", ar:"ML-KEM (Kyber) + ML-DSA (Dilithium) الأصلي عبر WASM. بنية هجينة ECC + PQC.", hi:"WASM के माध्यम से ML-KEM (Kyber) + ML-DSA (Dilithium)। ECC + PQC NIST FIPS 203/204 हाइब्रिड।", bn:"WASM-এর মাধ্যমে ML-KEM (Kyber) + ML-DSA (Dilithium)। ECC + PQC হাইব্রিড।", vi:"ML-KEM (Kyber) + ML-DSA (Dilithium) gốc qua WASM. Kiến trúc lai ECC + PQC NIST FIPS 203/204.", tr:"WASM üzerinden yerel ML-KEM (Kyber) + ML-DSA (Dilithium). ECC + PQC NIST FIPS 203/204 hibrit." }
+  },
+  {
+    date: "2026-Q4", type: "soon",
+    title: { fr:"Zenkari Encrypt v13 — Résistance Quantique", en:"Zenkari Encrypt v13 — Quantum Resistance", es:"Zenkari Encrypt v13 — Resistencia Cuántica", de:"Zenkari Encrypt v13 — Quantenresistenz", it:"Zenkari Encrypt v13 — Resistenza Quantistica", pt:"Zenkari Encrypt v13 — Resistência Quântica", ru:"Zenkari Encrypt v13 — Квантовая стойкость", zh:"Zenkari Encrypt v13 — 抗量子", ja:"Zenkari Encrypt v13 — 量子耐性", ko:"Zenkari Encrypt v13 — 양자 내성", ar:"Zenkari Encrypt v13 — مقاومة الكم", hi:"Zenkari Encrypt v13 — क्वांटम प्रतिरोध", bn:"Zenkari Encrypt v13 — কোয়ান্টাম প্রতিরোধ", vi:"Zenkari Encrypt v13 — Kháng lượng tử", tr:"Zenkari Encrypt v13 — Kuantum Direnci" },
+    desc: { fr:"Chiffrement post-quantique hybride CRYSTALS-Kyber + X25519. Résistant aux attaques des ordinateurs quantiques via l'algorithme de Shor.", en:"Hybrid post-quantum CRYSTALS-Kyber + X25519 encryption. Resistant to quantum computer attacks via Shor's algorithm.", es:"Cifrado post-cuántico híbrido CRYSTALS-Kyber + X25519. Resistente a ataques de computadoras cuánticas.", de:"Hybride Post-Quanten-Verschlüsselung CRYSTALS-Kyber + X25519. Resistent gegen Quantenangriffe.", it:"Cifratura post-quantistica ibrida CRYSTALS-Kyber + X25519. Resistente agli attacchi quantistici.", pt:"Criptografia pós-quântica híbrida CRYSTALS-Kyber + X25519. Resistente a ataques quânticos.", ru:"Гибридное пост-квантовое шифрование CRYSTALS-Kyber + X25519. Устойчиво к алгоритму Шора.", zh:"混合后量子CRYSTALS-Kyber + X25519加密。抵抗量子计算机Shor算法攻击。", ja:"ハイブリッドポスト量子CRYSTALS-Kyber + X25519暗号化。Shorアルゴリズムに対する耐性。", ko:"하이브리드 포스트 양자 CRYSTALS-Kyber + X25519 암호화. Shor 알고리즘 공격에 내성.", ar:"تشفير هجين ما بعد الكم CRYSTALS-Kyber + X25519. مقاوم لهجمات الكمبيوتر الكمي.", hi:"हाइब्रिड पोस्ट-क्वांटम CRYSTALS-Kyber + X25519 एन्क्रिप्शन। Shor एल्गोरिदम के विरुद्ध प्रतिरोधी।", bn:"হাইব্রিড পোস্ট-কোয়ান্টাম CRYSTALS-Kyber + X25519। Shor অ্যালগরিদম আক্রমণে প্রতিরোধী।", vi:"Mã hóa hậu lượng tử lai CRYSTALS-Kyber + X25519. Kháng tấn công máy tính lượng tử qua thuật toán Shor.", tr:"Hibrit post-kuantum CRYSTALS-Kyber + X25519 şifreleme. Shor algoritması saldırılarına dayanıklı." }
+  }
+];
+
+const T = {
+  fr: {
+    title:"ZKmenu", subtitle:"PLATEFORME DE SÉCURITÉ UNIFIÉE – CHOISISSEZ VOTRE APPLICATION",
+    ze_title:"Zenkari Encrypt", ze_desc:"Messagerie chiffrée E2E, transfert de fichiers sécurisé et appels audio/vidéo chiffrés",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Fingerprints d'identité", ze_f4:"Appels audio/vidéo chiffrés",
+    btn_encrypt:"⬡ LANCER ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Gestionnaire de mots de passe zero-knowledge avec double chiffrement AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Auto-lock 10min",
+    btn_pass:"LANCER ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Authentificateur 2FA avec scan QR et génération de codes TOTP",
+    btn_download_zkpa:"TÉLÉCHARGER ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Suite complète : Music Pro, Audio Engine, Converter – 60+ formats", zktk_all_utils:"Tous les utilitaires",
+    btn_toolkit:"LANCER TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BÊTA", zkia_desc:"Assistant IA avec recherche web, Wikipedia hors ligne et OCR intégré",
+    btn_launch_zkia:"LANCER TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BÊTA", zks_desc:"Suite EDR complète avec antivirus ClamAV, VPN intégré et quarantaine chiffrée",
+    zks_feat1:"Moteur ClamAV + Heuristique", zks_feat2:"Ransomware Shield (kill auto)", zks_feat3:"VPN WireGuard + OpenVPN intégré", zks_feat4:"Quarantaine AES-256-GCM", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ TÉLÉCHARGER SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"Cloud personnel 100% chiffré de bout en bout. Vos fichiers, photos et documents protégés par AES-256-GCM.",
+    zd_f1:"Chiffrement AES-256-GCM côté client", zd_f2:"Zero-knowledge : personne ne lit vos données", zd_f3:"Sync multi-appareils sécurisée", zd_f4:"Partage de liens chiffrés avec expiration",
+    zd_free:"5 GB GRATUITS À L'INSCRIPTION", btn_drive:"⬡ LANCER DRIVE",
+    feat_2fa:"Authentification 2FA TOTP", feat_totp:"Génération codes TOTP", feat_qr_detect:"Détection QR par screenshot",
+    feat_tz:"Tous fuseaux horaires", feat_offline:"Hors ligne", feat_langs:"15 langues",
+    feat_ai_chat:"Assistant Chat IA", feat_ai_auto:"Automatisation Intelligente", feat_ai_sec:"Analyse de Sécurité", feat_ai_real:"Traitement Temps Réel",
+    protected:"PROTÉGÉ",
+    status_operational:"Toutes les applications sont opérationnelles", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 Applications disponibles",
+    footer_copyright:"© 2026 ZKmenu – Tous droits réservés",
+    contact_title:"📧 AIDE / CONTACT", contact_hint_prefix:"Vos messages seront envoyés à",
+    contact_name:"Nom", contact_email:"Email", contact_message:"Message", contact_send:"ENVOYER ➥", contact_success:"Votre client mail va s'ouvrir…",
+    cl_title:"NOUVEAUTÉS & ROADMAP", cl_label:"Mises à jour", cl_type_new:"NOUVEAU", cl_type_update:"MISE À JOUR", cl_type_soon:"BIENTÔT"
+  },
+  en: {
+    title:"ZKmenu", subtitle:"UNIFIED SECURITY PLATFORM – CHOOSE YOUR APPLICATION",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E encrypted messaging, secure file transfer and encrypted audio/video calls",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Identity Fingerprints", ze_f4:"Encrypted audio/video calls",
+    btn_encrypt:"⬡ LAUNCH ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Zero-knowledge password manager with dual AES-256 + ChaCha20 encryption",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Auto-lock 10min",
+    btn_pass:"LAUNCH ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"2FA authenticator with QR scan and TOTP code generation",
+    btn_download_zkpa:"DOWNLOAD ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Complete suite: Music Pro, Audio Engine, Converter – 60+ formats", zktk_all_utils:"All utilities",
+    btn_toolkit:"LAUNCH TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"AI assistant with web search, offline Wikipedia and integrated OCR",
+    btn_launch_zkia:"LAUNCH TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Full EDR suite with ClamAV antivirus, built-in VPN and encrypted quarantine",
+    zks_feat1:"ClamAV + Heuristic Engine", zks_feat2:"Ransomware Shield (auto-kill)", zks_feat3:"WireGuard + OpenVPN built-in", zks_feat4:"AES-256-GCM Quarantine", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ DOWNLOAD SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"100% end-to-end encrypted personal cloud. Your files, photos and documents protected by AES-256-GCM.",
+    zd_f1:"Client-side AES-256-GCM encryption", zd_f2:"Zero-knowledge: no one reads your data", zd_f3:"Secure multi-device sync", zd_f4:"Encrypted link sharing with expiration",
+    zd_free:"5 GB FREE AT SIGNUP", btn_drive:"⬡ LAUNCH DRIVE",
+    feat_2fa:"TOTP 2FA Authentication", feat_totp:"TOTP code generation", feat_qr_detect:"QR via screenshot",
+    feat_tz:"All timezones", feat_offline:"Works offline", feat_langs:"15 languages",
+    feat_ai_chat:"AI Chat Assistant", feat_ai_auto:"Smart Automation", feat_ai_sec:"Security Analysis", feat_ai_real:"Real-time Processing",
+    protected:"PROTECTED",
+    status_operational:"All applications operational", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 Applications available",
+    footer_copyright:"© 2026 ZKmenu – All rights reserved",
+    contact_title:"📧 HELP / CONTACT", contact_hint_prefix:"Your messages will be sent to",
+    contact_name:"Name", contact_email:"Email", contact_message:"Message", contact_send:"SEND ➥", contact_success:"Your mail client will open…",
+    cl_title:"UPDATES & ROADMAP", cl_label:"Updates", cl_type_new:"NEW", cl_type_update:"UPDATE", cl_type_soon:"SOON"
+  },
+  es: {
+    title:"ZKmenu", subtitle:"PLATAFORMA DE SEGURIDAD UNIFICADA – ELIGE TU APLICACIÓN",
+    ze_title:"Zenkari Encrypt", ze_desc:"Mensajería cifrada E2E, transferencia segura de archivos y llamadas de audio/video cifradas",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Huellas de identidad", ze_f4:"Llamadas de audio/video cifradas",
+    btn_encrypt:"⬡ INICIAR ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Gestor de contraseñas zero-knowledge con doble cifrado AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Bloqueo automático 10min",
+    btn_pass:"INICIAR ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Autenticador 2FA con escaneo QR y generación de códigos TOTP",
+    btn_download_zkpa:"DESCARGAR ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Suite completa: Music Pro, Audio Engine, Converter – 60+ formatos", zktk_all_utils:"Todos los utilitarios",
+    btn_toolkit:"INICIAR TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"Asistente IA con búsqueda web, Wikipedia sin conexión y OCR integrado",
+    btn_launch_zkia:"INICIAR TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Suite EDR completa con antivirus ClamAV, VPN integrado y cuarentena cifrada",
+    zks_feat1:"Motor ClamAV + Heurístico", zks_feat2:"Ransomware Shield (cierre auto)", zks_feat3:"WireGuard + OpenVPN integrado", zks_feat4:"Cuarentena AES-256-GCM", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ DESCARGAR SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"Nube personal 100% cifrada de extremo a extremo. Tus archivos, fotos y documentos protegidos por AES-256-GCM.",
+    zd_f1:"Cifrado AES-256-GCM del lado del cliente", zd_f2:"Zero-knowledge: nadie lee tus datos", zd_f3:"Sincronización multi-dispositivo segura", zd_f4:"Compartir enlaces cifrados con expiración",
+    zd_free:"5 GB GRATIS AL REGISTRARSE", btn_drive:"⬡ INICIAR DRIVE",
+    feat_2fa:"Autenticación 2FA TOTP", feat_totp:"Generación de códigos TOTP", feat_qr_detect:"QR por captura de pantalla",
+    feat_tz:"Todas las zonas horarias", feat_offline:"Funciona sin conexión", feat_langs:"15 idiomas",
+    feat_ai_chat:"Asistente de Chat IA", feat_ai_auto:"Automatización Inteligente", feat_ai_sec:"Análisis de Seguridad", feat_ai_real:"Procesamiento en Tiempo Real",
+    protected:"PROTEGIDO",
+    status_operational:"Todas las aplicaciones operativas", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 Aplicaciones disponibles",
+    footer_copyright:"© 2026 ZKmenu – Todos los derechos reservados",
+    contact_title:"📧 AYUDA / CONTACTO", contact_hint_prefix:"Sus mensajes serán enviados a",
+    contact_name:"Nombre", contact_email:"Correo", contact_message:"Mensaje", contact_send:"ENVIAR ➥", contact_success:"Se abrirá tu cliente de correo…",
+    cl_title:"NOVEDADES Y ROADMAP", cl_label:"Actualizaciones", cl_type_new:"NUEVO", cl_type_update:"ACTUALIZACIÓN", cl_type_soon:"PRÓXIMAMENTE"
+  },
+  de: {
+    title:"ZKmenu", subtitle:"EINHEITLICHE SICHERHEITSPLATTFORM – WÄHLE DEINE ANWENDUNG",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E-verschlüsselte Nachrichten, sicherer Dateitransfer und verschlüsselte Audio-/Videoanrufe",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Identitäts-Fingerprints", ze_f4:"Verschlüsselte Audio-/Videoanrufe",
+    btn_encrypt:"⬡ ENCRYPT STARTEN",
+    zkp_title:"ZenkariPass", zkp_desc:"Zero-Knowledge-Passwort-Manager mit doppelter AES-256 + ChaCha20 Verschlüsselung",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Auto-Sperre 10min",
+    btn_pass:"ZKPASS STARTEN",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"2FA-Authentifikator mit QR-Scan und TOTP-Code-Generierung",
+    btn_download_zkpa:"ZKPA HERUNTERLADEN",
+    zktk_title:"ZK Toolkit", zktk_desc:"Komplette Suite: Music Pro, Audio Engine, Converter – 60+ Formate", zktk_all_utils:"Alle Hilfsprogramme",
+    btn_toolkit:"TOOLKIT STARTEN",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"KI-Assistent mit Websuche, Offline-Wikipedia und integriertem OCR",
+    btn_launch_zkia:"TECUIT IA STARTEN",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Vollständige EDR-Suite mit ClamAV-Antivirus, integriertem VPN und verschlüsselter Quarantäne",
+    zks_feat1:"ClamAV + Heuristik-Engine", zks_feat2:"Ransomware Shield (Auto-Stopp)", zks_feat3:"WireGuard + OpenVPN integriert", zks_feat4:"AES-256-GCM-Quarantäne", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ SHIELD HERUNTERLADEN",
+    zd_title:"Zenkari Drive", zd_desc:"100% Ende-zu-Ende verschlüsselte persönliche Cloud. Deine Dateien, Fotos und Dokumente geschützt durch AES-256-GCM.",
+    zd_f1:"Clientseitige AES-256-GCM-Verschlüsselung", zd_f2:"Zero-Knowledge: niemand liest deine Daten", zd_f3:"Sichere Multi-Geräte-Synchronisation", zd_f4:"Verschlüsselte Link-Freigabe mit Ablauf",
+    zd_free:"5 GB KOSTENLOS BEI ANMELDUNG", btn_drive:"⬡ DRIVE STARTEN",
+    feat_2fa:"TOTP-2FA-Authentifizierung", feat_totp:"TOTP-Code-Generierung", feat_qr_detect:"QR per Screenshot",
+    feat_tz:"Alle Zeitzonen", feat_offline:"Funktioniert offline", feat_langs:"15 Sprachen",
+    feat_ai_chat:"KI-Chat-Assistent", feat_ai_auto:"Intelligente Automatisierung", feat_ai_sec:"Sicherheitsanalyse", feat_ai_real:"Echtzeit-Verarbeitung",
+    protected:"GESCHÜTZT",
+    status_operational:"Alle Anwendungen betriebsbereit", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 Anwendungen verfügbar",
+    footer_copyright:"© 2026 ZKmenu – Alle Rechte vorbehalten",
+    contact_title:"📧 HILFE / KONTAKT", contact_hint_prefix:"Ihre Nachrichten werden gesendet an",
+    contact_name:"Name", contact_email:"E-Mail", contact_message:"Nachricht", contact_send:"SENDEN ➥", contact_success:"Ihr E-Mail-Client wird geöffnet…",
+    cl_title:"NEUIGKEITEN & ROADMAP", cl_label:"Updates", cl_type_new:"NEU", cl_type_update:"UPDATE", cl_type_soon:"BALD"
+  },
+  it: {
+    title:"ZKmenu", subtitle:"PIATTAFORMA DI SICUREZZA UNIFICATA – SCEGLI LA TUA APPLICAZIONE",
+    ze_title:"Zenkari Encrypt", ze_desc:"Messaggistica cifrata E2E, trasferimento file sicuro e chiamate audio/video cifrate",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Impronte di identità", ze_f4:"Chiamate audio/video cifrate",
+    btn_encrypt:"⬡ AVVIA ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Gestore di password zero-knowledge con doppia cifratura AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Blocco automatico 10min",
+    btn_pass:"AVVIA ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Autenticatore 2FA con scansione QR e generazione codici TOTP",
+    btn_download_zkpa:"SCARICA ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Suite completa: Music Pro, Audio Engine, Converter – 60+ formati", zktk_all_utils:"Tutti gli strumenti",
+    btn_toolkit:"AVVIA TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"Assistente IA con ricerca web, Wikipedia offline e OCR integrato",
+    btn_launch_zkia:"AVVIA TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Suite EDR completa con antivirus ClamAV, VPN integrato e quarantena cifrata",
+    zks_feat1:"Motore ClamAV + Euristico", zks_feat2:"Ransomware Shield (kill auto)", zks_feat3:"WireGuard + OpenVPN integrato", zks_feat4:"Quarantena AES-256-GCM", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ SCARICA SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"Cloud personale 100% cifrato end-to-end. I tuoi file, foto e documenti protetti da AES-256-GCM.",
+    zd_f1:"Cifratura AES-256-GCM lato client", zd_f2:"Zero-knowledge: nessuno legge i tuoi dati", zd_f3:"Sync multi-dispositivo sicura", zd_f4:"Condivisione link cifrati con scadenza",
+    zd_free:"5 GB GRATUITI ALLA REGISTRAZIONE", btn_drive:"⬡ AVVIA DRIVE",
+    feat_2fa:"Autenticazione 2FA TOTP", feat_totp:"Generazione codici TOTP", feat_qr_detect:"QR tramite screenshot",
+    feat_tz:"Tutti i fusi orari", feat_offline:"Funziona offline", feat_langs:"15 lingue",
+    feat_ai_chat:"Assistente Chat IA", feat_ai_auto:"Automazione intelligente", feat_ai_sec:"Analisi di sicurezza", feat_ai_real:"Elaborazione in tempo reale",
+    protected:"PROTETTO",
+    status_operational:"Tutte le applicazioni sono operative", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 applicazioni disponibili",
+    footer_copyright:"© 2026 ZKmenu – Tutti i diritti riservati",
+    contact_title:"📧 AIUTO / CONTATTO", contact_hint_prefix:"I tuoi messaggi saranno inviati a",
+    contact_name:"Nome", contact_email:"Email", contact_message:"Messaggio", contact_send:"INVIA ➥", contact_success:"Il tuo client email si aprirà…",
+    cl_title:"NOVITÀ E ROADMAP", cl_label:"Aggiornamenti", cl_type_new:"NUOVO", cl_type_update:"AGGIORNAMENTO", cl_type_soon:"PROSSIMAMENTE"
+  },
+  pt: {
+    title:"ZKmenu", subtitle:"PLATAFORMA DE SEGURANÇA UNIFICADA – ESCOLHA SUA APLICAÇÃO",
+    ze_title:"Zenkari Encrypt", ze_desc:"Mensagens cifradas E2E, transferência segura de arquivos e chamadas de áudio/vídeo cifradas",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Impressões digitais de identidade", ze_f4:"Chamadas de áudio/vídeo cifradas",
+    btn_encrypt:"⬡ INICIAR ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Gerenciador de senhas zero-knowledge com dupla criptografia AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Bloqueio automático 10min",
+    btn_pass:"INICIAR ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Autenticador 2FA com digitalização QR e geração de códigos TOTP",
+    btn_download_zkpa:"BAIXAR ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Suite completa: Music Pro, Audio Engine, Converter – 60+ formatos", zktk_all_utils:"Todos os utilitários",
+    btn_toolkit:"INICIAR TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"Assistente de IA com busca na web, Wikipedia offline e OCR integrado",
+    btn_launch_zkia:"INICIAR TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Suite EDR completa com antivírus ClamAV, VPN integrado e quarentena cifrada",
+    zks_feat1:"Motor ClamAV + Heurístico", zks_feat2:"Ransomware Shield (kill auto)", zks_feat3:"WireGuard + OpenVPN integrado", zks_feat4:"Quarentena AES-256-GCM", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ BAIXAR SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"Nuvem pessoal 100% criptografada de ponta a ponta. Seus arquivos, fotos e documentos protegidos por AES-256-GCM.",
+    zd_f1:"Criptografia AES-256-GCM no cliente", zd_f2:"Zero-knowledge: ninguém lê seus dados", zd_f3:"Sincronização multi-dispositivo segura", zd_f4:"Compartilhamento de links criptografados com expiração",
+    zd_free:"5 GB GRÁTIS NO CADASTRO", btn_drive:"⬡ INICIAR DRIVE",
+    feat_2fa:"Autenticação 2FA TOTP", feat_totp:"Geração de códigos TOTP", feat_qr_detect:"QR por captura de tela",
+    feat_tz:"Todos os fusos horários", feat_offline:"Funciona offline", feat_langs:"15 idiomas",
+    feat_ai_chat:"Assistente de Chat com IA", feat_ai_auto:"Automação Inteligente", feat_ai_sec:"Análise de Segurança", feat_ai_real:"Processamento em Tempo Real",
+    protected:"PROTEGIDO",
+    status_operational:"Todas as aplicações operacionais", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 aplicações disponíveis",
+    footer_copyright:"© 2026 ZKmenu – Todos os direitos reservados",
+    contact_title:"📧 AJUDA / CONTATO", contact_hint_prefix:"Suas mensagens serão enviadas para",
+    contact_name:"Nome", contact_email:"E-mail", contact_message:"Mensagem", contact_send:"ENVIAR ➥", contact_success:"Seu cliente de email será aberto…",
+    cl_title:"NOVIDADES E ROADMAP", cl_label:"Atualizações", cl_type_new:"NOVO", cl_type_update:"ATUALIZAÇÃO", cl_type_soon:"EM BREVE"
+  },
+  ru: {
+    title:"ZKmenu", subtitle:"ЕДИНАЯ ПЛАТФОРМА БЕЗОПАСНОСТИ – ВЫБЕРИТЕ ПРИЛОЖЕНИЕ",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E зашифрованные сообщения, безопасная передача файлов и зашифрованные аудио/видео звонки",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"Отпечатки идентификации", ze_f4:"Зашифрованные аудио/видео звонки",
+    btn_encrypt:"⬡ ЗАПУСТИТЬ ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Менеджер паролей с нулевым разглашением и двойным шифрованием AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1М + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Авто-блокировка 10мин",
+    btn_pass:"ЗАПУСТИТЬ ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Аутентификатор 2FA со сканированием QR и генерацией кодов TOTP",
+    btn_download_zkpa:"СКАЧАТЬ ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Полный пакет: Music Pro, Audio Engine, Converter – 60+ форматов", zktk_all_utils:"Все утилиты",
+    btn_toolkit:"ЗАПУСТИТЬ TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 БЕТА", zkia_desc:"ИИ-ассистент с поиском в сети, офлайн Википедия и встроенный OCR",
+    btn_launch_zkia:"ЗАПУСТИТЬ TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 БЕТА", zks_desc:"Полный пакет EDR с антивирусом ClamAV, встроенным VPN и зашифрованным карантином",
+    zks_feat1:"Движок ClamAV + Эвристика", zks_feat2:"Ransomware Shield (авто-уничтожение)", zks_feat3:"WireGuard + OpenVPN встроены", zks_feat4:"Карантин AES-256-GCM", zks_feat6:"Tamper Shield",
+    btn_download_zks:"⬡ СКАЧАТЬ SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"100% зашифрованное личное облако. Ваши файлы, фото и документы защищены AES-256-GCM.",
+    zd_f1:"Клиентское шифрование AES-256-GCM", zd_f2:"Zero-knowledge: никто не читает ваши данные", zd_f3:"Безопасная синхронизация устройств", zd_f4:"Зашифрованные ссылки с истечением срока",
+    zd_free:"5 ГБ БЕСПЛАТНО ПРИ РЕГИСТРАЦИИ", btn_drive:"⬡ ЗАПУСТИТЬ DRIVE",
+    feat_2fa:"Аутентификация 2FA TOTP", feat_totp:"Генерация кодов TOTP", feat_qr_detect:"QR через скриншот",
+    feat_tz:"Все часовые пояса", feat_offline:"Работает офлайн", feat_langs:"15 языков",
+    feat_ai_chat:"ИИ-чат-ассистент", feat_ai_auto:"Умная автоматизация", feat_ai_sec:"Анализ безопасности", feat_ai_real:"Обработка в реальном времени",
+    protected:"ЗАЩИЩЕНО",
+    status_operational:"Все приложения работают", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 приложений доступно",
+    footer_copyright:"© 2026 ZKmenu – Все права защищены",
+    contact_title:"📧 ПОМОЩЬ / КОНТАКТ", contact_hint_prefix:"Ваши сообщения будут отправлены на",
+    contact_name:"Имя", contact_email:"Эл. почта", contact_message:"Сообщение", contact_send:"ОТПРАВИТЬ ➥", contact_success:"Открывается ваш почтовый клиент…",
+    cl_title:"НОВИНКИ И ДОРОЖНАЯ КАРТА", cl_label:"Обновления", cl_type_new:"НОВОЕ", cl_type_update:"ОБНОВЛЕНИЕ", cl_type_soon:"СКОРО"
+  },
+  zh: {
+    title:"ZKmenu", subtitle:"统一安全平台 – 选择您的应用",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E加密消息、安全文件传输和加密音视频通话",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"前向保密 (Double Ratchet)", ze_f3:"身份指纹", ze_f4:"加密音视频通话",
+    btn_encrypt:"⬡ 启动 ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"零知识密码管理器，双重 AES-256 + ChaCha20 加密",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + 自动锁定10分钟",
+    btn_pass:"启动 ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"带QR扫描和TOTP代码生成的2FA验证器",
+    btn_download_zkpa:"下载 ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"完整套件：Music Pro、Audio Engine、Converter – 60+格式", zktk_all_utils:"所有实用工具",
+    btn_toolkit:"启动工具包",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 测试版", zkia_desc:"AI助手，支持网络搜索、离线维基百科和集成OCR",
+    btn_launch_zkia:"启动 TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 测试版", zks_desc:"完整EDR套件，含ClamAV杀毒、内置VPN和加密隔离区",
+    zks_feat1:"ClamAV + 启发式引擎", zks_feat2:"勒索软件防护(自动终止)", zks_feat3:"内置 WireGuard + OpenVPN", zks_feat4:"AES-256-GCM 隔离区", zks_feat6:"防篡改盾",
+    btn_download_zks:"⬡ 下载 SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"100%端到端加密的个人云。您的文件、照片和文档由AES-256-GCM保护。",
+    zd_f1:"客户端AES-256-GCM加密", zd_f2:"零知识：无人能读取您的数据", zd_f3:"安全多设备同步", zd_f4:"带过期时间的加密链接分享",
+    zd_free:"注册即赠 5 GB 免费空间", btn_drive:"⬡ 启动 DRIVE",
+    feat_2fa:"TOTP 2FA 身份验证", feat_totp:"TOTP 代码生成", feat_qr_detect:"通过截图检测 QR",
+    feat_tz:"所有时区", feat_offline:"离线工作", feat_langs:"15 种语言",
+    feat_ai_chat:"AI 聊天助手", feat_ai_auto:"智能自动化", feat_ai_sec:"安全分析", feat_ai_real:"实时处理",
+    protected:"已保护",
+    status_operational:"所有应用均正常运行", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 个应用可用",
+    footer_copyright:"© 2026 ZKmenu – 保留所有权利",
+    contact_title:"📧 帮助 / 联系", contact_hint_prefix:"您的消息将发送至",
+    contact_name:"姓名", contact_email:"电子邮件", contact_message:"消息", contact_send:"发送 ➥", contact_success:"您的邮件客户端将打开…",
+    cl_title:"更新与路线图", cl_label:"更新", cl_type_new:"新增", cl_type_update:"更新", cl_type_soon:"即将推出"
+  },
+  ja: {
+    title:"ZKmenu", subtitle:"統合セキュリティプラットフォーム – アプリケーションを選択",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E暗号化メッセージ、安全なファイル転送、暗号化音声/ビデオ通話",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"前方秘匿性 (Double Ratchet)", ze_f3:"IDフィンガープリント", ze_f4:"暗号化音声/ビデオ通話",
+    btn_encrypt:"⬡ ENCRYPT を起動",
+    zkp_title:"ZenkariPass", zkp_desc:"AES-256 + ChaCha20 二重暗号化のゼロ知識パスワードマネージャー",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + 自動ロック10分",
+    btn_pass:"ZKPASS を起動",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"QRスキャンとTOTPコード生成機能付き2FA認証アプリ",
+    btn_download_zkpa:"ZKPA をダウンロード",
+    zktk_title:"ZK Toolkit", zktk_desc:"完全スイート: Music Pro、Audio Engine、Converter – 60+フォーマット", zktk_all_utils:"すべてのユーティリティ",
+    btn_toolkit:"TOOLKIT を起動",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 ベータ", zkia_desc:"ウェブ検索、オフラインWikipedia、統合OCR付きAIアシスタント",
+    btn_launch_zkia:"TECUIT IA を起動",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 ベータ", zks_desc:"ClamAVアンチウイルス、内蔵VPN、暗号化隔離付き完全EDRスイート",
+    zks_feat1:"ClamAV + ヒューリスティックエンジン", zks_feat2:"ランサムウェアシールド(自動停止)", zks_feat3:"WireGuard + OpenVPN 内蔵", zks_feat4:"AES-256-GCM 隔離", zks_feat6:"改ざん防止シールド",
+    btn_download_zks:"⬡ SHIELD をダウンロード",
+    zd_title:"Zenkari Drive", zd_desc:"100%エンドツーエンド暗号化の個人クラウド。ファイル、写真、ドキュメントをAES-256-GCMで保護。",
+    zd_f1:"クライアント側AES-256-GCM暗号化", zd_f2:"ゼロ知識：誰もデータを読めない", zd_f3:"安全なマルチデバイス同期", zd_f4:"期限付き暗号化リンク共有",
+    zd_free:"登録時に 5 GB 無料", btn_drive:"⬡ DRIVE を起動",
+    feat_2fa:"TOTP 2FA 認証", feat_totp:"TOTP コード生成", feat_qr_detect:"スクリーンショットによる QR 検出",
+    feat_tz:"すべてのタイムゾーン", feat_offline:"オフラインで動作", feat_langs:"15 言語",
+    feat_ai_chat:"AIチャットアシスタント", feat_ai_auto:"スマート自動化", feat_ai_sec:"セキュリティ分析", feat_ai_real:"リアルタイム処理",
+    protected:"保護済み",
+    status_operational:"すべてのアプリケーションが稼働中", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 個のアプリケーションが利用可能",
+    footer_copyright:"© 2026 ZKmenu – 全著作権所有",
+    contact_title:"📧 ヘルプ / お問い合わせ", contact_hint_prefix:"メッセージの送信先",
+    contact_name:"お名前", contact_email:"メール", contact_message:"メッセージ", contact_send:"送信 ➥", contact_success:"メークライアントが開きます…",
+    cl_title:"アップデートとロードマップ", cl_label:"更新情報", cl_type_new:"新規", cl_type_update:"アップデート", cl_type_soon:"近日公開"
+  },
+  ko: {
+    title:"ZKmenu", subtitle:"통합 보안 플랫폼 – 애플리케이션을 선택하세요",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E 암호화 메시지, 안전한 파일 전송 및 암호화된 오디오/비디오 통화",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"전방 비밀성 (Double Ratchet)", ze_f3:"ID 지문", ze_f4:"암호화된 오디오/비디오 통화",
+    btn_encrypt:"⬡ ENCRYPT 실행",
+    zkp_title:"ZenkariPass", zkp_desc:"AES-256 + ChaCha20 이중 암호화 제로 지식 비밀번호 관리자",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + 자동 잠금 10분",
+    btn_pass:"ZKPASS 실행",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"QR 스캔 및 TOTP 코드 생성 기능이 있는 2FA 인증기",
+    btn_download_zkpa:"ZKPA 다운로드",
+    zktk_title:"ZK Toolkit", zktk_desc:"완전한 스위트: Music Pro, Audio Engine, Converter – 60+ 형식", zktk_all_utils:"모든 유틸리티",
+    btn_toolkit:"TOOLKIT 실행",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 베타", zkia_desc:"웹 검색, 오프라인 Wikipedia 및 통합 OCR이 있는 AI 어시스턴트",
+    btn_launch_zkia:"TECUIT IA 실행",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 베타", zks_desc:"ClamAV 안티바이러스, 내장 VPN 및 암호화된 격리 기능의 완전한 EDR 스위트",
+    zks_feat1:"ClamAV + 휴리스틱 엔진", zks_feat2:"랜섬웨어 방어 (자동 종료)", zks_feat3:"WireGuard + OpenVPN 내장", zks_feat4:"AES-256-GCM 격리", zks_feat6:"변조 방지 방패",
+    btn_download_zks:"⬡ SHIELD 다운로드",
+    zd_title:"Zenkari Drive", zd_desc:"100% 종단간 암호화 개인 클라우드. 파일, 사진, 문서를 AES-256-GCM으로 보호합니다.",
+    zd_f1:"클라이언트 측 AES-256-GCM 암호화", zd_f2:"제로 지식: 누구도 데이터를 읽을 수 없음", zd_f3:"안전한 멀티 디바이스 동기화", zd_f4:"만료 기간이 있는 암호화 링크 공유",
+    zd_free:"가입 시 5GB 무료", btn_drive:"⬡ DRIVE 실행",
+    feat_2fa:"TOTP 2FA 인증", feat_totp:"TOTP 코드 생성", feat_qr_detect:"스크린샷을 통한 QR 감지",
+    feat_tz:"모든 시간대", feat_offline:"오프라인 작동", feat_langs:"15개 언어",
+    feat_ai_chat:"AI 채팅 어시스턴트", feat_ai_auto:"스마트 자동화", feat_ai_sec:"보안 분석", feat_ai_real:"실시간 처리",
+    protected:"보호됨",
+    status_operational:"모든 애플리케이션이 작동 중", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7개 애플리케이션 사용 가능",
+    footer_copyright:"© 2026 ZKmenu – 모든 권리 보유",
+    contact_title:"📧 도움말 / 연락처", contact_hint_prefix:"메시지는 다음으로 전송됩니다",
+    contact_name:"이름", contact_email:"이메일", contact_message:"메시지", contact_send:"보내기 ➥", contact_success:"메일 클라이언트가 열립니다…",
+    cl_title:"업데이트 및 로드맵", cl_label:"업데이트", cl_type_new:"신규", cl_type_update:"업데이트", cl_type_soon:"출시 예정"
+  },
+  tr: {
+    title:"ZKmenu", subtitle:"BİRLEŞİK GÜVENLİK PLATFORMU – UYGULAMANIZI SEÇİN",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E şifreli mesajlaşma, güvenli dosya transferi ve şifreli ses/video aramaları",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"İleri Gizlilik (Double Ratchet)", ze_f3:"Kimlik Parmak İzleri", ze_f4:"Şifreli ses/video aramaları",
+    btn_encrypt:"⬡ ENCRYPT'İ BAŞLAT",
+    zkp_title:"ZenkariPass", zkp_desc:"AES-256 + ChaCha20 çift şifreli sıfır bilgi şifre yöneticisi",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Otomatik kilit 10dk",
+    btn_pass:"ZKPASS'I BAŞLAT",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"QR tarama ve TOTP kod üretimi ile 2FA kimlik doğrulayıcı",
+    btn_download_zkpa:"ZKPA'YI İNDİR",
+    zktk_title:"ZK Toolkit", zktk_desc:"Eksiksiz paket: Music Pro, Audio Engine, Converter – 60+ format", zktk_all_utils:"Tüm yardımcı programlar",
+    btn_toolkit:"TOOLKIT'İ BAŞLAT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"Web arama, çevrimdışı Wikipedia ve entegre OCR ile AI asistanı",
+    btn_launch_zkia:"TECUIT IA'YI BAŞLAT",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"ClamAV antivirüs, yerleşik VPN ve şifreli karantina ile eksiksiz EDR paketi",
+    zks_feat1:"ClamAV + Sezgisel motor", zks_feat2:"Fidye yazılımı kalkanı (otomatik kapatma)", zks_feat3:"Yerleşik WireGuard + OpenVPN", zks_feat4:"AES-256-GCM karantina", zks_feat6:"Kurcalama kalkanı",
+    btn_download_zks:"⬡ SHIELD'İ İNDİR",
+    zd_title:"Zenkari Drive", zd_desc:"%100 uçtan uca şifreli kişisel bulut. Dosyalarınız, fotoğraflarınız ve belgeleriniz AES-256-GCM ile korunur.",
+    zd_f1:"İstemci tarafı AES-256-GCM şifreleme", zd_f2:"Sıfır bilgi: kimse verilerinizi okuyamaz", zd_f3:"Güvenli çoklu cihaz senkronizasyonu", zd_f4:"Süresi dolan şifreli bağlantı paylaşımı",
+    zd_free:"KAYITTA 5 GB ÜCRETSİZ", btn_drive:"⬡ DRIVE'İ BAŞLAT",
+    feat_2fa:"TOTP 2FA kimlik doğrulama", feat_totp:"TOTP kod üretimi", feat_qr_detect:"Ekran görüntüsünden QR",
+    feat_tz:"Tüm saat dilimleri", feat_offline:"Çevrimdışı çalışır", feat_langs:"15 dil",
+    feat_ai_chat:"AI Sohbet Asistanı", feat_ai_auto:"Akıllı Otomasyon", feat_ai_sec:"Güvenlik Analizi", feat_ai_real:"Gerçek Zamanlı İşleme",
+    protected:"KORUNUYOR",
+    status_operational:"Tüm uygulamalar çalışıyor", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 uygulama mevcut",
+    footer_copyright:"© 2026 ZKmenu – Tüm hakları saklıdır",
+    contact_title:"📧 YARDIM / İLETİŞİM", contact_hint_prefix:"Mesajlarınız şu adrese gönderilecek",
+    contact_name:"İsim", contact_email:"E-posta", contact_message:"Mesaj", contact_send:"GÖNDER ➥", contact_success:"Mail istemciniz açılacak…",
+    cl_title:"GÜNCELLEMELER VE YOL HARİTASI", cl_label:"Güncellemeler", cl_type_new:"YENİ", cl_type_update:"GÜNCELLEME", cl_type_soon:"YAKINDA"
+  },
+  hi: {
+    title:"ZKmenu", subtitle:"एकीकृत सुरक्षा प्लेटफ़ॉर्म – अपना एप्लिकेशन चुनें",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E एन्क्रिप्टेड मैसेजिंग, सुरक्षित फ़ाइल ट्रांसफर और एन्क्रिप्टेड ऑडियो/वीडियो कॉल",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"आइडेंटिटी फिंगरप्रिंट", ze_f4:"एन्क्रिप्टेड ऑडियो/वीडियो कॉल",
+    btn_encrypt:"⬡ ENCRYPT लॉन्च करें",
+    zkp_title:"ZenkariPass", zkp_desc:"AES-256 + ChaCha20 दोहरे एन्क्रिप्शन वाला ज़ीरो-नॉलेज पासवर्ड मैनेजर",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + ऑटो-लॉक 10 मिनट",
+    btn_pass:"ZKPASS लॉन्च करें",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"QR स्कैन और TOTP कोड जनरेशन के साथ 2FA प्रमाणक",
+    btn_download_zkpa:"ZKPA डाउनलोड करें",
+    zktk_title:"ZK Toolkit", zktk_desc:"पूर्ण सूट: Music Pro, Audio Engine, Converter – 60+ फॉर्मेट", zktk_all_utils:"सभी उपयोगिताएँ",
+    btn_toolkit:"TOOLKIT लॉन्च करें",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 बीटा", zkia_desc:"वेब सर्च, ऑफलाइन Wikipedia और एकीकृत OCR के साथ AI सहायक",
+    btn_launch_zkia:"TECUIT IA लॉन्च करें",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 बीटा", zks_desc:"ClamAV एंटीवायरस, अंतर्निहित VPN और एन्क्रिप्टेड क्वारंटाइन के साथ पूर्ण EDR सूट",
+    zks_feat1:"ClamAV + ह्यूरिस्टिक इंजन", zks_feat2:"रैनसमवेयर शील्ड (स्वत: बंद)", zks_feat3:"WireGuard + OpenVPN अंतर्निहित", zks_feat4:"AES-256-GCM क्वारंटाइन", zks_feat6:"टैम्पर शील्ड",
+    btn_download_zks:"⬡ SHIELD डाउनलोड करें",
+    zd_title:"Zenkari Drive", zd_desc:"100% एंड-टू-एंड एन्क्रिप्टेड व्यक्तिगत क्लाउड। आपकी फ़ाइलें, फ़ोटो और दस्तावेज़ AES-256-GCM द्वारा सुरक्षित।",
+    zd_f1:"क्लाइंट-साइड AES-256-GCM एन्क्रिप्शन", zd_f2:"ज़ीरो-नॉलेज: कोई आपका डेटा नहीं पढ़ सकता", zd_f3:"सुरक्षित मल्टी-डिवाइस सिंक", zd_f4:"समय-सीमा के साथ एन्क्रिप्टेड लिंक शेयरिंग",
+    zd_free:"साइनअप पर 5 GB मुफ्त", btn_drive:"⬡ DRIVE लॉन्च करें",
+    feat_2fa:"TOTP 2FA प्रमाणीकरण", feat_totp:"TOTP कोड जनरेशन", feat_qr_detect:"स्क्रीनशॉट के माध्यम से QR",
+    feat_tz:"सभी समय क्षेत्र", feat_offline:"ऑफ़लाइन काम करता है", feat_langs:"15 भाषाएँ",
+    feat_ai_chat:"AI चैट सहायक", feat_ai_auto:"स्मार्ट स्वचालन", feat_ai_sec:"सुरक्षा विश्लेषण", feat_ai_real:"वास्तविक समय प्रसंस्करण",
+    protected:"सुरक्षित",
+    status_operational:"सभी एप्लिकेशन परिचालन में", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 एप्लिकेशन उपलब्ध",
+    footer_copyright:"© 2026 ZKmenu – सर्वाधिकार सुरक्षित",
+    contact_title:"📧 मदद / संपर्क", contact_hint_prefix:"आपके संदेश भेजे जाएंगे",
+    contact_name:"नाम", contact_email:"ईमेल", contact_message:"संदेश", contact_send:"भेजें ➥", contact_success:"आपका मेल क्लाइंट खुलेगा…",
+    cl_title:"नवीनतम और रोडमैप", cl_label:"अपडेट", cl_type_new:"नया", cl_type_update:"अपडेट", cl_type_soon:"जल्द आ रहा है"
+  },
+  ar: {
+    title:"ZKmenu", subtitle:"منصة الأمان الموحّدة – اختر تطبيقك",
+    ze_title:"Zenkari Encrypt", ze_desc:"رسائل مشفرة E2E، نقل ملفات آمن ومكالمات صوتية/مرئية مشفرة",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"السرية الأمامية (Double Ratchet)", ze_f3:"بصمات الهوية", ze_f4:"مكالمات صوتية/مرئية مشفرة",
+    btn_encrypt:"⬡ تشغيل ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"مدير كلمات مرور بدون معرفة مع تشفير مزدوج AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + قفل تلقائي 10 دقائق",
+    btn_pass:"تشغيل ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"موثّق 2FA مع مسح QR وتوليد رموز TOTP",
+    btn_download_zkpa:"تنزيل ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"مجموعة كاملة: Music Pro، Audio Engine، Converter – 60+ تنسيق", zktk_all_utils:"جميع الأدوات",
+    btn_toolkit:"تشغيل TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 تجريبي", zkia_desc:"مساعد ذكاء اصطناعي مع بحث ويب وويكيبيديا غير متصلة وتعريف ضوئي مدمج",
+    btn_launch_zkia:"تشغيل TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 تجريبي", zks_desc:"حزمة EDR كاملة مع مضادات فيروسات ClamAV، VPN مدمج وحجر صحي مشفر",
+    zks_feat1:"محرك ClamAV + استدلالي", zks_feat2:"درع برامج الفدية (إيقاف تلقائي)", zks_feat3:"WireGuard + OpenVPN مدمج", zks_feat4:"حجر صحي AES-256-GCM", zks_feat6:"درع منع العبث",
+    btn_download_zks:"⬡ تنزيل SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"سحابة شخصية مشفرة 100% من طرف إلى طرف. ملفاتك وصورك ومستنداتك محمية بـ AES-256-GCM.",
+    zd_f1:"تشفير AES-256-GCM من جانب العميل", zd_f2:"معرفة صفرية: لا أحد يقرأ بياناتك", zd_f3:"مزامنة متعددة الأجهزة آمنة", zd_f4:"مشاركة روابط مشفرة مع انتهاء صلاحية",
+    zd_free:"5 جيجابايت مجانًا عند التسجيل", btn_drive:"⬡ تشغيل DRIVE",
+    feat_2fa:"مصادقة TOTP 2FA", feat_totp:"توليد رموز TOTP", feat_qr_detect:"كشف QR عبر لقطة شاشة",
+    feat_tz:"جميع المناطق الزمنية", feat_offline:"يعمل دون اتصال", feat_langs:"15 لغة",
+    feat_ai_chat:"مساعد محادثة بالذكاء الاصطناعي", feat_ai_auto:"أتمتة ذكية", feat_ai_sec:"تحليل الأمان", feat_ai_real:"معالجة فورية",
+    protected:"محمي",
+    status_operational:"جميع التطبيقات تعمل", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 تطبيقات متاحة",
+    footer_copyright:"© 2026 ZKmenu – جميع الحقوق محفوظة",
+    contact_title:"📧 مساعدة / تواصل", contact_hint_prefix:"ستُرسل رسائلك إلى",
+    contact_name:"الاسم", contact_email:"البريد الإلكتروني", contact_message:"الرسالة", contact_send:"إرسال ➥", contact_success:"سيفتح عميل البريد الإلكتروني…",
+    cl_title:"التحديثات وخريطة الطريق", cl_label:"التحديثات", cl_type_new:"جديد", cl_type_update:"تحديث", cl_type_soon:"قريبًا"
+  },
+  bn: {
+    title:"ZKmenu", subtitle:"একীভূত নিরাপত্তা প্ল্যাটফর্ম – আপনার অ্যাপ্লিকেশন বেছে নিন",
+    ze_title:"Zenkari Encrypt", ze_desc:"E2E এনক্রিপ্টেড মেসেজিং, নিরাপদ ফাইল ট্রান্সফার এবং এনক্রিপ্টেড অডিও/ভিডিও কল",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Forward Secrecy (Double Ratchet)", ze_f3:"পরিচয় ফিঙ্গারপ্রিন্ট", ze_f4:"এনক্রিপ্টেড অডিও/ভিডিও কল",
+    btn_encrypt:"⬡ ENCRYPT চালু করুন",
+    zkp_title:"ZenkariPass", zkp_desc:"AES-256 + ChaCha20 দ্বৈত এনক্রিপশন সহ জিরো-নলেজ পাসওয়ার্ড ম্যানেজার",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + স্বয়ংক্রিয় লক 10 মিনিট",
+    btn_pass:"ZKPASS চালু করুন",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"QR স্ক্যান ও TOTP কোড জেনারেশন সহ 2FA প্রমাণকারী",
+    btn_download_zkpa:"ZKPA ডাউনলোড করুন",
+    zktk_title:"ZK Toolkit", zktk_desc:"সম্পূর্ণ স্যুট: Music Pro, Audio Engine, Converter – ৬০+ ফরম্যাট", zktk_all_utils:"সব ইউটিলিটি",
+    btn_toolkit:"TOOLKIT চালু করুন",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 বিটা", zkia_desc:"ওয়েব সার্চ, অফলাইন উইকিপিডিয়া এবং ইন্টিগ্রেটেড OCR সহ AI সহকারী",
+    btn_launch_zkia:"TECUIT IA চালু করুন",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 বিটা", zks_desc:"ClamAV অ্যান্টিভাইরাস, বিল্ট-ইন VPN এবং এনক্রিপ্টেড কোয়ারেন্টাইন সহ সম্পূর্ণ EDR স্যুট",
+    zks_feat1:"ClamAV + হিউরিস্টিক ইঞ্জিন", zks_feat2:"র‍্যানসমওয়্যার শিল্ড (স্বয়ংক্রিয় বন্ধ)", zks_feat3:"বিল্ট-ইন WireGuard + OpenVPN", zks_feat4:"AES-256-GCM কোয়ারেন্টাইন", zks_feat6:"ট্যাম্পার শিল্ড",
+    btn_download_zks:"⬡ SHIELD ডাউনলোড করুন",
+    zd_title:"Zenkari Drive", zd_desc:"100% এন্ড-টু-এন্ড এনক্রিপ্টেড ব্যক্তিগত ক্লাউড। আপনার ফাইল, ছবি ও ডকুমেন্ট AES-256-GCM দ্বারা সুরক্ষিত।",
+    zd_f1:"ক্লায়েন্ট-সাইড AES-256-GCM এনক্রিপশন", zd_f2:"জিরো-নলেজ: কেউ আপনার ডেটা পড়তে পারবে না", zd_f3:"নিরাপদ মাল্টি-ডিভাইস সিঙ্ক", zd_f4:"মেয়াদ শেষ সহ এনক্রিপ্টেড লিঙ্ক শেয়ারিং",
+    zd_free:"সাইনআপে 5 GB ফ্রি", btn_drive:"⬡ DRIVE চালু করুন",
+    feat_2fa:"TOTP 2FA প্রমাণীকরণ", feat_totp:"TOTP কোড জেনারেশন", feat_qr_detect:"স্ক্রিনশটের মাধ্যমে QR",
+    feat_tz:"সব টাইম জোন", feat_offline:"অফলাইনে কাজ করে", feat_langs:"১৫টি ভাষা",
+    feat_ai_chat:"AI চ্যাট সহকারী", feat_ai_auto:"স্মার্ট অটোমেশন", feat_ai_sec:"নিরাপত্তা বিশ্লেষণ", feat_ai_real:"রিয়েল-টাইম প্রক্রিয়াকরণ",
+    protected:"সুরক্ষিত",
+    status_operational:"সব অ্যাপ্লিকেশন চালু", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"৭টি অ্যাপ্লিকেশন উপলব্ধ",
+    footer_copyright:"© 2026 ZKmenu – সর্বস্বত্ব সংরক্ষিত",
+    contact_title:"📧 সাহায্য / যোগাযোগ", contact_hint_prefix:"আপনার বার্তা পাঠানো হবে",
+    contact_name:"নাম", contact_email:"ইমেইল", contact_message:"বার্তা", contact_send:"পাঠান ➥", contact_success:"আপনার মেল ক্লায়েন্ট খুলবে…",
+    cl_title:"নতুনত্ব এবং রোডম্যাপ", cl_label:"আপডেট", cl_type_new:"নতুন", cl_type_update:"আপডেট", cl_type_soon:"শীঘ্রই"
+  },
+  vi: {
+    title:"ZKmenu", subtitle:"NỀN TẢNG BẢO MẬT THỐNG NHẤT – CHỌN ỨNG DỤNG CỦA BẠN",
+    ze_title:"Zenkari Encrypt", ze_desc:"Nhắn tin mã hóa E2E, truyền tập an toàn và cuộc gọi âm thanh/video mã hóa",
+    ze_f1:"X25519 + XChaCha20-Poly1305", ze_f2:"Bảo mật chuyển tiếp (Double Ratchet)", ze_f3:"Dấu vân tay danh tính", ze_f4:"Cuộc gọi âm thanh/video mã hóa",
+    btn_encrypt:"⬡ KHỞI ĐỘNG ENCRYPT",
+    zkp_title:"ZenkariPass", zkp_desc:"Trình quản lý mật khẩu không kiến thức với mã hóa kép AES-256 + ChaCha20",
+    zkp_f1:"AES-256-GCM + ChaCha20-Poly1305", zkp_f3:"PBKDF2 1M + HKDF + ECDSA P-384", zkp_f4:"HMAC-SHA512 + Tự động khóa 10 phút",
+    btn_pass:"KHỞI ĐỘNG ZKPASS",
+    zkpa_title:"ZKPass Authenticator", zkpa_desc:"Trình xác thực 2FA với quét QR và tạo mã TOTP",
+    btn_download_zkpa:"TẢI ZKPA",
+    zktk_title:"ZK Toolkit", zktk_desc:"Bộ hoàn chỉnh: Music Pro, Audio Engine, Converter – 60+ định dạng", zktk_all_utils:"Tất cả tiện ích",
+    btn_toolkit:"KHỞI ĐỘNG TOOLKIT",
+    zkia_title:"Tecuit IA", zkia_version:"v5.1.0 BETA", zkia_desc:"Trợ lý AI với tìm kiếm web, Wikipedia ngoại tuyến và OCR tích hợp",
+    btn_launch_zkia:"KHỞI ĐỘNG TECUIT IA",
+    zks_title:"Zenkari Shield", zks_version:"v7.0.0 BETA", zks_desc:"Bộ EDR đầy đủ với diệt virus ClamAV, VPN tích hợp và cách ly mã hóa",
+    zks_feat1:"Công cụ ClamAV + Heuristic", zks_feat2:"Lá chắn ransomware (tự động chặn)", zks_feat3:"WireGuard + OpenVPN tích hợp", zks_feat4:"Cách ly AES-256-GCM", zks_feat6:"Lá chắn chống can thiệp",
+    btn_download_zks:"⬡ TẢI SHIELD",
+    zd_title:"Zenkari Drive", zd_desc:"Đám mây cá nhân mã hóa 100% đầu cuối. Tệp, ảnh và tài liệu của bạn được bảo vệ bởi AES-256-GCM.",
+    zd_f1:"Mã hóa AES-256-GCM phía client", zd_f2:"Zero-knowledge: không ai đọc được dữ liệu của bạn", zd_f3:"Đồng bộ đa thiết bị an toàn", zd_f4:"Chia sẻ liên kết mã hóa có thời hạn",
+    zd_free:"5 GB MIỄN PHÍ KHI ĐĂNG KÝ", btn_drive:"⬡ KHỞI ĐỘNG DRIVE",
+    feat_2fa:"Xác thực TOTP 2FA", feat_totp:"Tạo mã TOTP", feat_qr_detect:"QR qua ảnh chụp màn hình",
+    feat_tz:"Tất cả múi giờ", feat_offline:"Hoạt động ngoại tuyến", feat_langs:"15 ngôn ngữ",
+    feat_ai_chat:"Trợ lý trò chuyện AI", feat_ai_auto:"Tự động hóa thông minh", feat_ai_sec:"Phân tích bảo mật", feat_ai_real:"Xử lý thời gian thực",
+    protected:"ĐƯỢC BẢO VỆ",
+    status_operational:"Tất cả ứng dụng đang hoạt động", status_encryption:"🔒 AES-256 / RSA-4096", status_apps:"7 ứng dụng có sẵn",
+    footer_copyright:"© 2026 ZKmenu – Bảo lưu mọi quyền",
+    contact_title:"📧 TRỢ GIÚP / LIÊN HỆ", contact_hint_prefix:"Tin nhắn của bạn sẽ được gửi đến",
+    contact_name:"Tên", contact_email:"Email", contact_message:"Tin nhắn", contact_send:"GỬI ➥", contact_success:"Ứng dụng mail của bạn sẽ mở…",
+    cl_title:"CẬP NHẬT & LỘ TRÌNH", cl_label:"Cập nhật", cl_type_new:"MỚI", cl_type_update:"CẬP NHẬT", cl_type_soon:"SẮP CÓ"
+  }
+};
+
+const FL = {
+  fr:'🇫🇷 FR', en:'🇬🇧 EN', es:'🇪🇸 ES', de:'🇩🇪 DE', it:'🇮🇹 IT', pt:'🇵🇹 PT',
+  ru:'🇷🇺 RU', zh:'🇨🇳 ZH', ja:'🇯🇵 JA', ko:'🇰🇷 KO', tr:'🇹🇷 TR',
+  hi:'🇮🇳 HI', ar:'🇸🇦 AR', bn:'🇧🇩 BN', vi:'🇻🇳 VI'
+};
+
+let lang = 'fr';
+function t(k){ return (T[lang] && T[lang][k]) || (T.en[k]) || k; }
+function tEntry(entry, field){
+  return (entry[field] && entry[field][lang]) || entry[field].en || entry[field].fr || '';
+}
+
+function applyLang(l){
+  const tr = T[l] || T.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (tr[k] !== undefined) el.textContent = tr[k];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const k = el.getAttribute('data-i18n-placeholder');
+    if (tr[k] !== undefined) el.placeholder = tr[k];
+  });
+  document.getElementById('li').textContent = FL[l] || l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderChangelog(){
+  const c = document.getElementById('clEntries');
+  c.innerHTML = '';
+  CHANGELOG.forEach((entry, i) => {
+    const div = document.createElement('div');
+    div.className = `cl-entry type-${entry.type}`;
+    div.style.animationDelay = `${i * 0.07}s`;
+    div.innerHTML = `
+      <div class="cl-entry-head">
+        <span class="cl-type ${entry.type}">${escHtml(t('cl_type_' + entry.type))}</span>
+        <span class="cl-date">${escHtml(entry.date)}</span>
+      </div>
+      <div class="cl-entry-title">${escHtml(tEntry(entry, 'title'))}</div>
+      <div class="cl-entry-desc">${escHtml(tEntry(entry, 'desc'))}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function changeLang(){
+  lang = document.getElementById('ls').value;
+  localStorage.setItem('zk_lang', lang);
+  applyLang(lang);
+  renderChangelog();
+}
+
+function onContact(){
+  const n  = document.getElementById('cN').value.trim();
+  const em = document.getElementById('cE').value.trim();
+  const m  = document.getElementById('cM').value.trim();
+  if (!n || !em || !m) return;
+
+  const subject = encodeURIComponent('[ZKmenu] Message de ' + n + ' <' + em + '>');
+  const body    = encodeURIComponent(m);
+  window.location.href = 'mailto:ZenkariWebService@protonmail.com?subject=' + subject + '&body=' + body;
+
+  document.getElementById('cN').value = '';
+  document.getElementById('cE').value = '';
+  document.getElementById('cM').value = '';
+  const ok = document.getElementById('contactOk');
+  document.getElementById('contactOkMsg').textContent = t('contact_success');
+  ok.classList.add('show');
+  setTimeout(() => ok.classList.remove('show'), 4000);
+}
+
+(function(){
+  const c = document.getElementById('bgCanvas'), ctx = c.getContext('2d');
+  let W, H, mx = -999, my = -999;
+  const N = 65, nodes = [];
+  function resize(){ W = c.width = innerWidth; H = c.height = innerHeight; }
+  resize();
+  addEventListener('resize', resize);
+  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  for (let i = 0; i < N; i++) nodes.push({
+    x: Math.random()*2000, y: Math.random()*1200,
+    vx: (Math.random()-.5)*.28, vy: (Math.random()-.5)*.28,
+    r: Math.random()*1.6+.5, h: 200+Math.random()*55
+  });
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+      const dx = n.x-mx, dy = n.y-my, d = Math.hypot(dx, dy);
+      if (d < 130 && d > 0){ n.x += dx/d*1.8; n.y += dy/d*1.8; }
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+      ctx.fillStyle = `hsla(${n.h},68%,63%,.45)`;
+      ctx.fill();
+    });
+    for (let i = 0; i < N; i++) for (let j = i+1; j < N; j++){
+      const a = nodes[i], b = nodes[j], d = Math.hypot(a.x-b.x, a.y-b.y);
+      if (d < 145){
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(59,130,246,${(1-d/145)*.18})`;
+        ctx.lineWidth = .6; ctx.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting){
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'none';
+      obs.unobserve(e.target);
+    }
+  });
+}, {threshold: .12});
+document.querySelectorAll('.app-card').forEach(c => obs.observe(c));
+
+const saved = localStorage.getItem('zk_lang');
+if (saved && FL[saved]) {
+  lang = saved;
+  document.getElementById('ls').value = saved;
+}
+applyLang(lang);
+renderChangelog();
+setTimeout(()=>{document.querySelectorAll(".app-card").forEach(c=>{c.style.opacity="1";c.style.transform="none"})},2000);
+</script>
+</body>
+</html>
+
